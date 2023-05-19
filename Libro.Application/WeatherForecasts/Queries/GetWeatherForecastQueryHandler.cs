@@ -2,7 +2,7 @@
 using Libro.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
-namespace Libro.Application.SampleEntity.Queries
+namespace Libro.Application.WeatherForecasts.Queries
 {
     public class GetWeatherForecastQueryHandler : IRequestHandler<GetWeatherForecastQuery, List<WeatherForecast>>
     {

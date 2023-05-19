@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Libro.Presentation
 {
@@ -8,7 +7,7 @@ namespace Libro.Presentation
         public static IServiceCollection AddPresentaion(this IServiceCollection services)
         {
          
-             return services;
+            return services;
         }
     }
 }

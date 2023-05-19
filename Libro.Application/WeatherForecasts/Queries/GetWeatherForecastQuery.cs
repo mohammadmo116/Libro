@@ -3,7 +3,7 @@ using MediatR;
 using System.Collections.Generic;
 
 
-namespace Libro.Application.SampleEntity.Queries
+namespace Libro.Application.WeatherForecasts.Queries
 {
     public class GetWeatherForecastQuery : IRequest<List<WeatherForecast>>
     {
