@@ -5,10 +5,18 @@ namespace Libro.Infrastructure.Repositories
 {
     public class WeatherRepository : IWeatherRepository
     {
+        
         private static readonly string[] Summaries = new[]
    { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+        private readonly ApplicationDbContext _context;
+
+        public WeatherRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public async Task<List<WeatherForecast>> Get()
         {
+   
             var weatherForecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),

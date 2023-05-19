@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Libro.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230518140929_CreateDataBase")]
+    [Migration("20230519091209_CreateDataBase")]
     partial class CreateDataBase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

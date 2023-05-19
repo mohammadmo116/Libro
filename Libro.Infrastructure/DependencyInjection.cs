@@ -19,6 +19,7 @@ namespace Libro.Infrastracture
                 options.UseSqlServer(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
            
             services.AddScoped<IWeatherRepository, WeatherRepository>();
+            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             return services;
         }
     }
