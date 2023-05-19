@@ -13,12 +13,12 @@ namespace Libro.Domain.Entities
     {
         [Required]
         [MaxLength(450)]
-        [ForeignKey(nameof(Entities.User))]
+        [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
 
         [Required]
         [MaxLength(450)]
-        [ForeignKey(nameof(Entities.Role))]
+        [ForeignKey(nameof(Role))]
         public Guid RoleId { get; set; }
         
     }

@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Users\Queries\" />
     <Folder Include="WeatherForecasts\Commands\" />
   </ItemGroup>
 

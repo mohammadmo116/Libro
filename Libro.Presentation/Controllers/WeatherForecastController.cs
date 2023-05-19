@@ -2,9 +2,11 @@ using Libro.Domain.Entities;
 using MediatR;
 using Libro.Application.WeatherForecasts.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Libro.WebApi.Controllers
 {
+    
     [ApiController]
     [Route("WeatherForecast")]
     public class WeatherForecastController : ControllerBase
@@ -18,7 +20,7 @@ namespace Libro.WebApi.Controllers
         {
             _mediator = mediator;
         }
-
+        [Authorize]
         [HttpGet(Name = "GetWeatherForecast")]
         public async Task<ActionResult<List<WeatherForecast>>> Get()
         {
