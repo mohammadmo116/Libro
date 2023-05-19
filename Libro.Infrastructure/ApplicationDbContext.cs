@@ -21,8 +21,8 @@ namespace Libro.Infrastructure
         {
 
         }
-  
-     
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -42,8 +42,10 @@ namespace Libro.Infrastructure
           .HasForeignKey(e => e.UserId)
           .OnDelete(DeleteBehavior.Cascade));
 
+            modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();
+
             modelBuilder.Entity<UserRole>().HasKey(e => new { e.UserId, e.RoleId });
-       
+
         }
     }
 }

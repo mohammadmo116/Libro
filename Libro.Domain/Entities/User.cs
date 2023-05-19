@@ -23,7 +23,7 @@ namespace Libro.Domain.Entities
 
         [PasswordPropertyText]
         [Required]
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
         [Phone]
         public string? PhoneNumber { get; set; }
     

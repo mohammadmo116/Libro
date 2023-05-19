@@ -4,6 +4,8 @@ namespace Libro.Application.Interfaces
 {
     public interface IAuthenticationRepository
     {
-        Task<User> RegisterUser(User user);
+        
+        Task<User> RegisterUserAsync(User user);
+        Task<string> Authenticate(string Email, string Password);
     }
 }
