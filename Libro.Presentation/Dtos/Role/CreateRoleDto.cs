@@ -10,6 +10,7 @@ namespace Libro.Presentation.Dtos.Role
 {
     public class CreateRoleDto
     {
+        public Guid Id { get; set; }
         [Required]
         [MaxLength(256)]
         public string Name { get; set; }

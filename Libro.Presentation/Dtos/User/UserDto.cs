@@ -9,7 +9,7 @@ namespace Libro.Presentation.Dtos.User
 {
     public class UserDto
     {
-
+       
         [MaxLength(256)]
         public string? UserName { get; set; }
         [Required]
@@ -19,5 +19,7 @@ namespace Libro.Presentation.Dtos.User
 
         [Phone]
         public string? PhoneNumber { get; set; }
+
+
     }
 }
