@@ -1,10 +1,10 @@
 using Libro.Application;
 using Libro.Infrastracture;
-using Libro.Infrastructure;
+using Libro.Infrastructure.Authorization;
 using Libro.Presentation;
 using Libro.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -16,11 +16,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 
-builder.Services.AddControllers(options=>options.Filters.Add<ValidationFilter>())
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddApplicationPart(typeof(Libro.Presentation.AssemblyReference).Assembly)
     .AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+   .ConfigureApiBehaviorOptions(options =>
+    options.SuppressModelStateInvalidFilter = true);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,9 +36,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
+builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
+//builder.Services.AddScoped<ValidationFilter>();
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Libro.WebApi", Version = "V1" });
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -81,6 +89,7 @@ catch (Exception ex)
 
 
 }
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -96,7 +105,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
+   
