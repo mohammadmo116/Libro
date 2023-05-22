@@ -3,7 +3,6 @@ using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Runtime.Intrinsics.X86;
 
 namespace Libro.Application.Users.Commands
 {
@@ -24,11 +23,14 @@ namespace Libro.Application.Users.Commands
         {
             try
             {
+                
                 var user = await _authenticationRepository.RegisterUserAsync(request.User);
                 return user;
             }
             catch (UserExistsException e)
-            { throw new UserExistsException(e._field,e._message); }
+            {    
+                throw new UserExistsException(e._field); 
+            }
 
         }
     }

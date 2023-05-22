@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace Libro.Domain.Entities
+
+namespace Libro.Presentation.Dtos.Role
 {
-
-    public class UserRole
+    public class AddRoleToUserDto
     {
         [Required]
         [MaxLength(450)]
@@ -15,6 +15,5 @@ namespace Libro.Domain.Entities
         [MaxLength(450)]
         [ForeignKey(nameof(Role))]
         public Guid RoleId { get; set; }
-
     }
 }
