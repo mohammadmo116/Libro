@@ -1,12 +1,11 @@
 ﻿
 using Libro.Application.Interfaces;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System.Configuration;
 
 namespace Libro.Infrastracture
 {
@@ -17,9 +16,13 @@ namespace Libro.Infrastracture
         
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
-           
+       
             services.AddScoped<IWeatherRepository, WeatherRepository>();
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleService, RoleService>();
+
             return services;
         }
     }

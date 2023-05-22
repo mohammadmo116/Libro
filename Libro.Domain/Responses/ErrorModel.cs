@@ -1,4 +1,4 @@
-﻿namespace Libro.WebApi.Responses
+﻿namespace Libro.Domain.Responses
 {
     public class ErrorModel
     {

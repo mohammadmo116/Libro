@@ -1,7 +1,5 @@
 ﻿using Libro.Domain.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 
 namespace Libro.Infrastructure
@@ -12,7 +10,6 @@ namespace Libro.Infrastructure
         public DbSet<User>? Users { get; set; }
         public DbSet<Role>? Roles { get; set; }
         public DbSet<UserRole>? UserRoles { get; set; }
-
         public ApplicationDbContext() 
         {
 

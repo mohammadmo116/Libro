@@ -1,19 +1,14 @@
 ﻿using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
-using Libro.Application.WeatherForecasts.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.User;
 using Mapster;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Security.Authentication;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Presentation.Controllers
 {
@@ -31,13 +26,19 @@ namespace Libro.Presentation.Controllers
         {
             try
             {
-                var user = createUserDto.Adapt<User>();
+                var user = createUserDto.Adapt<User>();  
                 var query = new CreateUserCommand(user);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<UserDtoWithId>());
             }
+           
             catch (UserExistsException e)
-            { return BadRequest(e.Message); }
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName= e._field,Message=e.Message});
+                return new BadRequestObjectResult(errorResponse);
+        
+            }
             
 
         }
@@ -51,7 +52,7 @@ namespace Libro.Presentation.Controllers
                 var Result = await _mediator.Send(query);
                 return Ok(Result);
             }
-            catch(InvalidCredentialException e) {
+            catch(InvalidCredentialException e) { 
                 return Unauthorized(e.Message);
             }
             

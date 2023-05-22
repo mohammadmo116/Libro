@@ -1,6 +1,7 @@
-﻿using Libro.WebApi.Responses;
+﻿using Libro.Domain.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net;
 
 namespace Libro.WebApi.Filters
 {
@@ -15,7 +16,7 @@ namespace Libro.WebApi.Filters
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(x => x.ErrorMessage))
                     .ToArray();
 
-                var errorResponse = new ErrorResponse();
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
                 foreach (var error in errorModelState)
                 {
                     foreach (var subError in error.Value)
