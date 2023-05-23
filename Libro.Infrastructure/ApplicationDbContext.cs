@@ -10,7 +10,9 @@ namespace Libro.Infrastructure
         public DbSet<User>? Users { get; set; }
         public DbSet<Role>? Roles { get; set; }
         public DbSet<UserRole>? UserRoles { get; set; }
-    
+        public DbSet<Book>? Books { get; set; }
+        public DbSet<Author>? Authors { get; set; }
+        public DbSet<AuthorBook>? AuthorBooks { get; set; }
         public ApplicationDbContext() 
         {
 
@@ -25,7 +27,22 @@ namespace Libro.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-        
+            modelBuilder.Entity<Book>()
+          .HasMany(a => a.Authors)
+          .WithMany(b => b.Books)
+          .UsingEntity<AuthorBook>(
+          join => join
+          .HasOne<Author>()
+          .WithMany()
+          .HasForeignKey(ca => ca.AuthorId)
+          .OnDelete(DeleteBehavior.Cascade),
+         join => join
+          .HasOne<Book>()
+          .WithMany()
+          .HasForeignKey(e => e.BookId)
+          .OnDelete(DeleteBehavior.Cascade));
+
+           modelBuilder.Entity<AuthorBook>().HasKey(e => new { e.BookId, e.AuthorId });
 
             modelBuilder.Entity<User>()
           .HasMany(a => a.Roles)
