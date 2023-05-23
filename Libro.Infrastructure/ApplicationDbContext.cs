@@ -10,6 +10,7 @@ namespace Libro.Infrastructure
         public DbSet<User>? Users { get; set; }
         public DbSet<Role>? Roles { get; set; }
         public DbSet<UserRole>? UserRoles { get; set; }
+    
         public ApplicationDbContext() 
         {
 
@@ -23,6 +24,8 @@ namespace Libro.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+        
 
             modelBuilder.Entity<User>()
           .HasMany(a => a.Roles)
@@ -39,6 +42,7 @@ namespace Libro.Infrastructure
           .HasForeignKey(e => e.UserId)
           .OnDelete(DeleteBehavior.Cascade));
 
+            modelBuilder.Entity<Role>().HasIndex(e => e.Name).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();
 
             modelBuilder.Entity<UserRole>().HasKey(e => new { e.UserId, e.RoleId });
