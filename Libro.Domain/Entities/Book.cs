@@ -14,6 +14,7 @@ namespace Libro.Domain.Entities
         [MaxLength(256)]
         public string? Title { get; set; }
 
+        public string? Genre { get; set; }
         public DateTime? PublishedDate { get; set; }
 
         public List<Author>? Authors { get; set; }
