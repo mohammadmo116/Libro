@@ -20,24 +20,32 @@ namespace Libro.Infrastructure.Repositories
 
         public async Task<List<string>> Search(string? Title, string? AuthorName, string? Genre)
         {
-            List<string> BookNames = new();
+            List<Book> Books = null;
 
             if (AuthorName is not null)
             {
-                var AuthorIds = await _context.Authors.Where(b => b.Name == $"%{AuthorName}%").Select(a => a.Id).ToListAsync();
+                var AuthorIds = await _context.Authors.Where(b => b.Name.Contains(AuthorName)).Select(a => a.Id).ToListAsync();
                 var BookIds = await _context.AuthorBooks.Where(a => AuthorIds.Contains(a.AuthorId)).Select(a => a.BookId).ToListAsync();
-                BookNames = await _context.Books.Where(b => BookIds.Contains(b.Id)).Select(b => b.Title).ToListAsync();
+                Books = await _context.Books.Where(b => BookIds.Contains(b.Id)).ToListAsync();
             }
             if (Title is not null)
             {
-                BookNames = await _context.Books.Where(b => b.Title == $"%{Title}%").Select(b => b.Title).ToListAsync();
+                if (Books is null)
+                    Books = await _context.Books.Where(b => b.Title.Contains(Title)).ToListAsync();
+                else
+                    Books = Books.Where(b => b.Title.Contains(Title)).ToList();
             }
             if (Genre is not null)
             {
-                BookNames = await _context.Books.Where(b => b.Genre == $"%{Genre}%").Select(b => b.Title).ToListAsync();
-            }
+                if (Books is null)
+                    Books = await _context.Books.Where(b => b.Genre.Contains(Genre)).ToListAsync();
+                else
+                    Books = Books.Where(b => b.Genre.Contains(Genre)).ToList();
 
-            return BookNames;
+            }
+            if (Books is null)
+                Books = new();
+            return Books.Select(a => a.Title).ToList();
         }
 
 
