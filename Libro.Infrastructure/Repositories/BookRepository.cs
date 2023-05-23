@@ -19,6 +19,11 @@ namespace Libro.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Book> GetBook(Guid BookId)
+        {
+            return await _context.Books.FirstOrDefaultAsync(b=>b.Id==BookId);
+        }
+
         public async Task<List<string>> GetBooks(string? Title, string? AuthorName, string? Genre)
         {
             if (Title is null && AuthorName is null && Genre is null)
