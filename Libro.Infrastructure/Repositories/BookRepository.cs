@@ -19,12 +19,12 @@ namespace Libro.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Book> GetBook(Guid BookId)
+        public async Task<Book> GetBookAsync(Guid BookId)
         {
             return await _context.Books.FirstOrDefaultAsync(b=>b.Id==BookId);
         }
 
-        public async Task<List<string>> GetBooks(string? Title, string? AuthorName, string? Genre)
+        public async Task<List<string>> GetBooksAsync(string? Title, string? AuthorName, string? Genre)
         {
             if (Title is null && AuthorName is null && Genre is null)
             {
@@ -41,11 +41,11 @@ namespace Libro.Infrastructure.Repositories
             }
             if (Title is not null)
             {
-                Books=await GetBooksByTitle(Books, Title);           
+                Books=await GetBooksByTitleAsync(Books, Title);           
             }
             if (Genre is not null)
             {
-                Books=await GetBooksByGenre(Books, Genre);
+                Books=await GetBooksByGenreAsync(Books, Genre);
                
             }
 
@@ -53,7 +53,7 @@ namespace Libro.Infrastructure.Repositories
             return Books.Select(a => a.Title).ToList();
         }
 
-        private async Task<List<Book>> GetBooksByGenre(List<Book>? Books, string Genre)
+        private async Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre)
         {
             if (Books is null)
                 Books = await _context.Books.Where(b => b.Genre.Contains(Genre)).ToListAsync();
@@ -62,7 +62,7 @@ namespace Libro.Infrastructure.Repositories
             return Books;
         }
 
-        private async Task<List<Book>> GetBooksByTitle(List<Book>? Books, string Title)
+        private async Task<List<Book>> GetBooksByTitleAsync(List<Book>? Books, string Title)
         {
             if (Books is null)
                 Books = await _context.Books.Where(b => b.Title.Contains(Title)).ToListAsync();
