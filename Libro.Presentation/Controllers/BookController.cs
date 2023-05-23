@@ -31,5 +31,15 @@ namespace Libro.Presentation.Controllers
             var Result = await _mediator.Send(query);
             return Ok(Result);
         }
+        [HttpGet("{BookId}", Name = "BookById")]
+        public async Task<ActionResult<List<string>>> GetBookById(Guid BookId)
+        {
+
+            var query = new GetBookByIdQuery(BookId);
+            var Result = await _mediator.Send(query);
+            if (Result is null)
+                return NotFound("Book Not_Found");
+            return Ok(Result);
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace Libro.Infrastructure.Repositories
 
         public async Task<Book> GetBookAsync(Guid BookId)
         {
-            return await _context.Books.FirstOrDefaultAsync(b=>b.Id==BookId);
+            return await _context.Books.Include(a => a.Authors).FirstOrDefaultAsync(b => b.Id == BookId);
         }
 
         public async Task<List<string>> GetBooksAsync(string? Title, string? AuthorName, string? Genre)
