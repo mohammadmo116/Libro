@@ -2,6 +2,6 @@
 {
     public interface IBookRepository
     {
-        Task<List<string>> Search(string? Title, string? AuthorName, string? Genre);
+        Task<List<string>> GetBooks(string? Title, string? AuthorName, string? Genre);
     }
 }

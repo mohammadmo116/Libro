@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Libro.Infrastructure.Repositories
 {
@@ -18,8 +19,13 @@ namespace Libro.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<string>> Search(string? Title, string? AuthorName, string? Genre)
+        public async Task<List<string>> GetBooks(string? Title, string? AuthorName, string? Genre)
         {
+            if (Title is null && AuthorName is null && Genre is null)
+            {
+                return await _context.Books.Where(b=>b.IsAvailable==true).Select(b => b.Title).ToListAsync(); 
+            }
+
             List<Book> Books = null;
 
             if (AuthorName is not null)
@@ -30,24 +36,34 @@ namespace Libro.Infrastructure.Repositories
             }
             if (Title is not null)
             {
-                if (Books is null)
-                    Books = await _context.Books.Where(b => b.Title.Contains(Title)).ToListAsync();
-                else
-                    Books = Books.Where(b => b.Title.Contains(Title)).ToList();
+                Books=await GetBooksByTitle(Books, Title);           
             }
             if (Genre is not null)
             {
-                if (Books is null)
-                    Books = await _context.Books.Where(b => b.Genre.Contains(Genre)).ToListAsync();
-                else
-                    Books = Books.Where(b => b.Genre.Contains(Genre)).ToList();
-
+                Books=await GetBooksByGenre(Books, Genre);
+               
             }
-            if (Books is null)
-                Books = new();
+
+            Books ??= new();
             return Books.Select(a => a.Title).ToList();
         }
 
+        private async Task<List<Book>> GetBooksByGenre(List<Book>? Books, string Genre)
+        {
+            if (Books is null)
+                Books = await _context.Books.Where(b => b.Genre.Contains(Genre)).ToListAsync();
+            else
+                Books = Books.Where(b => b.Genre.Contains(Genre)).ToList();
+            return Books;
+        }
 
+        private async Task<List<Book>> GetBooksByTitle(List<Book>? Books, string Title)
+        {
+            if (Books is null)
+                Books = await _context.Books.Where(b => b.Title.Contains(Title)).ToListAsync();
+            else
+                Books = Books.Where(b => b.Title.Contains(Title)).ToList();
+            return Books;
+        }
     }
 }
