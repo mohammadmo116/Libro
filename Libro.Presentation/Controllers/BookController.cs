@@ -1,8 +1,11 @@
 ﻿using Libro.Application.Books.Queries;
 using Libro.Application.Roles.Commands;
 using Libro.Domain.Entities;
+using Libro.Presentation.Dtos.Author;
+using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,22 +27,23 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
         }
         [HttpGet("Books", Name = "search")]
-        public async Task<ActionResult<List<string>>> Search(string? Title, string? AuthorName, string? Genre)
+        public async Task<ActionResult<List<string>>> Search(string? Title, string? AuthorName, string? Genre, int PageNumber=0,int Count=5)
         {
             
-            var query = new GetSearchedBooksQuery(Title, AuthorName, Genre);
+            var query = new GetSearchedBooksQuery(Title, AuthorName, Genre, PageNumber, Count);
             var Result = await _mediator.Send(query);
             return Ok(Result);
         }
         [HttpGet("{BookId}", Name = "BookById")]
-        public async Task<ActionResult<List<string>>> GetBookById(Guid BookId)
+        public async Task<ActionResult<BookDto>> GetBookById(Guid BookId)
         {
-
+            
             var query = new GetBookByIdQuery(BookId);
             var Result = await _mediator.Send(query);
             if (Result is null)
                 return NotFound("Book Not_Found");
-            return Ok(Result);
+          
+            return Ok(Result.Adapt<BookDto>());
         }
     }
 }

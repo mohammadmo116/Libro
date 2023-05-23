@@ -23,7 +23,7 @@ namespace Libro.Application.Books.Queries
 
         public async Task<List<string>> Handle(GetSearchedBooksQuery request, CancellationToken cancellationToken)
         {
-            return await _bookRepository.GetBooksAsync(Title:request.Title, AuthorName: request.AuthorName,Genre:request.Genre);
+            return await _bookRepository.GetBooksAsync(request.Title,request.AuthorName,request.Genre,request.PageNumber,request.Count);
         }
     }
 }
