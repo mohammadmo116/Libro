@@ -24,11 +24,18 @@ namespace Libro.Infrastructure.Repositories
             return await _context.Books.Include(a => a.Authors).FirstOrDefaultAsync(b => b.Id == BookId);
         }
 
-        public async Task<List<string>> GetBooksAsync(string? Title, string? AuthorName, string? Genre)
+        public async Task<List<string>> GetBooksAsync(string? Title, 
+            string? AuthorName, 
+            string? Genre,
+            int PageNumber,
+            int Count
+            )
         {
+            if (Count > 10)
+                Count = 10;
             if (Title is null && AuthorName is null && Genre is null)
             {
-                return await _context.Books.Where(b=>b.IsAvailable==true).Select(b => b.Title).ToListAsync(); 
+                return await _context.Books.Where(b=>b.IsAvailable==true).Select(b => b.Title).Skip(PageNumber * Count).Take(Count).ToListAsync(); 
             }
 
             List<Book> Books = null;
@@ -50,7 +57,7 @@ namespace Libro.Infrastructure.Repositories
             }
 
             Books ??= new();
-            return Books.Select(a => a.Title).ToList();
+            return Books.Select(a => a.Title).Skip(PageNumber*Count).Take(Count).ToList();
         }
 
         private async Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre)
