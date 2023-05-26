@@ -17,24 +17,31 @@ namespace Libro.Infrastructure.Authorization
             AuthorizationHandlerContext context,
             RoleRequirement requirement)
         {
-            string? userId=context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-            if (!Guid.TryParse(userId,out Guid parsedUserId)) {
+            string? userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
+            {
                 return;
             }
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
-                IRoleService roleService = scope.ServiceProvider
-                .GetRequiredService<IRoleService>();
+            IRoleService roleService = scope.ServiceProvider
+            .GetRequiredService<IRoleService>();
 
 
-                HashSet<string> roles = await roleService
-                    .GetRolesAsync(parsedUserId);
+            HashSet<string> roles = await roleService
+                .GetRolesAsync(parsedUserId);
+
+            var GivenRoles = requirement.Roles
+                .Trim()
+                .Replace(" ", "")
+                .Split(',')
+                .ToHashSet<string>();
 
 
-                if (roles.Contains(requirement.Role))
-                {
-                    context.Succeed(requirement);
-                }
-            
+            if (roles.Intersect(GivenRoles).Any())
+            {
+                context.Succeed(requirement);
+            }
+
         }
     }
 }

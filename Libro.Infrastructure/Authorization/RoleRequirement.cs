@@ -4,9 +4,9 @@ namespace Libro.Infrastructure.Authorization
 {
     public class RoleRequirement : IAuthorizationRequirement
     {
-        public RoleRequirement(string role) {
-            Role = role;
+        public RoleRequirement(string roles) {
+            Roles = roles;
         }
-        public string Role { get; set; }
+        public string Roles { get; set; }
     }
 }
