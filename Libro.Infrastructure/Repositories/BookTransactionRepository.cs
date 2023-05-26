@@ -34,7 +34,9 @@ namespace Libro.Infrastructure.Repositories
             book.IsAvailable = false;
             _context.Books.Update(book);
             bookTransaction.Status = BookStatus.Reserved;
+            bookTransaction.Id = Guid.NewGuid();
             _context.BookTransactions.AddAsync(bookTransaction);
+            await _context.SaveChangesAsync();
             await contextTransactio.CommitAsync();
         }
 
