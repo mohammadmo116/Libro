@@ -33,13 +33,35 @@ namespace Libro.Infrastructure.Repositories
             using var contextTransactio = await _context.Database.BeginTransactionAsync();
             book.IsAvailable = false;
             _context.Books.Update(book);
-            bookTransaction.Status = BookStatus.Reserved;
             bookTransaction.Id = Guid.NewGuid();
+            bookTransaction.Status = BookStatus.Reserved;   
             _context.BookTransactions.AddAsync(bookTransaction);
             await _context.SaveChangesAsync();
             await contextTransactio.CommitAsync();
         }
+        public async Task CheckOut(Guid UserId,Guid BookId,DateTime dueDate)
+        {
 
+        
+            var book = await _context.Books.
+                FirstOrDefaultAsync(b => b.Id == BookId)
+                ?? throw new CustomNotFoundException("Book");
 
+            var bookTransaction = _context.BookTransactions
+            .FirstOrDefault(BookIsReserved(UserId,BookId))
+            ?? throw new BookIsNotReservedException(book.Title);
+
+            bookTransaction.Status = BookStatus.Borrowed;
+            bookTransaction.DueDate= dueDate;
+            _context.BookTransactions.Update(bookTransaction);
+            await _context.SaveChangesAsync();
+            
+        }
+
+        private static Func<BookTransaction, bool> BookIsReserved(Guid UserId,Guid BookId)
+        {
+            return a => a.UserId == UserId && a.BookId == BookId && a.Status == BookStatus.Reserved;
+           
+        }
     }
 }
