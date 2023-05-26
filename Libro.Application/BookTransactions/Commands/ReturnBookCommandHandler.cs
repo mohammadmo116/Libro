@@ -6,41 +6,43 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Libro.Application.BookTransactions.Commands
 {
-    public sealed class CheckOutBookCommandHandler : IRequestHandler<CheckOutBookCommand>
+    public class ReturnBookCommandHandler : IRequestHandler<ReturnBookCommand>
     {
+
         private readonly ILogger<BookTransaction> _logger;
         private readonly IBookTransactionRepository _bookTransactionRepository;
 
-        //private readonly ILogger<BookTransactions> _logger;
-
-        public CheckOutBookCommandHandler(ILogger<BookTransaction> logger,
+        public ReturnBookCommandHandler(ILogger<BookTransaction> logger,
             IBookTransactionRepository bookTransactionRepository)
         {
             _logger = logger;
             _bookTransactionRepository = bookTransactionRepository;
+
         }
-       public async Task Handle(CheckOutBookCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ReturnBookCommand request, CancellationToken cancellationToken)
         {
+
             try
             {
-                await _bookTransactionRepository.CheckOutAsync(request.UserId, request.BookId, request.dueDate);
+               await _bookTransactionRepository.ReturnBookAsync(request.UserId, request.BookId);
+
             }
+
             catch (CustomNotFoundException e)
             {
-                _logger.LogInformation($"CustomNotFoundException message : {e.Message}");
+                _logger.LogInformation($"CustomNotFoundException message:{e.Message}");
                 _logger.LogInformation($"bookId : {request.BookId}, userId : {request.UserId}");
                 throw e;
             }
-            catch (BookIsNotAvailableException e)
+            catch (BookIsNotReservedOrBorrowedException e)
             {
-                _logger.LogInformation($"BookIsNotReservedException message : {e.Message}");
-                _logger.LogInformation($"bookId : {request.BookId}, userId : {request.UserId}");
+                _logger.LogInformation($"BookIsNotReservedOrBorrowedException message:{e.Message}");
+                _logger.LogInformation($"bookId : {request.BookId}");
                 throw e;
             }
         }

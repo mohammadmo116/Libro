@@ -4,9 +4,9 @@ namespace Libro.Application.Interfaces
 {
     public interface IBookTransactionRepository
     {
-        Task ReserveBook(BookTransaction bookTransaction);
-        Task CheckOut(Guid userId, Guid bookId, DateTime dueDate);
-        Task ReturnBook(Guid userId, Guid bookId);
+        Task ReserveBookAsync(BookTransaction bookTransaction);
+        Task CheckOutAsync(Guid userId, Guid bookId, DateTime dueDate);
+        Task ReturnBookAsync(Guid userId, Guid bookId);
         
     }
 }
