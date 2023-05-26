@@ -37,7 +37,7 @@ namespace Libro.Application.BookTransactions.Commands
                 _logger.LogInformation($"bookId : {request.BookId}, userId : {request.UserId}");
                 throw e;
             }
-            catch (BookIsNotReservedException e)
+            catch (BookIsNotAvailableException e)
             {
                 _logger.LogInformation($"BookIsNotReservedException message : {e.Message}");
                 _logger.LogInformation($"bookId : {request.BookId}, userId : {request.UserId}");
