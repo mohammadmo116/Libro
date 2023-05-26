@@ -21,7 +21,7 @@ namespace Libro.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task ReserveBook(BookTransaction bookTransaction)
+        public async Task ReserveBookAsync(BookTransaction bookTransaction)
         {
 
 
@@ -39,7 +39,7 @@ namespace Libro.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             await contextTransactio.CommitAsync();
         }
-        public async Task CheckOut(Guid UserId,Guid BookId,DateTime dueDate)
+        public async Task CheckOutAsync(Guid UserId,Guid BookId,DateTime dueDate)
         {
 
         
@@ -64,7 +64,7 @@ namespace Libro.Infrastructure.Repositories
            
         }
 
-        public async Task ReturnBook(Guid UserId, Guid BookId)
+        public async Task ReturnBookAsync(Guid UserId, Guid BookId)
         {
 
 

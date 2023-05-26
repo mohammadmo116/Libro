@@ -26,7 +26,7 @@ namespace Libro.Application.BookTransactions.Commands
         {
             try
             {
-               await _bookTransactionRepository.ReserveBook(request.bookTransaction);
+               await _bookTransactionRepository.ReserveBookAsync(request.bookTransaction);
             }
             catch (CustomNotFoundException e)
             {
