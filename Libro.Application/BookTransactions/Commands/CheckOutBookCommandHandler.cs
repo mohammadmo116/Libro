@@ -17,7 +17,6 @@ namespace Libro.Application.BookTransactions.Commands
         private readonly ILogger<BookTransaction> _logger;
         private readonly IBookTransactionRepository _bookTransactionRepository;
 
-        //private readonly ILogger<BookTransactions> _logger;
 
         public CheckOutBookCommandHandler(ILogger<BookTransaction> logger,
             IBookTransactionRepository bookTransactionRepository)
@@ -29,18 +28,19 @@ namespace Libro.Application.BookTransactions.Commands
         {
             try
             {
-                await _bookTransactionRepository.CheckOutAsync(request.UserId, request.BookId, request.dueDate);
+                await _bookTransactionRepository.CheckOutAsync(request.TransactionId);
             }
             catch (CustomNotFoundException e)
             {
                 _logger.LogInformation($"CustomNotFoundException message : {e.Message}");
-                _logger.LogInformation($"bookId : {request.BookId}, userId : {request.UserId}");
+                _logger.LogInformation($"TransactionId : {request.TransactionId}");
                 throw e;
             }
-            catch (BookIsNotAvailableException e)
+            catch (BookIsBorrowedException e)
+
             {
-                _logger.LogInformation($"BookIsNotReservedException message : {e.Message}");
-                _logger.LogInformation($"bookId : {request.BookId}, userId : {request.UserId}");
+                _logger.LogInformation($"BookIsBorrowedException message : {e.Message}");
+                _logger.LogInformation($"TransactionId : {request.TransactionId}");
                 throw e;
             }
         }

@@ -29,22 +29,17 @@ namespace Libro.Application.BookTransactions.Commands
 
             try
             {
-               await _bookTransactionRepository.ReturnBookAsync(request.UserId, request.BookId);
+               await _bookTransactionRepository.ReturnBookAsync(request.TransactionId);
 
             }
 
             catch (CustomNotFoundException e)
             {
                 _logger.LogInformation($"CustomNotFoundException message:{e.Message}");
-                _logger.LogInformation($"bookId : {request.BookId}, userId : {request.UserId}");
+                _logger.LogInformation($"TransactionId : {request.TransactionId}");
                 throw e;
             }
-            catch (BookIsNotReservedOrBorrowedException e)
-            {
-                _logger.LogInformation($"BookIsNotReservedOrBorrowedException message:{e.Message}");
-                _logger.LogInformation($"bookId : {request.BookId}");
-                throw e;
-            }
+       
         }
     }
 }

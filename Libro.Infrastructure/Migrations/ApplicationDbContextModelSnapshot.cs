@@ -37,7 +37,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.AuthorBook", b =>
@@ -52,7 +52,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("AuthorBooks");
+                    b.ToTable("AuthorBooks", (string)null);
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.Book", b =>
@@ -76,7 +76,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
@@ -105,7 +105,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BookTransactions");
+                    b.ToTable("BookTransactions", (string)null);
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.Role", b =>
@@ -123,7 +123,7 @@ namespace Libro.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.User", b =>
@@ -152,7 +152,7 @@ namespace Libro.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.UserRole", b =>
@@ -169,7 +169,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.AuthorBook", b =>

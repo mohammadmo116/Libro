@@ -31,7 +31,7 @@ namespace Libro.Presentation.Controllers
         }
         [HasRole("patron")]
         [HttpPost("Reserve")]
-        public async Task<ActionResult> ReserveBook(BookTransactionDto reserveBookDto)
+        public async Task<ActionResult> ReserveBook(ReserveBookTransactionDto reserveBookDto)
         {
 
             try
@@ -56,13 +56,12 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("librarian")]
-        [HttpPut("{UserId}/Books/{BookId}/Borrow")]
-        public async Task<ActionResult> CheckOutBook([FromRoute] BookTransactionDto checkOutBookDto,DateTimeDto dateTimeDto)
+        [HttpPut("Borrow/{TransactionId}")]
+        public async Task<ActionResult> CheckOutBook(Guid TransactionId)
         {   
             try
             {
-               
-                var query = new CheckOutBookCommand(checkOutBookDto.UserId, checkOutBookDto.BookId, dateTimeDto.DueDate);
+                var query = new CheckOutBookCommand(TransactionId);
                 await _mediator.Send(query);
                 return Ok("Book has been Borrowed");
             }
@@ -72,13 +71,34 @@ namespace Libro.Presentation.Controllers
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
                 return new NotFoundObjectResult(errorResponse);
             }
-            catch (BookIsNotAvailableException e)
+
+            catch(BookIsBorrowedException e)
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
                 return new BadRequestObjectResult(errorResponse);
+
             }
             
+        }
+
+        [HasRole("librarian")]
+        [HttpPut("Return/{TransactionId}")]
+        public async Task<ActionResult> ReturnBook(Guid TransactionId)
+        {
+            try
+            {
+                var query = new ReturnBookCommand(TransactionId);
+                await _mediator.Send(query);
+                return Ok("Book has been Returned");
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new NotFoundObjectResult(errorResponse);
+            }
+
         }
     }
 }

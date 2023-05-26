@@ -31,13 +31,13 @@ namespace Libro.Application.BookTransactions.Commands
             catch (CustomNotFoundException e)
             {
                 _logger.LogInformation($"CustomNotFoundException message:{e.Message}");
-                _logger.LogInformation($"bookId : {request.bookTransaction.BookId}, userId : {request.bookTransaction.UserId}");
+                _logger.LogInformation($"bookId : {request.bookTransaction.BookId}");
                 throw e;
             }
             catch (BookIsNotAvailableException e)
             {
                 _logger.LogInformation($"BookIsNotAvailableException message:{e.Message}");
-                _logger.LogInformation($"bookId : {request.bookTransaction.BookId}, userId : {request.bookTransaction.UserId}");
+                _logger.LogInformation($"bookId : {request.bookTransaction.BookId}");
                 throw e;
             }
         }

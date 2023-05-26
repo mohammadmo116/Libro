@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Libro.Domain.Exceptions
 {
-    public class BookIsNotReservedOrBorrowedException : Exception
+    public class BookIsNotReservedException : Exception
     {
-        public BookIsNotReservedOrBorrowedException(string title) :base($"Book {title} is not Reserved or Borrowed")
+        public BookIsNotReservedException() : base("Please Reserve The Book So you can borrow it") 
         { 
         }
     }
