@@ -63,5 +63,28 @@ namespace Libro.Infrastructure.Repositories
             return a => a.UserId == UserId && a.BookId == BookId && a.Status == BookStatus.Reserved;
            
         }
+
+        public async Task ReturnBook(Guid UserId, Guid BookId)
+        {
+
+
+            var book = await _context.Books.
+                FirstOrDefaultAsync(b => b.Id == BookId)
+                ?? throw new CustomNotFoundException("Book");
+
+            var bookTransaction = _context.BookTransactions
+            .FirstOrDefault(BookIsReservedOrBorrowed(UserId, BookId))
+            ?? throw new BookIsNotReservedOrBorrowedException(book.Title);
+
+            bookTransaction.Status = BookStatus.None;
+            _context.BookTransactions.Update(bookTransaction);
+            await _context.SaveChangesAsync();
+
+        }
+        private static Func<BookTransaction, bool> BookIsReservedOrBorrowed(Guid UserId, Guid BookId)
+        {
+            return a => a.UserId == UserId && a.BookId == BookId && a.Status != BookStatus.None ;
+
+        }
     }
 }

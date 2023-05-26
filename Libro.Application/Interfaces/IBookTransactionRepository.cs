@@ -6,5 +6,7 @@ namespace Libro.Application.Interfaces
     {
         Task ReserveBook(BookTransaction bookTransaction);
         Task CheckOut(Guid userId, Guid bookId, DateTime dueDate);
+        Task ReturnBook(Guid userId, Guid bookId);
+        
     }
 }
