@@ -3,12 +3,6 @@ using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Infrastructure.Repositories
 {
@@ -21,7 +15,7 @@ namespace Libro.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task ReserveBookAsync(BookTransaction bookTransaction)
+        public async Task ReserveBookAsync(Domain.Entities.BookTransaction bookTransaction)
         {
 
 
@@ -39,52 +33,68 @@ namespace Libro.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             await contextTransactio.CommitAsync();
         }
-        public async Task CheckOutAsync(Guid UserId,Guid BookId,DateTime dueDate)
+        public async Task CheckOutAsync(Guid TransactionId)
         {
 
-        
-            var book = await _context.Books.
-                FirstOrDefaultAsync(b => b.Id == BookId)
-                ?? throw new CustomNotFoundException("Book");
+            var transaction = await _context.BookTransactions
+                .Where(a => a.Status != BookStatus.None)
+                .FirstOrDefaultAsync(a => a.Id == TransactionId)
+                ?? throw new CustomNotFoundException("bookTransaction");
 
-            var bookTransaction = _context.BookTransactions
-            .FirstOrDefault(BookIsReserved(UserId,BookId))
-            ?? throw new BookIsNotAvailableException(book.Title);
+            if (transaction.Status == BookStatus.Borrowed)
+                throw new BookIsBorrowedException();
 
-            bookTransaction.Status = BookStatus.Borrowed;
-            bookTransaction.DueDate= dueDate;
-            _context.BookTransactions.Update(bookTransaction);
+            transaction.Status = BookStatus.Borrowed;
+
+            _context.BookTransactions.Update(transaction);
             await _context.SaveChangesAsync();
+
+        }
+
+        public async Task ReturnBookAsync(Guid TransactionId)
+        {
+            var transaction = await _context.BookTransactions
+                .Where(a=>a.Status!=BookStatus.None)
+                .FirstOrDefaultAsync(a=>a.Id== TransactionId)
+               ?? throw new CustomNotFoundException("bookTransaction");
             
+            var book = await _context.Books.FindAsync(transaction.BookId)
+                ??throw new CustomNotFoundException("Book");
+   
+            if (transaction.Status == BookStatus.Reserved)
+            {
+               await DeleteBookTransactionAsync(transaction, book);
+               return;
+
+            }
+            if (transaction.Status == BookStatus.Borrowed)
+            {
+                using var contextTransactio = await _context.Database.BeginTransactionAsync();
+                book.IsAvailable = true;
+                _context.Books.Update(book);
+                transaction.Status = BookStatus.None;
+                _context.BookTransactions.Update(transaction);
+                await _context.SaveChangesAsync();
+                await contextTransactio.CommitAsync();
+            }
+   
+      
+
         }
+   
+        private async Task DeleteBookTransactionAsync(BookTransaction Transaction,Book book) {
 
-        private static Func<BookTransaction, bool> BookIsReserved(Guid UserId,Guid BookId)
-        {
-            return a => a.UserId == UserId && a.BookId == BookId && a.Status == BookStatus.Reserved;
-           
-        }
+            using var contextTransactio = await _context.Database.BeginTransactionAsync();
 
-        public async Task ReturnBookAsync(Guid UserId, Guid BookId)
-        {
-
-
-            var book = await _context.Books.
-                FirstOrDefaultAsync(b => b.Id == BookId)
-                ?? throw new CustomNotFoundException("Book");
-
-            var bookTransaction = _context.BookTransactions
-            .FirstOrDefault(BookIsReservedOrBorrowed(UserId, BookId))
-            ?? throw new BookIsNotReservedOrBorrowedException(book.Title);
-
-            bookTransaction.Status = BookStatus.None;
-            _context.BookTransactions.Update(bookTransaction);
+            book.IsAvailable = true;
+            _context.Books.Update(book);
+            _context.BookTransactions.Remove(Transaction);
             await _context.SaveChangesAsync();
 
-        }
-        private static Func<BookTransaction, bool> BookIsReservedOrBorrowed(Guid UserId, Guid BookId)
-        {
-            return a => a.UserId == UserId && a.BookId == BookId && a.Status != BookStatus.None ;
+            await contextTransactio.CommitAsync();
+
 
         }
+   
     }
 }

@@ -58,7 +58,7 @@ namespace Libro.Infrastructure
           .HasForeignKey(e => e.BookId)
           .OnDelete(DeleteBehavior.Cascade));
 
-           modelBuilder.Entity<AuthorBook>().HasKey(e => new { e.BookId, e.AuthorId });
+            modelBuilder.Entity<AuthorBook>().HasKey(e => new { e.BookId, e.AuthorId });
 
             modelBuilder.Entity<User>()
           .HasMany(a => a.Roles)

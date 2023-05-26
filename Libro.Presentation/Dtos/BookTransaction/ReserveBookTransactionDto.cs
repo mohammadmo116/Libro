@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.BookTransaction
 {
-    public class BookTransactionDto
+    public class ReserveBookTransactionDto
     {
         [Required]
         [ForeignKey(nameof(Book))]
