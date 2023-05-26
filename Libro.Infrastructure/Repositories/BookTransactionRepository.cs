@@ -1,4 +1,5 @@
-﻿using Libro.Domain.Entities;
+﻿using Libro.Application.Interfaces;
+using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Infrastructure.Repositories
 {
-    public class BookTransactionRepository
+    public class BookTransactionRepository : IBookTransactionRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -20,11 +21,12 @@ namespace Libro.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task ReserveBook(BookTransaction bookTransaction) {
+        public async Task ReserveBook(BookTransaction bookTransaction)
+        {
 
-            
+
             var book = await _context.Books.
-                FirstOrDefaultAsync(b => b.Id == bookTransaction.BookId) 
+                FirstOrDefaultAsync(b => b.Id == bookTransaction.BookId)
                 ?? throw new CustomNotFoundException("Book");
             if (!book.IsAvailable)
             { throw new BookIsNotAvailableException(book.Title); }
@@ -36,6 +38,6 @@ namespace Libro.Infrastructure.Repositories
             await contextTransactio.CommitAsync();
         }
 
-      
+
     }
 }
