@@ -21,5 +21,6 @@ namespace Libro.Domain.Entities
         public string? PhoneNumber { get; set; }
 
         public List<Role>? Roles { get; set; } = new();
+        public List<Book>? Books { get; set; }
     }
 }
