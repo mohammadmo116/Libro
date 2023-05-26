@@ -49,7 +49,7 @@ namespace Libro.Infrastructure.Repositories
 
             var bookTransaction = _context.BookTransactions
             .FirstOrDefault(BookIsReserved(UserId,BookId))
-            ?? throw new BookIsNotReservedException(book.Title);
+            ?? throw new BookIsNotAvailableException(book.Title);
 
             bookTransaction.Status = BookStatus.Borrowed;
             bookTransaction.DueDate= dueDate;
