@@ -9,6 +9,7 @@ namespace Libro.Infrastructure.Authorization
         {
         }
 
+        
         public override async Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
         {
             AuthorizationPolicy? policy= await base.GetPolicyAsync(policyName);

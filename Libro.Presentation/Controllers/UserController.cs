@@ -1,6 +1,5 @@
 ﻿using Libro.Application.Users.Commands;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure;
@@ -28,7 +27,7 @@ namespace Libro.Presentation.Controllers
         }
 
 
-        [HasRole(RoleType.admin)]
+        [HasRole("admin")]
         [HttpPost("{UserId}/AssignRole/{RoleId}", Name = "AssignRole")]
         public async Task<ActionResult<List<string>>> AssignRoleToUser(Guid UserId, Guid RoleId)
         {

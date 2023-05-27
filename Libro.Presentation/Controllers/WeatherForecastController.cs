@@ -3,16 +3,16 @@ using MediatR;
 using Libro.Application.WeatherForecasts.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Libro.Infrastructure.Authorization;
-using Libro.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
+using System.Runtime.CompilerServices;
+
 namespace Libro.WebApi.Controllers
 {
-    
+
     [ApiController]
     [Route("WeatherForecast")]
     public class WeatherForecastController : ControllerBase
     {
-   
-
         private readonly IMediator _mediator;
 
 
@@ -20,12 +20,13 @@ namespace Libro.WebApi.Controllers
         {
             _mediator = mediator;
         }
-        [HasRole(RoleType.admin)]
+        //pass array of roles
+
+        [HasRole("admin,patron")]
         [HttpGet(Name = "GetWeatherForecast")]
         public async Task<ActionResult<List<WeatherForecast>>> Get()
         {
-            
-                    var query = new GetWeatherForecastQuery();
+            var query = new GetWeatherForecastQuery();
             var Result = await _mediator.Send(query);
             return Ok(Result);
         }

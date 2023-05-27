@@ -1,6 +1,5 @@
 ﻿using Libro.Application.Roles.Commands;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
@@ -23,7 +22,7 @@ namespace Libro.Presentation.Controllers
         {
             _mediator = mediator;
         }
-        [HasRole(RoleType.admin)]
+        [HasRole("admin")]
         [HttpPost("AddRole", Name = "AddRole")]
         public async Task<ActionResult<UserDto>> CreateRole(CreateRoleDto createRoleDto)
         {

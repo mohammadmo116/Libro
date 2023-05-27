@@ -28,7 +28,8 @@ namespace Libro.Application.Users.Commands
                 return user;
             }
             catch (UserExistsException e)
-            {    
+            {
+                _logger.LogInformation($"UserExistsException message : {e.Message}");
                 throw new UserExistsException(e._field); 
             }
 

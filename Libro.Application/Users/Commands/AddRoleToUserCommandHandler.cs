@@ -26,13 +26,19 @@ namespace Libro.Application.Users.Commands
                 var Roles = await _userRepository.AssignRoleToUserAsync(request.UserRole);
                 return Roles;
             }
-            catch (UserOrRoleNotFoundException)
+            catch (UserOrRoleNotFoundException e)
             {
-                throw new UserOrRoleNotFoundException();
+                _logger.LogInformation($"UserOrRoleNotFoundException {e.Message}");
+                _logger.LogInformation($"UserId : {request.UserRole.UserId}, RoleId : {request.UserRole.RoleId}");
+
+                throw e;
             }
-            catch (UserHasTheAssignedRoleException)
+            catch (UserHasTheAssignedRoleException e)
             {
-                throw new UserHasTheAssignedRoleException();
+                
+                _logger.LogInformation($"UserHasTheAssignedRoleException message:{e.Message}");
+                _logger.LogInformation($"UserId : {request.UserRole.UserId}, RoleId : {request.UserRole.RoleId}");
+                throw e;
             }
 
 

@@ -23,6 +23,7 @@ namespace Libro.Infrastracture
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IBookTransactionRepository,BookTransactionRepository>();
             return services;
         }
     }

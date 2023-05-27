@@ -1,7 +1,6 @@
 ﻿using Libro.Application.Books.Queries;
 using Libro.Application.Roles.Commands;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Author;
 using Libro.Presentation.Dtos.Book;
@@ -28,7 +27,7 @@ namespace Libro.Presentation.Controllers
         {
             _mediator = mediator;
         }
-        [HasRole(RoleType.patron)]
+        [HasRole("patron")]
         [HttpGet("Books", Name = "search")]
         public async Task<ActionResult<List<string>>> Search(string? Title, string? AuthorName, string? Genre, int PageNumber=0,int Count=5)
         {
@@ -37,7 +36,7 @@ namespace Libro.Presentation.Controllers
             var Result = await _mediator.Send(query);
             return Ok(Result);
         }
-        [HasRole(RoleType.patron)]
+        [HasRole("patron")]
         [HttpGet("{BookId}", Name = "BookById")]
         public async Task<ActionResult<BookDto>> GetBookById(Guid BookId)
         {
@@ -49,5 +48,7 @@ namespace Libro.Presentation.Controllers
           
             return Ok(Result.Adapt<BookDto>());
         }
+
+
     }
 }

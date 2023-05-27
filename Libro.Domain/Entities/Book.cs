@@ -20,5 +20,8 @@ namespace Libro.Domain.Entities
         public List<Author>? Authors { get; set; }
         public bool IsAvailable { get; set; } = true;
 
+        public List<User>? Users { get; set; }= new();
+
+        public List<BookTransaction>? BookTransactions { get; set; } = new();
     }
 }
