@@ -7,7 +7,7 @@ namespace Libro.Application.Interfaces
         Task ReserveBookAsync(BookTransaction bookTransaction);
         Task CheckOutAsync(Guid TransactionId);
         Task ReturnBookAsync(Guid TransactionId);
-        Task<List<BookTransaction>> TrackDueDate()
+        Task<List<BookTransaction>> TrackDueDateAsync();
 
 
     }

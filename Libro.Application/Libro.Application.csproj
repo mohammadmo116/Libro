@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Books\Commands\" />
-    <Folder Include="BookTransactions\Queiries\" />
     <Folder Include="Roles\Queries\" />
     <Folder Include="WeatherForecasts\Commands\" />
   </ItemGroup>

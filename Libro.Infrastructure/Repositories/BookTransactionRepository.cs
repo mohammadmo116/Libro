@@ -96,7 +96,7 @@ namespace Libro.Infrastructure.Repositories
 
 
         }
-        public async Task<List<BookTransaction>> TrackDueDate()
+        public async Task<List<BookTransaction>> TrackDueDateAsync()
         {
             return await _context.BookTransactions.Include(a=>a.User).Include(a=>a.Book)
                 .Where(a => a.Status == BookStatus.Borrowed).OrderByDescending(a=>a.DueDate).ToListAsync();
