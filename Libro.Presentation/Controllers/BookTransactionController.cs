@@ -58,11 +58,11 @@ namespace Libro.Presentation.Controllers
 
         [HasRole("librarian")]
         [HttpPut("Borrow/{TransactionId}")]
-        public async Task<ActionResult> CheckOutBook(Guid TransactionId)
+        public async Task<ActionResult> CheckOutBook(Guid TransactionId, DueDateDto dueDateDto)
         {   
             try
             {
-                var query = new CheckOutBookCommand(TransactionId);
+                var query = new CheckOutBookCommand(TransactionId, dueDateDto.DueDate);
                 await _mediator.Send(query);
                 return Ok("Book has been Borrowed");
             }
@@ -109,7 +109,7 @@ namespace Libro.Presentation.Controllers
            
                 var query = new TrackDueDateQuery();
                 var Result = await _mediator.Send(query);
-                return Ok(Result);
+                return Ok(Result.Adapt<List<BookTransactionDto>>());
         }
     }
 }
