@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Libro.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230526112234_BookTransaction-renameTable")]
-    partial class BookTransactionrenameTable
+    [Migration("20230527182947_BookTransaction")]
+    partial class BookTransaction
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -191,17 +191,21 @@ namespace Libro.Infrastructure.Migrations
 
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
                 {
-                    b.HasOne("Libro.Domain.Entities.Book", null)
-                        .WithMany()
+                    b.HasOne("Libro.Domain.Entities.Book", "Book")
+                        .WithMany("BookTransactions")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Libro.Domain.Entities.User", null)
-                        .WithMany()
+                    b.HasOne("Libro.Domain.Entities.User", "User")
+                        .WithMany("BookTransactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.UserRole", b =>
@@ -217,6 +221,16 @@ namespace Libro.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.Book", b =>
+                {
+                    b.Navigation("BookTransactions");
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.User", b =>
+                {
+                    b.Navigation("BookTransactions");
                 });
 #pragma warning restore 612, 618
         }

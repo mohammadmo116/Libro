@@ -1,5 +1,6 @@
 ﻿using Libro.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 
 namespace Libro.Infrastructure
@@ -31,17 +32,9 @@ namespace Libro.Infrastructure
             modelBuilder.Entity<Book>()
         .HasMany(a => a.Users)
         .WithMany(b => b.Books)
-        .UsingEntity<BookTransaction>(
-        join => join
-        .HasOne<User>()
-        .WithMany()
-        .HasForeignKey(ca=>ca.UserId)
-        .OnDelete(DeleteBehavior.Cascade),
-       join => join
-        .HasOne<Book>()
-        .WithMany()
-        .HasForeignKey(e => e.BookId)
-        .OnDelete(DeleteBehavior.Cascade));
+        .UsingEntity<BookTransaction>();
+  
+
 
             modelBuilder.Entity<Book>()
           .HasMany(a => a.Authors)

@@ -37,7 +37,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors", (string)null);
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.AuthorBook", b =>
@@ -52,7 +52,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("AuthorBooks", (string)null);
+                    b.ToTable("AuthorBooks");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.Book", b =>
@@ -76,7 +76,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
@@ -105,7 +105,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BookTransactions", (string)null);
+                    b.ToTable("BookTransactions");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.Role", b =>
@@ -123,7 +123,7 @@ namespace Libro.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.User", b =>
@@ -152,7 +152,7 @@ namespace Libro.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.UserRole", b =>
@@ -169,7 +169,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.AuthorBook", b =>
@@ -189,17 +189,21 @@ namespace Libro.Infrastructure.Migrations
 
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
                 {
-                    b.HasOne("Libro.Domain.Entities.Book", null)
-                        .WithMany()
+                    b.HasOne("Libro.Domain.Entities.Book", "Book")
+                        .WithMany("BookTransactions")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Libro.Domain.Entities.User", null)
-                        .WithMany()
+                    b.HasOne("Libro.Domain.Entities.User", "User")
+                        .WithMany("BookTransactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.UserRole", b =>
@@ -215,6 +219,16 @@ namespace Libro.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.Book", b =>
+                {
+                    b.Navigation("BookTransactions");
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.User", b =>
+                {
+                    b.Navigation("BookTransactions");
                 });
 #pragma warning restore 612, 618
         }

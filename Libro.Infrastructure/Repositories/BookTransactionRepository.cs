@@ -34,7 +34,7 @@ namespace Libro.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             await contextTransactio.CommitAsync();
         }
-        public async Task CheckOutAsync(Guid TransactionId)
+        public async Task CheckOutAsync(Guid TransactionId,DateTime DueDate)
         {
 
             var transaction = await _context.BookTransactions
@@ -46,7 +46,7 @@ namespace Libro.Infrastructure.Repositories
                 throw new BookIsBorrowedException();
 
             transaction.Status = BookStatus.Borrowed;
-
+            transaction.DueDate = DueDate;
             _context.BookTransactions.Update(transaction);
             await _context.SaveChangesAsync();
 
@@ -100,7 +100,7 @@ namespace Libro.Infrastructure.Repositories
         {
             return await _context.BookTransactions.Include(a=>a.User).Include(a=>a.Book)
                 .Where(a => a.Status == BookStatus.Borrowed).OrderByDescending(a=>a.DueDate).ToListAsync();
-
+            
         }
 
     }

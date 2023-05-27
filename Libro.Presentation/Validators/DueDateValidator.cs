@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Validators
 {
-    public class DueDateValidator : AbstractValidator<BorrowBookTransactionDto>
+    public class DueDateValidator : AbstractValidator<DueDateDto>
     {
         public DueDateValidator()
         {

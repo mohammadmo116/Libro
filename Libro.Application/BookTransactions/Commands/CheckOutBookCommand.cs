@@ -9,6 +9,6 @@ using System.Transactions;
 
 namespace Libro.Application.BookTransactions.Commands
 {
-    public sealed record CheckOutBookCommand(Guid TransactionId) : IRequest;
+    public sealed record CheckOutBookCommand(Guid TransactionId,DateTime DueDate) : IRequest;
  
 }

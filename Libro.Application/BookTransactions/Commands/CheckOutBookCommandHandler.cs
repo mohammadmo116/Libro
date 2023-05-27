@@ -28,7 +28,7 @@ namespace Libro.Application.BookTransactions.Commands
         {
             try
             {
-                await _bookTransactionRepository.CheckOutAsync(request.TransactionId);
+                await _bookTransactionRepository.CheckOutAsync(request.TransactionId,request.DueDate);
             }
             catch (CustomNotFoundException e)
             {

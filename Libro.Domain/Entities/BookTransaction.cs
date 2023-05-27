@@ -12,16 +12,17 @@ namespace Libro.Domain.Entities
 {
     public class BookTransaction : BaseEntity
     {
+   
         [Required]
-        [ForeignKey(nameof(Book))]
         public Guid BookId { get; set; }
-        [NotMapped]
-        public Book Book { get; set; }
+
         [Required]
-        [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
-        [NotMapped]
-        public User User { get; set; }
+
+        public Book Book { get; set; } = null!;
+        public User User { get; set; } = null!;
+
+        
         [Required]
         public BookStatus Status { get; set; }
         public DateTime? BorrowedDate { get; set; }
