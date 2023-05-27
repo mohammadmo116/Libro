@@ -3,6 +3,7 @@ using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Libro.Infrastructure.Repositories
 {
@@ -95,6 +96,12 @@ namespace Libro.Infrastructure.Repositories
 
 
         }
-   
+        public async Task<List<BookTransaction>> TrackDueDate()
+        {
+            return await _context.BookTransactions.Include(a=>a.User).Include(a=>a.Book)
+                .Where(a => a.Status == BookStatus.Borrowed).OrderByDescending(a=>a.DueDate).ToListAsync();
+
+        }
+
     }
 }
