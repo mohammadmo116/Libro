@@ -1,6 +1,7 @@
 ﻿using FluentValidation.Validators;
 using Libro.Application.Books.Queries;
 using Libro.Application.BookTransactions.Commands;
+using Libro.Application.BookTransactions.Queiries;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
@@ -99,6 +100,16 @@ namespace Libro.Presentation.Controllers
                 return new NotFoundObjectResult(errorResponse);
             }
 
+        }
+
+        [HasRole("librarian")]
+        [HttpPut("TrackTransaction")]
+        public async Task<ActionResult> TrackDueDate()
+        {
+           
+                var query = new TrackDueDateQuery();
+                var Result = await _mediator.Send(query);
+                return Ok(Result);
         }
     }
 }
