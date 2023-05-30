@@ -9,9 +9,9 @@ namespace Libro.Application.Users.Commands
     public sealed class AddRoleToUserCommandHandler : IRequestHandler<AddRoleToUserCommand,List<string>>
     {
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<User> _logger;
+        private readonly ILogger<AddRoleToUserCommandHandler> _logger;
 
-        public AddRoleToUserCommandHandler(ILogger<User> logger,
+        public AddRoleToUserCommandHandler(ILogger<AddRoleToUserCommandHandler> logger,
                                            IUserRepository userRepository)
         {
             _logger = logger;
@@ -20,26 +20,25 @@ namespace Libro.Application.Users.Commands
 
         public async Task<List<string>> Handle(AddRoleToUserCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
+           
+                if (await _userRepository.RoleOrUserNotFoundAsync(request.UserRole))
+                {
+                    _logger.LogInformation($"UserOrRoleNotFoundException");
+                    _logger.LogInformation($"UserId : {request.UserRole.UserId}, RoleId : {request.UserRole.RoleId}");
 
+                    throw new UserOrRoleNotFoundException();
+                }
+                if (await _userRepository.UserHasTheAssignedRoleAsync(request.UserRole))
+                {
+                    _logger.LogInformation($"UserHasTheAssignedRoleException message");
+                    _logger.LogInformation($"UserId : {request.UserRole.UserId}, RoleId : {request.UserRole.RoleId}");
+
+                    throw new UserHasTheAssignedRoleException();
+                }
                 var Roles = await _userRepository.AssignRoleToUserAsync(request.UserRole);
                 return Roles;
-            }
-            catch (UserOrRoleNotFoundException e)
-            {
-                _logger.LogInformation($"UserOrRoleNotFoundException {e.Message}");
-                _logger.LogInformation($"UserId : {request.UserRole.UserId}, RoleId : {request.UserRole.RoleId}");
-
-                throw e;
-            }
-            catch (UserHasTheAssignedRoleException e)
-            {
-                
-                _logger.LogInformation($"UserHasTheAssignedRoleException message:{e.Message}");
-                _logger.LogInformation($"UserId : {request.UserRole.UserId}, RoleId : {request.UserRole.RoleId}");
-                throw e;
-            }
+            
+        
 
 
 
