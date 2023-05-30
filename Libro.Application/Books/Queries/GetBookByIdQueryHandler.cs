@@ -12,9 +12,9 @@ namespace Libro.Application.Books.Queries
 {
     public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery,Book>
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<GetBookByIdQueryHandler> _logger;
         private readonly IBookRepository _bookRepository;
-        public GetBookByIdQueryHandler(ILogger<Book> logger,
+        public GetBookByIdQueryHandler(ILogger<GetBookByIdQueryHandler> logger,
             IBookRepository bookRepository) 
         {
             _logger = logger;

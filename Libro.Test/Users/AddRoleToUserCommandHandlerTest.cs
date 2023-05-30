@@ -124,7 +124,7 @@ namespace Libro.Test.Users
             _userRepositoryMock.Verify(
               x => x.AssignRoleToUserAsync(_userRole),
               Times.Never);
-            Assert.Equal(Actual.Message, ExpectedException.Message);
+            Assert.Equal(ExpectedException.Message, Actual.Message);
 
         }
         [Fact]
@@ -156,7 +156,7 @@ namespace Libro.Test.Users
             _userRepositoryMock.Verify(
               x => x.AssignRoleToUserAsync(_userRole),
               Times.Never);
-            Assert.Equal(Actual.Message, ExpectedException.Message);
+            Assert.Equal(ExpectedException.Message, Actual.Message);
 
         }
     }

@@ -4,7 +4,11 @@ namespace Libro.Application.Interfaces
 {
     public interface IBookRepository
     {
-        Task<List<string>> GetBooksAsync(string? Title, string? AuthorName, string? Genre, int PageNumber, int Count);
         Task<Book> GetBookAsync(Guid BookId);
+
+        Task<List<string>> GetAllBooksAsync(int PageNumber, int Count);
+        Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre);
+        Task<List<Book>> GetBooksByTitleAsync(List<Book>? Books, string Title);
+        Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books,string? AuthorName);
     }
 }
