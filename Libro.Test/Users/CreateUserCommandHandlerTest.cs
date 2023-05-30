@@ -81,7 +81,7 @@ namespace Libro.Test.Users
             _authenticationRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
-            Assert.Equal(Actual.Message, ExpectedException.Message);
+            Assert.Equal(ExpectedException.Message, Actual.Message);
            
 
         }
@@ -109,7 +109,7 @@ namespace Libro.Test.Users
             _authenticationRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
-            Assert.Equal(Actual.Message, ExpectedException.Message);
+            Assert.Equal(ExpectedException.Message, Actual.Message);
 
 
         }
@@ -135,7 +135,7 @@ namespace Libro.Test.Users
             _authenticationRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
-            Assert.Equal(Actual.Message, ExpectedException.Message);
+            Assert.Equal(ExpectedException.Message, Actual.Message);
 
 
         }

@@ -1,5 +1,6 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,43 +25,20 @@ namespace Libro.Infrastructure.Repositories
             return await _context.Books.Include(a => a.Authors).FirstOrDefaultAsync(b => b.Id == BookId);
         }
 
-        public async Task<List<string>> GetBooksAsync(string? Title, 
-            string? AuthorName, 
-            string? Genre,
-            int PageNumber,
-            int Count
-            )
+        public async Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books, string? AuthorName)
         {
-            if (Count > 10)
-                Count = 10;
-            if (Title is null && AuthorName is null && Genre is null)
-            {
-                return await _context.Books.Where(b=>b.IsAvailable==true).Select(b => b.Title).Skip(PageNumber * Count).Take(Count).ToListAsync(); 
-            }
-
-            List<Book> Books = null;
-
-            if (AuthorName is not null)
-            {
-                var AuthorIds = await _context.Authors.Where(b => b.Name.Contains(AuthorName)).Select(a => a.Id).ToListAsync();
-                var BookIds = await _context.AuthorBooks.Where(a => AuthorIds.Contains(a.AuthorId)).Select(a => a.BookId).ToListAsync();
-                Books = await _context.Books.Where(b => BookIds.Contains(b.Id)).ToListAsync();
-            }
-            if (Title is not null)
-            {
-                Books=await GetBooksByTitleAsync(Books, Title);           
-            }
-            if (Genre is not null)
-            {
-                Books=await GetBooksByGenreAsync(Books, Genre);
-               
-            }
-
-            Books ??= new();
-            return Books.Select(a => a.Title).Skip(PageNumber*Count).Take(Count).ToList();
+            var AuthorIds = await _context.Authors.Where(b => b.Name.Contains(AuthorName)).Select(a => a.Id).ToListAsync();
+            var BookIds = await _context.AuthorBooks.Where(a => AuthorIds.Contains(a.AuthorId)).Select(a => a.BookId).ToListAsync();
+            Books = await _context.Books.Where(b => BookIds.Contains(b.Id)).ToListAsync();
+            return Books;
         }
 
-        private async Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre)
+        public async Task<List<string>> GetAllBooksAsync(int PageNumber, int Count)
+        {
+            return await _context.Books.Where(b => b.IsAvailable == true).Select(b => b.Title).Skip(PageNumber * Count).Take(Count).ToListAsync();
+        }
+
+        public async Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre)
         {
             if (Books is null)
                 Books = await _context.Books.Where(b => b.Genre.Contains(Genre)).ToListAsync();
@@ -69,7 +47,7 @@ namespace Libro.Infrastructure.Repositories
             return Books;
         }
 
-        private async Task<List<Book>> GetBooksByTitleAsync(List<Book>? Books, string Title)
+        public async Task<List<Book>> GetBooksByTitleAsync(List<Book>? Books, string Title)
         {
             if (Books is null)
                 Books = await _context.Books.Where(b => b.Title.Contains(Title)).ToListAsync();
