@@ -24,29 +24,17 @@ namespace Libro.Infrastructure.Repositories
 
         public async Task<User> RegisterUserAsync(User user)
         {
-            try {
-                await ExceptionIfUserExistsAsync(user);
 
-                user.Id = Guid.NewGuid();
-                user.Email = user.Email.ToLower();
-                user.UserName = user.UserName?.ToLower();
-                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-                user.PhoneNumber = user.PhoneNumber?.ToLower();
-                 await _context.Users.AddAsync(user);
-                 await _context.SaveChangesAsync();
-                return user;
-            }
-           catch(UserExistsException e)
-            {
-              
-
-                throw new UserExistsException(e._field); 
-            }
-           
-        
+            user.Id = Guid.NewGuid();
+            user.Email = user.Email.ToLower();
+            user.UserName = user.UserName?.ToLower();
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            user.PhoneNumber = user.PhoneNumber?.ToLower();
+            await _context.Users.AddAsync(user);
+            return user;
         }
 
-        private async Task ExceptionIfUserExistsAsync(User User)
+        public async Task ExceptionIfUserExistsAsync(User User)
         {
             if (User.Email is not null)
                 if (await _context.Users.AnyAsync(e => e.Email == User.Email.ToLower()))
@@ -59,14 +47,11 @@ namespace Libro.Infrastructure.Repositories
                     throw new UserExistsException(nameof(User.PhoneNumber));
         }
 
-        public async Task<string> Authenticate(string Email, string Password)
+        public async Task<string> Authenticate(User user)
         {
-            var user = await ValidateUserCredentialsAsync(Email, Password);
-            if (user is null)
-                return null;
 
-            var roleIds = _context.UserRoles.Where(e => e.UserId == user.Id).Select(r => r.RoleId).ToList();
-            var roles = _context.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToList();
+            var roleIds =await _context.UserRoles.Where(e => e.UserId == user.Id).Select(r => r.RoleId).ToListAsync();
+            var roles = await _context.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync();
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretForKey"]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsForToken = new List<Claim>
@@ -87,16 +72,18 @@ namespace Libro.Infrastructure.Repositories
 
         }
 
-        private async Task<User?> ValidateUserCredentialsAsync(string email,string password)
+        public async Task<User?> ValidateUserCredentialsAsync(string email, string password)
         {
 
-           var user = await _context.Users.FirstOrDefaultAsync(e=>e.Email==email.ToLower());
+            var user = await _context.Users.FirstOrDefaultAsync(e => e.Email == email.ToLower());
             if (user is null)
                 return null;
             if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 return user;
             return null;
         }
-       
+
+
+
     }
 }

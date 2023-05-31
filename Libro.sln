@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libro.Domain", "Libro.Domain\Libro.Domain.csproj", "{CAD39362-30B8-4C14-8FC6-A3A43E92E8EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.Domain", "Libro.Domain\Libro.Domain.csproj", "{CAD39362-30B8-4C14-8FC6-A3A43E92E8EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libro.Infrastructure", "Libro.Infrastructure\Libro.Infrastructure.csproj", "{B18C5CF0-3A05-4D73-83FE-0CA06A7D2FD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.Infrastructure", "Libro.Infrastructure\Libro.Infrastructure.csproj", "{B18C5CF0-3A05-4D73-83FE-0CA06A7D2FD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libro.Presentation", "Libro.Presentation\Libro.Presentation.csproj", "{5DB0C7B1-CF9E-4CB4-B07A-71DD17AA97CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.Presentation", "Libro.Presentation\Libro.Presentation.csproj", "{5DB0C7B1-CF9E-4CB4-B07A-71DD17AA97CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libro.Application", "Libro.Application\Libro.Application.csproj", "{D126A08A-8BE7-4003-BA1D-C06B36C6CAC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.Application", "Libro.Application\Libro.Application.csproj", "{D126A08A-8BE7-4003-BA1D-C06B36C6CAC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libro.WebApi", "Libro.WebApi\Libro.WebApi.csproj", "{1EA8EC4C-AFFC-4334-8AAF-27FD37A1E714}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.WebApi", "Libro.WebApi\Libro.WebApi.csproj", "{1EA8EC4C-AFFC-4334-8AAF-27FD37A1E714}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libro.Test", "Libro.Test\Libro.Test.csproj", "{BED62CE4-4150-4D18-83B6-B3A8B31F3EDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{1EA8EC4C-AFFC-4334-8AAF-27FD37A1E714}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EA8EC4C-AFFC-4334-8AAF-27FD37A1E714}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EA8EC4C-AFFC-4334-8AAF-27FD37A1E714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BED62CE4-4150-4D18-83B6-B3A8B31F3EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED62CE4-4150-4D18-83B6-B3A8B31F3EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED62CE4-4150-4D18-83B6-B3A8B31F3EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED62CE4-4150-4D18-83B6-B3A8B31F3EDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

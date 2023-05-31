@@ -6,6 +6,9 @@ namespace Libro.Application.Interfaces
     {
         
         Task<User> RegisterUserAsync(User user);
-        Task<string> Authenticate(string Email, string Password);
+        Task<string> Authenticate(User User);
+        Task ExceptionIfUserExistsAsync(User User);
+        Task<User?> ValidateUserCredentialsAsync(string email, string password);
+
     }
 }

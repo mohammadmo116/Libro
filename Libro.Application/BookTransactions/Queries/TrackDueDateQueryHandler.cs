@@ -12,10 +12,10 @@ namespace Libro.Application.BookTransactions.Queiries
 {
     public sealed class TrackDueDateQueryHandler : IRequestHandler<TrackDueDateQuery, List<BookTransaction>>
     {
-        private readonly ILogger<BookTransaction> _logger;
+        private readonly ILogger<TrackDueDateQueryHandler> _logger;
         private readonly IBookTransactionRepository _bookTransactionRepository;
 
-        public TrackDueDateQueryHandler(ILogger<BookTransaction> logger, 
+        public TrackDueDateQueryHandler(ILogger<TrackDueDateQueryHandler> logger, 
             IBookTransactionRepository bookTransactionRepository)
         {
             _logger = logger;
@@ -24,7 +24,7 @@ namespace Libro.Application.BookTransactions.Queiries
 
         public async Task<List<BookTransaction>> Handle(TrackDueDateQuery request, CancellationToken cancellationToken)
         {
-            return await _bookTransactionRepository.TrackDueDateAsync();
+            return await _bookTransactionRepository.TrackDueDateAsync(request.PageNumber, request.Count);
         }
     }
 }

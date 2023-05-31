@@ -17,18 +17,27 @@ namespace Libro.Application.Users.Queries
             _authenticationRepository = authenticationRepository;
             _logger = logger;
         }
-        public async Task<string> Handle(LoginUserQuery query, CancellationToken cancellationToken) {
- 
-            var jwt = await _authenticationRepository.Authenticate(query.Email, query.Password);
+        public async Task<string> Handle(LoginUserQuery query, CancellationToken cancellationToken) 
+        {
+
+            var user = await _authenticationRepository.ValidateUserCredentialsAsync(query.Email, query.Password);
+            if (user is null)
+            {
+                throwInvalidCredentialException(query);
+            }
+                var jwt = await _authenticationRepository.Authenticate(user);
             if (jwt is null) {
-                var message = $"Invalid Credentials,\n email : {query.Email} \n password: {query.Password}";
-                _logger.LogInformation(message);
-                throw new InvalidCredentialException(message);
+                throwInvalidCredentialException(query);
             }
             return jwt;
 
 
 
+        }
+        private void throwInvalidCredentialException(LoginUserQuery query) {
+            var message = $"Invalid Credentials,\n email : {query.Email} \n password: {query.Password}";
+            _logger.LogInformation(message);
+            throw new InvalidCredentialException(message);
         }
     }
 }
