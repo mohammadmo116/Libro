@@ -31,7 +31,8 @@ namespace Libro.Presentation.Controllers
         [HttpGet("Books", Name = "search")]
         public async Task<ActionResult<List<string>>> Search(string? Title, string? AuthorName, string? Genre, int PageNumber=0,int Count=5)
         {
-            
+            if (Count > 10)
+                Count = 10;
             var query = new GetSearchedBooksQuery(Title, AuthorName, Genre, PageNumber, Count);
             var Result = await _mediator.Send(query);
             return Ok(Result);

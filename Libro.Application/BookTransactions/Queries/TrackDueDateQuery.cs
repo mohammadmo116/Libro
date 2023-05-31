@@ -3,6 +3,6 @@ using MediatR;
 
 namespace Libro.Application.BookTransactions.Queiries
 {
-    public sealed record TrackDueDateQuery:IRequest<List<BookTransaction>>;
+    public sealed record TrackDueDateQuery(int PageNumber,int Count):IRequest<List<BookTransaction>>;
     
 }

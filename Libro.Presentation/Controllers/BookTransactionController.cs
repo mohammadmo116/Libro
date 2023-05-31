@@ -9,6 +9,7 @@ using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.BookTransaction;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -39,8 +40,8 @@ namespace Libro.Presentation.Controllers
             {
                 var bookTransaction = reserveBookDto.Adapt<BookTransaction>();
                 var query = new ReserveBookCommand(bookTransaction);
-                await _mediator.Send(query);
-                return Ok("Book has been reserved");
+                var Result = await _mediator.Send(query);
+                return Result ? Ok("Book has been reserved") : BadRequest();
             }
             catch (CustomNotFoundException e) {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
@@ -63,8 +64,8 @@ namespace Libro.Presentation.Controllers
             try
             {
                 var query = new CheckOutBookCommand(TransactionId, dueDateDto.DueDate);
-                await _mediator.Send(query);
-                return Ok("Book has been Borrowed");
+                var result =  await _mediator.Send(query);
+                return result? Ok("Book has been Borrowed") : BadRequest();
             }
             catch (CustomNotFoundException e)
             {
@@ -90,8 +91,8 @@ namespace Libro.Presentation.Controllers
             try
             {
                 var query = new ReturnBookCommand(TransactionId);
-                await _mediator.Send(query);
-                return Ok("Book has been Returned");
+                var result = await _mediator.Send(query);
+                return result? Ok("Book has been Returned") : BadRequest();
             }
             catch (CustomNotFoundException e)
             {
@@ -104,10 +105,11 @@ namespace Libro.Presentation.Controllers
 
         [HasRole("librarian")]
         [HttpPut("TrackTransaction")]
-        public async Task<ActionResult> TrackDueDate()
+        public async Task<ActionResult> TrackDueDate(int PageNumber = 0, int Count = 5)
         {
-           
-                var query = new TrackDueDateQuery();
+            if (Count > 10)
+                 Count = 10;
+                var query = new TrackDueDateQuery(PageNumber, Count);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<List<BookTransactionDto>>());
         }
