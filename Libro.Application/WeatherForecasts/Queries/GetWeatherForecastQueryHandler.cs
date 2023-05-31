@@ -17,10 +17,11 @@ namespace Libro.Application.WeatherForecasts.Queries
             _weatherRepository = weatherRepository;
         }
 
-        public async Task<List<WeatherForecast>> Handle(GetWeatherForecastQuery request, CancellationToken cancellationToken)
+        public Task<List<WeatherForecast>> Handle(GetWeatherForecastQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("getting weather forecast...");
-            return await _weatherRepository.Get();
+            return _weatherRepository.Get();
+           
 
 
 

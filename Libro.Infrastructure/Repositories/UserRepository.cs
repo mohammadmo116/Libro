@@ -14,13 +14,9 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<List<string>> AssignRoleToUserAsync(UserRole userRole)
+        public async Task AssignRoleToUserAsync(UserRole userRole)
         {
-            await _context.AddAsync(userRole);
-            await _context.SaveChangesAsync();
-            var roleIds = await _context.UserRoles.Where(e => e.UserId == userRole.UserId).Select(r => r.RoleId).ToListAsync();
-            return  await _context.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync();
-            
+            await _context.AddAsync(userRole);     
         }
 
         public async Task<bool> UserHasTheAssignedRoleAsync(UserRole userRole) 

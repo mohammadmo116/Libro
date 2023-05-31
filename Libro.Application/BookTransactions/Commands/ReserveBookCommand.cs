@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.BookTransactions.Commands
 {
-    public sealed record ReserveBookCommand(BookTransaction bookTransaction) :IRequest;
+    public sealed record ReserveBookCommand(BookTransaction bookTransaction) :IRequest<bool>;
     
 }
