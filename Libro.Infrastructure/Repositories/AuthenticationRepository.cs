@@ -31,7 +31,6 @@ namespace Libro.Infrastructure.Repositories
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             user.PhoneNumber = user.PhoneNumber?.ToLower();
             await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
             return user;
         }
 
@@ -51,8 +50,8 @@ namespace Libro.Infrastructure.Repositories
         public async Task<string> Authenticate(User user)
         {
 
-            var roleIds = _context.UserRoles.Where(e => e.UserId == user.Id).Select(r => r.RoleId).ToList();
-            var roles = _context.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToList();
+            var roleIds =await _context.UserRoles.Where(e => e.UserId == user.Id).Select(r => r.RoleId).ToListAsync();
+            var roles = await _context.Roles.Where(r => roleIds.Contains(r.Id)).Select(r => r.Name).ToListAsync();
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretForKey"]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsForToken = new List<Claim>

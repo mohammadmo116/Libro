@@ -16,90 +16,48 @@ namespace Libro.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task ReserveBookAsync(Domain.Entities.BookTransaction bookTransaction)
+        public async Task AddBookTransactionWithReservedStatus(BookTransaction bookTransaction)
         {
-
-
-            var book = await _context.Books.
-                FirstOrDefaultAsync(b => b.Id == bookTransaction.BookId)
-                ?? throw new CustomNotFoundException("Book");
-            if (!book.IsAvailable)
-            { throw new BookIsNotAvailableException(book.Title); }
-            using var contextTransactio = await _context.Database.BeginTransactionAsync();
-            book.IsAvailable = false;
-            _context.Books.Update(book);
             bookTransaction.Id = Guid.NewGuid();
             bookTransaction.Status = BookStatus.Reserved;   
-            _context.BookTransactions.AddAsync(bookTransaction);
-            await _context.SaveChangesAsync();
-            await contextTransactio.CommitAsync();
+            await _context.BookTransactions.AddAsync(bookTransaction);
         }
-        public async Task CheckOutAsync(Guid TransactionId,DateTime DueDate)
+
+
+        public void ChangeBookTransactionStatusToBorrowed(BookTransaction bookTransaction, DateTime DueDate)
+        {   
+            bookTransaction.Status = BookStatus.Borrowed;
+            bookTransaction.DueDate = DueDate;
+            _context.BookTransactions.Update(bookTransaction);
+
+        }
+        public void ChangeBookTransactionStatusToNone(BookTransaction bookTransaction)
         {
-
-            var transaction = await _context.BookTransactions
-                .Where(a => a.Status != BookStatus.None)
-                .FirstOrDefaultAsync(a => a.Id == TransactionId)
-                ?? throw new CustomNotFoundException("bookTransaction");
-
-            if (transaction.Status == BookStatus.Borrowed)
-                throw new BookIsBorrowedException();
-
-            transaction.Status = BookStatus.Borrowed;
-            transaction.DueDate = DueDate;
-            _context.BookTransactions.Update(transaction);
-            await _context.SaveChangesAsync();
-
+                 bookTransaction.Status = BookStatus.None;
+                _context.BookTransactions.Update(bookTransaction);
         }
-
-        public async Task ReturnBookAsync(Guid TransactionId)
+        public void DeleteBookTransaction(BookTransaction Transaction, Book book)
         {
-            var transaction = await _context.BookTransactions
-                .Where(a=>a.Status!=BookStatus.None)
-                .FirstOrDefaultAsync(a=>a.Id== TransactionId)
-               ?? throw new CustomNotFoundException("bookTransaction");
-            
-            var book = await _context.Books.FindAsync(transaction.BookId)
-                ??throw new CustomNotFoundException("Book");
-   
-            if (transaction.Status == BookStatus.Reserved)
-            {
-               await DeleteBookTransactionAsync(transaction, book);
-               return;
-
-            }
-            if (transaction.Status == BookStatus.Borrowed)
-            {
-                using var contextTransactio = await _context.Database.BeginTransactionAsync();
-                book.IsAvailable = true;
-                _context.Books.Update(book);
-                transaction.Status = BookStatus.None;
-                _context.BookTransactions.Update(transaction);
-                await _context.SaveChangesAsync();
-                await contextTransactio.CommitAsync();
-            }
-   
-      
-
-        }
-   
-        private async Task DeleteBookTransactionAsync(BookTransaction Transaction,Book book) {
-
-            using var contextTransactio = await _context.Database.BeginTransactionAsync();
-
-            book.IsAvailable = true;
-            _context.Books.Update(book);
             _context.BookTransactions.Remove(Transaction);
-            await _context.SaveChangesAsync();
-
-            await contextTransactio.CommitAsync();
-
+        }
+        public async Task<BookTransaction> GetBookTransactionByIdWhereStatusNotNone(Guid TransactionId)
+        {
+            return await _context.BookTransactions
+                            .Where(a => a.Status != BookStatus.None)
+                            .FirstOrDefaultAsync(a => a.Id == TransactionId);
 
         }
-        public async Task<List<BookTransaction>> TrackDueDateAsync()
+
+        public async Task<List<BookTransaction>> TrackDueDateAsync(int PageNumber,int Count)
         {
-            return await _context.BookTransactions.Include(a=>a.User).Include(a=>a.Book)
-                .Where(a => a.Status == BookStatus.Borrowed).OrderByDescending(a=>a.DueDate).ToListAsync();
+            return await _context.BookTransactions
+                .Include(a=>a.User)
+                .Include(a=>a.Book)
+                .Where(a => a.Status == BookStatus.Borrowed)
+                .OrderByDescending(a=>a.DueDate)
+                .Skip(PageNumber*Count)
+                .Take(Count)
+                .ToListAsync();
             
         }
 

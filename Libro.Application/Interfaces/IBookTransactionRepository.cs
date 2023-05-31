@@ -4,10 +4,12 @@ namespace Libro.Application.Interfaces
 {
     public interface IBookTransactionRepository
     {
-        Task ReserveBookAsync(BookTransaction bookTransaction);
-        Task CheckOutAsync(Guid TransactionId, DateTime DueDate);
-        Task ReturnBookAsync(Guid TransactionId);
-        Task<List<BookTransaction>> TrackDueDateAsync();
+        Task AddBookTransactionWithReservedStatus(BookTransaction bookTransaction);
+        void ChangeBookTransactionStatusToBorrowed(BookTransaction bookTransaction, DateTime DueDate);
+        void ChangeBookTransactionStatusToNone(BookTransaction bookTransaction);
+        Task<List<BookTransaction>> TrackDueDateAsync(int PageNumber,int Count);
+        Task<BookTransaction> GetBookTransactionByIdWhereStatusNotNone(Guid TransactionId);
+        void DeleteBookTransaction(BookTransaction Transaction, Book book);
 
 
     }

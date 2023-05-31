@@ -14,17 +14,18 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<List<WeatherForecast>> Get()
+        public Task<List<WeatherForecast>> Get()
         {
    
             var weatherForecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
+                Id=Guid.NewGuid(),
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
         .ToList();
-            return weatherForecasts;
+            return Task.FromResult(weatherForecasts);
 
         }
     }

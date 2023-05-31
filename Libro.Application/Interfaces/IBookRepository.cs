@@ -10,5 +10,7 @@ namespace Libro.Application.Interfaces
         Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre);
         Task<List<Book>> GetBooksByTitleAsync(List<Book>? Books, string Title);
         Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books,string? AuthorName);
+        void MakeBookNotAvailable(Book book);
+        void MakeBookAvailable(Book book);
     }
 }

@@ -23,7 +23,7 @@ namespace Libro.Infrastructure.Repositories
         public async Task<Book> GetBookAsync(Guid BookId)
         {
             return await _context.Books.Include(a => a.Authors).FirstOrDefaultAsync(b => b.Id == BookId);
-        }
+        } 
 
         public async Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books, string? AuthorName)
         {
@@ -55,5 +55,16 @@ namespace Libro.Infrastructure.Repositories
                 Books = Books.Where(b => b.Title.Contains(Title)).ToList();
             return Books;
         }
+        public void MakeBookNotAvailable(Book book)
+        {
+            book.IsAvailable = false;
+            _context.Books.Update(book);
+        }
+        public void MakeBookAvailable(Book book)
+        {
+            book.IsAvailable = true;
+            _context.Books.Update(book);
+        }
+    
     }
 }

@@ -29,7 +29,7 @@ namespace Libro.Presentation.Controllers
 
         [HasRole("admin")]
         [HttpPost("{UserId}/AssignRole/{RoleId}", Name = "AssignRole")]
-        public async Task<ActionResult<List<string>>> AssignRoleToUser(Guid UserId, Guid RoleId)
+        public async Task<ActionResult<bool>> AssignRoleToUser(Guid UserId, Guid RoleId)
         {
             
             AddRoleToUserDto addRoleToUserDto = new() { 
@@ -41,7 +41,8 @@ namespace Libro.Presentation.Controllers
                 var userRole = addRoleToUserDto.Adapt<UserRole>();
                 var query = new AddRoleToUserCommand(userRole);
                 var Result = await _mediator.Send(query);
-                return Ok(Result);
+                return Result ?  Ok("Role Has Been Assigned") :  BadRequest();
+
             }
             catch (UserOrRoleNotFoundException e)
             {
