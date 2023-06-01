@@ -16,7 +16,7 @@ namespace Libro.Infrastructure.Repositories
         {
 
             var user= await _context.Users
-                .Include(a => a.Roles.Where(a => a.Name.ToLower() == "patron"))
+                .Include(a => a.Roles)
                 .FirstOrDefaultAsync(u=>u.Id==UserId);
             return user;
 

@@ -1,5 +1,6 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
+using Libro.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -19,8 +20,13 @@ namespace Libro.Application.Users.Queries
             _userRepository = userRepository;
           
         }
-        public Task<User> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public async Task<User> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
+            var user = await _userRepository.GetUserAsync(request.UserId);
+            if (user is null || ! user.Roles.Any(r=>r.Name.ToLower()=="patron")) {
+                throw new CustomNotFoundException("User");
+            }
+            return user;
             throw new NotImplementedException();
         }
     }
