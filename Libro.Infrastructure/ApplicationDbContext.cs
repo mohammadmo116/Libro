@@ -70,6 +70,8 @@ namespace Libro.Infrastructure
 
             modelBuilder.Entity<Role>().HasIndex(e => e.Name).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(e => e.UserName).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(e => e.PhoneNumber).IsUnique();
 
             modelBuilder.Entity<UserRole>().HasKey(e => new { e.UserId, e.RoleId });
 
