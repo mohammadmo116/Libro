@@ -130,7 +130,7 @@ namespace Libro.Test.Users
             
             //Act
             async Task act() => await _handler.Handle(_command, default);
-            UserExistsException Actual = await Assert.ThrowsAsync<UserExistsException>(act);
+            UserExistsException ActualException  = await Assert.ThrowsAsync<UserExistsException>(act);
             UserExistsException ExpectedException = new($"{nameof(_user.Email)}");
 
             //Assert   
@@ -144,7 +144,7 @@ namespace Libro.Test.Users
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
                Times.Never);
-            Assert.Equal(ExpectedException.Message, Actual.Message);
+            Assert.Equal(ExpectedException.Message, ActualException .Message);
            
 
         }
