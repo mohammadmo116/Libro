@@ -22,31 +22,6 @@ namespace Libro.Infrastructure.Repositories
             _configuration = configuration;
         }
 
-        public async Task<User> RegisterUserAsync(User user)
-        {
-
-            user.Id = Guid.NewGuid();
-            user.Email = user.Email.ToLower();
-            user.UserName = user.UserName?.ToLower();
-            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            user.PhoneNumber = user.PhoneNumber?.ToLower();
-            await _context.Users.AddAsync(user);
-            return user;
-        }
-
-        public async Task ExceptionIfUserExistsAsync(User User)
-        {
-            if (User.Email is not null)
-                if (await _context.Users.AnyAsync(e => e.Email == User.Email.ToLower()))
-                    throw new UserExistsException(nameof(User.Email));
-            if (User.UserName is not null)
-                if (await _context.Users.AnyAsync(predicate: e => e.UserName == User.UserName.ToLower()))
-                    throw new UserExistsException(nameof(User.UserName));
-            if (User.UserName is not null)
-                if (await _context.Users.AnyAsync(e => e.PhoneNumber == User.PhoneNumber.ToLower()))
-                    throw new UserExistsException(nameof(User.PhoneNumber));
-        }
-
         public async Task<string> Authenticate(User user)
         {
 
