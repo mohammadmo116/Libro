@@ -11,8 +11,11 @@ namespace Libro.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-       
-        public async Task<User> GetUserAsync(Guid UserId)
+        public UserRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+         public async Task<User> GetUserAsync(Guid UserId)
         {
 
             var user= await _context.Users

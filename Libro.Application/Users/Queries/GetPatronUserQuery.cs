@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Queries
 {
-    public sealed record class GetUserQuery(Guid UserId):IRequest<User>;
+    public sealed record class GetPatronUserQuery(Guid UserId):IRequest<User>;
 }

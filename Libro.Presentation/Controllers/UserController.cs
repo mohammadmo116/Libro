@@ -1,4 +1,5 @@
 ﻿using Libro.Application.Users.Commands;
+using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
@@ -6,6 +7,7 @@ using Libro.Domain.Responses;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Role;
+using Libro.Presentation.Dtos.User;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -26,8 +28,26 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
          
         }
+        [HasRole("admin,librarian,patron")]
+        [HttpPost("GetPatronUser/{UserId}", Name = "GetPatronUser")]
+        public async Task<ActionResult<User>> GetPatronUser(Guid UserId)
+        {
+            try
+            {
+                var query = new GetPatronUserQuery(UserId);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<UserDtoWithId>());
 
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
 
+            }
+        
+        }
         [HasRole("admin")]
         [HttpPost("{UserId}/AssignRole/{RoleId}", Name = "AssignRole")]
         public async Task<ActionResult<bool>> AssignRoleToUser(Guid UserId, Guid RoleId)
@@ -48,7 +68,9 @@ namespace Libro.Presentation.Controllers
             }
             catch (UserOrRoleNotFoundException e)
             {
-                return NotFound(e.Message);
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "UserOrRole", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
             }
             catch (UserHasTheAssignedRoleException e)
             {
