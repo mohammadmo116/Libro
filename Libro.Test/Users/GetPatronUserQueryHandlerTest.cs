@@ -15,16 +15,16 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Libro.Test.Users
 {
-    public class GetUserQueryHandlerTest
+    public class GetPatronUserQueryHandlerTest
     {
         private readonly Role _admin;
         private readonly Role _patron;
         private readonly User _user;
-        private readonly GetUserQuery _query;
-        private readonly GetUserQueryHandler _handler;
+        private readonly GetPatronUserQuery _query;
+        private readonly GetPatronUserQueryHandler _handler;
         private readonly Mock<IUserRepository> _userRepositoryMock;
-        private readonly Mock<ILogger<GetUserQueryHandler>> _loggerMock;
-        public GetUserQueryHandlerTest() {
+        private readonly Mock<ILogger<GetPatronUserQueryHandler>> _loggerMock;
+        public GetPatronUserQueryHandlerTest() {
             _user = new()
             {
             Id = Guid.NewGuid(),

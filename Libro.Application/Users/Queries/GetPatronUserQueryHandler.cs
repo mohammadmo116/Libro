@@ -6,13 +6,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Libro.Application.Users.Queries
 {
-    public class GetUserQueryHandler : IRequestHandler<GetUserQuery, User>
+    public class GetPatronUserQueryHandler : IRequestHandler<GetPatronUserQuery, User>
     {
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<GetUserQueryHandler> _logger;
+        private readonly ILogger<GetPatronUserQueryHandler> _logger;
 
-        public GetUserQueryHandler(
-            ILogger<GetUserQueryHandler> logger,
+        public GetPatronUserQueryHandler(
+            ILogger<GetPatronUserQueryHandler> logger,
             IUserRepository userRepository     
             ) 
         {
@@ -20,7 +20,7 @@ namespace Libro.Application.Users.Queries
             _userRepository = userRepository;
           
         }
-        public async Task<User> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public async Task<User> Handle(GetPatronUserQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserAsync(request.UserId);
             if (user is null || ! user.Roles.Any(r=>r.Name.ToLower()=="patron")) {
