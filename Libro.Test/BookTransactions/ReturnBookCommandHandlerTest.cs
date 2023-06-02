@@ -49,7 +49,7 @@ namespace Libro.Test.BookTransactions
                 UserId = Guid.NewGuid(),
             };
 
-            _command = new ReturnBookCommand(_bookTransaction.Id);
+            _command = new ReturnBookCommand(_bookTransaction.UserId,_bookTransaction.BookId);
 
             _handler = new ReturnBookCommandHandler(
                _loggerMock.Object,

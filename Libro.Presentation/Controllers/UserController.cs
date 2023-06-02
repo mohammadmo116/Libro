@@ -56,58 +56,7 @@ namespace Libro.Presentation.Controllers
             }
 
         }
-        [HasRole("librarian")]
-        [HttpPut("{UserId}/ReservedBooks/{BookId}/Borrow")]
-        public async Task<ActionResult> CheckOutBook(Guid UserId, Guid BookId, DueDateDto dueDateDto)
-        {
-            try
-            {
-           
-                var query = new CheckOutBookCommand(UserId, BookId, dueDateDto.DueDate);
-                var result = await _mediator.Send(query);
-                return result ? Ok("Book has been Borrowed") : BadRequest();
-            }
-            catch (CustomNotFoundException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new NotFoundObjectResult(errorResponse);
-            }
 
-            catch (BookIsBorrowedException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-
-            }
-
-        }
-        [Authorize()]
-        [HttpGet("BorrwingHistory", Name = "GetBorrwingHistory")]
-        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrwingHistory(int PageNumber = 0, int Count = 5)
-        {
-            try
-            {
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-                if (!Guid.TryParse(userId, out Guid parsedUserId))
-                {
-                    return BadRequest("Bad user Id");
-                }
-                var query = new GetBorrowingHistoryQuery(parsedUserId, PageNumber, Count);
-                var Result = await _mediator.Send(query);
-                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
-
-            }
-            catch (CustomNotFoundException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-
-            }
-
-        }
         [HasRole("admin,librarian")]
         [HttpGet("{UserId}", Name = "GetPatronUser")]
         public async Task<ActionResult<User>> GetPatronUser(Guid UserId)
@@ -126,7 +75,7 @@ namespace Libro.Presentation.Controllers
                 return new BadRequestObjectResult(errorResponse);
 
             }
-        
+
         }
         [HasRole("admin")]
         [HttpPost("{UserId}/Role/{RoleId}", Name = "AssignRole")]
@@ -159,6 +108,81 @@ namespace Libro.Presentation.Controllers
                 return new BadRequestObjectResult(errorResponse);
             }
         }
+
+        [HasRole("librarian")]
+        [HttpPut("{UserId}/Books/{BookId}/Borrow", Name = "BorrowBook")]
+        public async Task<ActionResult> CheckOutBook(Guid UserId, Guid BookId, DueDateDto dueDateDto)
+        {
+            try
+            {
+           
+                var query = new CheckOutBookCommand(UserId, BookId, dueDateDto.DueDate);
+                var result = await _mediator.Send(query);
+                return result ? Ok("Book has been Borrowed") : BadRequest();
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new NotFoundObjectResult(errorResponse);
+            }
+
+            catch (BookIsBorrowedException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
+        }
+
+        [HasRole("librarian")]
+        [HttpPut("{UserId}/Books/{BookId}/Return", Name = "ReturnBook")]
+        public async Task<ActionResult> ReturnBook(Guid UserId,Guid BookId)
+        {
+            try
+            {
+                var query = new ReturnBookCommand(UserId, BookId);
+                var result = await _mediator.Send(query);
+                return result ? Ok("Book has been Returned") : BadRequest();
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new NotFoundObjectResult(errorResponse);
+            }
+
+        }
+
+        [Authorize()]
+        [HttpGet("BorrwingHistory", Name = "GetBorrwingHistory")]
+        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrwingHistory(int PageNumber = 0, int Count = 5)
+        {
+            try
+            {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return BadRequest("Bad user Id");
+                }
+                var query = new GetBorrowingHistoryQuery(parsedUserId, PageNumber, Count);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
+        }
+        
+       
         
        
     }

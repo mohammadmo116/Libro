@@ -9,5 +9,5 @@ using System.Transactions;
 
 namespace Libro.Application.BookTransactions.Commands
 {
-    public sealed record ReturnBookCommand(Guid TransactionId) : IRequest<bool>;
+    public sealed record ReturnBookCommand(Guid UserId,Guid BookId) : IRequest<bool>;
 }
