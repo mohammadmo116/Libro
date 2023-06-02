@@ -28,7 +28,14 @@ namespace Libro.Application.Users.Queries
 
         public async Task<List<BookTransaction>> Handle(GetPatronBorrowingHistoryQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetUserAsync(request.UserId);
+            if (user is null || !user.Roles.Any(r => r.Name.ToLower() == "patron"))
+            {
+                _logger.LogInformation("CustomNotFoundException (User)");
+                throw new CustomNotFoundException("User");
+            }
+
+            return await _userRepository.GetBorrowingHistoryAsync(request.UserId, request.PageNumber, request.Count);
         }
     }
 }
