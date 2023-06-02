@@ -35,27 +35,9 @@ namespace Libro.Presentation.Controllers
        
 
 
+      
         [HasRole("librarian")]
-        [HttpPut("{TransactionId}/Return")]
-        public async Task<ActionResult> ReturnBook(Guid TransactionId)
-        {
-            try
-            {
-                var query = new ReturnBookCommand(TransactionId);
-                var result = await _mediator.Send(query);
-                return result? Ok("Book has been Returned") : BadRequest();
-            }
-            catch (CustomNotFoundException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new NotFoundObjectResult(errorResponse);
-            }
-
-        }
-
-        [HasRole("librarian")]
-        [HttpPut("Transactions")]
+        [HttpGet("Transactions")]
         public async Task<ActionResult> TrackDueDate(int PageNumber = 0, int Count = 5)
         {
             if (Count > 10)

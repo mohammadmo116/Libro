@@ -33,22 +33,22 @@ namespace Libro.Application.BookTransactions.Commands
     }
         public async Task<bool> Handle(ReturnBookCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-            /*var BookTransaction = await _bookTransactionRepository
-                  .GetBookTransactionWhereStatusNotNone(request.TransactionId);
+            
+            var BookTransaction = await _bookTransactionRepository
+                  .GetBookTransactionWhereStatusNotNone(request.UserId,request.BookId);
 
             if (BookTransaction is null)
             {
                 _logger.LogInformation($"CustomNotFoundException (BookTransaction)");
-                _logger.LogInformation($"TransactionId : {request.TransactionId}");
+                _logger.LogInformation($"UserId={request.UserId}, BookId : {request.BookId}");
                 throw new CustomNotFoundException("BookTransaction");
             }
 
-            var book = await _bookRepository.GetBookAsync(BookTransaction.BookId);
+            var book = await _bookRepository.GetBookAsync(request.BookId);
             if (book is null)
             {
                 _logger.LogInformation($"CustomNotFoundException (Book)");
-                _logger.LogInformation($"TransactionId : {request.TransactionId}");
+                _logger.LogInformation($"TransactionId : {BookTransaction.Id}");
                 throw new CustomNotFoundException("Book");
             }
 
@@ -70,7 +70,7 @@ namespace Libro.Application.BookTransactions.Commands
             var numberOfRows = await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync(transaction);
 
-            return numberOfRows > 0;*/
+            return numberOfRows > 0;
 
         }
     }

@@ -36,6 +36,17 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("patron")]
+        [HttpGet("", Name = "search")]
+        public async Task<ActionResult<List<string>>> Search(string? Title, string? AuthorName, string? Genre, int PageNumber = 0, int Count = 5)
+        {
+            if (Count > 10)
+                Count = 10;
+            var query = new GetSearchedBooksQuery(Title, AuthorName, Genre, PageNumber, Count);
+            var Result = await _mediator.Send(query);
+            return Ok(Result);
+        }
+
+        [HasRole("patron")]
         [HttpGet("{BookId}", Name = "BookById")]
         public async Task<ActionResult<BookWithAuthorsDto>> GetBookById(Guid BookId)
         {
@@ -47,20 +58,10 @@ namespace Libro.Presentation.Controllers
 
             return Ok(Result.Adapt<BookWithAuthorsDto>());
         }
-
-        [HasRole("patron")]
-        [HttpGet("Books", Name = "search")]
-        public async Task<ActionResult<List<string>>> Search(string? Title, string? AuthorName, string? Genre, int PageNumber=0,int Count=5)
-        {
-            if (Count > 10)
-                Count = 10;
-            var query = new GetSearchedBooksQuery(Title, AuthorName, Genre, PageNumber, Count);
-            var Result = await _mediator.Send(query);
-            return Ok(Result);
-        }
+      
        
         [HasRole("patron")]
-        [HttpPost("{BookId}/Reserve")]
+        [HttpPost("{BookId}/Reserve", Name = "ReserveBook")]
         public async Task<ActionResult> ReserveBook(Guid BookId)
         {
 
