@@ -57,8 +57,8 @@ namespace Libro.Presentation.Controllers
 
         }
         [Authorize()]
-        [HttpGet("BorrwingHistory", Name = "GetBorrwingHistory")]
-        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrwingHistory(int PageNumber = 0, int Count = 5)
+        [HttpGet("BorrowingHistory", Name = "GetBorrowingHistory")]
+        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
         {
             try
             {
@@ -102,7 +102,26 @@ namespace Libro.Presentation.Controllers
 
         }
 
-       
+        [HasRole("admin,librarian")]
+        [HttpGet("{UserId}/BorrowingHistory", Name = "GetPatronBorrwingHistory")]
+        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetPatronBorrowingHistory(Guid UserId, int PageNumber = 0, int Count = 5)
+        {
+            try
+            { 
+                var query = new GetPatronBorrowingHistoryQuery(UserId, PageNumber, Count);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
+        }
         [HasRole("admin")]
         [HttpPost("{UserId}/Role/{RoleId}", Name = "AssignRole")]
         public async Task<ActionResult<bool>> AssignRoleToUser(Guid UserId, Guid RoleId)
