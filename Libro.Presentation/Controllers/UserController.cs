@@ -110,13 +110,13 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("librarian")]
-        [HttpPut("{UserId}/Books/{BookId}/Borrow", Name = "BorrowBook")]
-        public async Task<ActionResult> CheckOutBook(Guid UserId, Guid BookId, DueDateDto dueDateDto)
+        [HttpPut("Transactions/{TransactionId}/Borrow", Name = "BorrowBook")]
+        public async Task<ActionResult> CheckOutBook(Guid TransactionId, DueDateDto dueDateDto)
         {
             try
             {
            
-                var query = new CheckOutBookCommand(UserId, BookId, dueDateDto.DueDate);
+                var query = new CheckOutBookCommand(TransactionId, dueDateDto.DueDate);
                 var result = await _mediator.Send(query);
                 return result ? Ok("Book has been Borrowed") : BadRequest();
             }
@@ -138,12 +138,12 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("librarian")]
-        [HttpPut("{UserId}/Books/{BookId}/Return", Name = "ReturnBook")]
-        public async Task<ActionResult> ReturnBook(Guid UserId,Guid BookId)
+        [HttpPut("Transactions/{TransactionId}/Return", Name = "ReturnBook")]
+        public async Task<ActionResult> ReturnBook(Guid TransactionId)
         {
             try
             {
-                var query = new ReturnBookCommand(UserId, BookId);
+                var query = new ReturnBookCommand(TransactionId);
                 var result = await _mediator.Send(query);
                 return result ? Ok("Book has been Returned") : BadRequest();
             }

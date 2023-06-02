@@ -41,13 +41,11 @@ namespace Libro.Infrastructure.Repositories
         {
             _context.BookTransactions.Remove(Transaction);
         }
-        public async Task<BookTransaction> GetBookTransactionWhereStatusNotNone(Guid UserId,Guid BookId)
+        public async Task<BookTransaction> GetBookTransactionWhereStatusNotNone(Guid TransactionId)
         {
            var bookTransaction= await _context.BookTransactions
-                            .Where(a => a.Status != BookStatus.None)
-                            .Where(a=>a.UserId==UserId)
-                            .Where(a=>a.BookId==BookId)
-                            .FirstOrDefaultAsync();
+                            .Where(a => a.Status != BookStatus.None) 
+                            .FirstOrDefaultAsync(a=>a.Id==TransactionId);
             return bookTransaction;
         }
 

@@ -10,7 +10,7 @@ namespace Libro.Presentation.Dtos.BookTransaction
 {
     public class BookTransactionDto
     {
-        public BookWithAuthorsDto Book { get; set; } = null!;
+        public BookDto Book { get; set; } = null!;
         public UserDtoWithId User { get; set; } = null!;
         public DateTime? DueDate { get; set; }
     }
