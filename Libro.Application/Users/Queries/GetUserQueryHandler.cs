@@ -1,5 +1,6 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
+using Libro.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,8 +27,15 @@ namespace Libro.Application.Users.Queries
         }
         public async Task<User> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            
-            throw new NotImplementedException();
+
+            var user = await _userRepository.GetUserAsync(request.UserId);
+            if (user is null)
+            {
+                _logger.LogInformation("CustomNotFoundException (User)");
+                throw new CustomNotFoundException("User");
+
+            }
+            return user;
         }
     }
 }
