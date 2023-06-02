@@ -29,7 +29,7 @@ namespace Libro.Application.Users.Queries
               
             }
             return user;
-            throw new NotImplementedException();
+            
         }
     }
 }
