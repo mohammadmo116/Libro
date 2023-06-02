@@ -35,16 +35,16 @@ namespace Libro.Application.BookTransactions.Commands
         {
             
             var BookTransaction = await _bookTransactionRepository
-                  .GetBookTransactionWhereStatusNotNone(request.UserId,request.BookId);
+                  .GetBookTransactionWhereStatusNotNone(request.TransactionId);
 
             if (BookTransaction is null)
             {
                 _logger.LogInformation($"CustomNotFoundException (BookTransaction)");
-                _logger.LogInformation($"UserId={request.UserId}, BookId : {request.BookId}");
+                _logger.LogInformation($"transaction Id : {request.TransactionId}");
                 throw new CustomNotFoundException("BookTransaction");
             }
 
-            var book = await _bookRepository.GetBookAsync(request.BookId);
+            var book = await _bookRepository.GetBookAsync(BookTransaction.BookId);
             if (book is null)
             {
                 _logger.LogInformation($"CustomNotFoundException (Book)");

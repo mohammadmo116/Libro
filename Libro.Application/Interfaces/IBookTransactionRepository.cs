@@ -8,7 +8,7 @@ namespace Libro.Application.Interfaces
         void ChangeBookTransactionStatusToBorrowed(BookTransaction bookTransaction, DateTime DueDate);
         void ChangeBookTransactionStatusToNone(BookTransaction bookTransaction);
         Task<List<BookTransaction>> TrackDueDateAsync(int PageNumber,int Count);
-        Task<BookTransaction> GetBookTransactionWhereStatusNotNone(Guid UserId, Guid BookId);
+        Task<BookTransaction> GetBookTransactionWhereStatusNotNone(Guid TransactionId);
         void DeleteBookTransaction(BookTransaction Transaction, Book book);
 
 

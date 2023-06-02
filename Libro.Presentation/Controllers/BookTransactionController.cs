@@ -36,15 +36,6 @@ namespace Libro.Presentation.Controllers
 
 
       
-        [HasRole("librarian")]
-        [HttpGet("Transactions")]
-        public async Task<ActionResult> TrackDueDate(int PageNumber = 0, int Count = 5)
-        {
-            if (Count > 10)
-                 Count = 10;
-                var query = new TrackDueDateQuery(PageNumber, Count);
-                var Result = await _mediator.Send(query);
-                return Ok(Result.Adapt<List<BookTransactionDto>>());
-        }
+      
     }
 }
