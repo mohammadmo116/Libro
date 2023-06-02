@@ -68,8 +68,9 @@ namespace Libro.Test.BookTransactions
         {
             //Arrange
             _bookTransactionRepository.Setup(
-              x => x.GetBookTransactionByIdWhereStatusNotNone(
-                  It.IsAny<Guid>()))
+              x => x.GetBookTransactionWhereStatusNotNone(
+                     It.IsAny<Guid>(),
+                     It.IsAny<Guid>()))
               .ReturnsAsync(() => _bookTransaction);
 
             _bookRepository.Setup(
@@ -118,8 +119,9 @@ namespace Libro.Test.BookTransactions
 
             //Assert
             _bookTransactionRepository.Verify(
-          x => x.GetBookTransactionByIdWhereStatusNotNone(
-              It.Is<Guid>(a => a == _bookTransaction.Id)),
+          x => x.GetBookTransactionWhereStatusNotNone(
+                It.Is<Guid>(a => a == _bookTransaction.UserId),
+                It.Is<Guid>(a => a == _bookTransaction.BookId)),
           Times.Once);
 
 
@@ -179,8 +181,9 @@ namespace Libro.Test.BookTransactions
         {
             //Arrange
             _bookTransactionRepository.Setup(
-              x => x.GetBookTransactionByIdWhereStatusNotNone(
-                  It.IsAny<Guid>()))
+              x => x.GetBookTransactionWhereStatusNotNone(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>()))
               .ReturnsAsync(() => null!);
 
 
@@ -194,8 +197,9 @@ namespace Libro.Test.BookTransactions
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
             _bookTransactionRepository.Verify(
-          x => x.GetBookTransactionByIdWhereStatusNotNone(
-              It.Is<Guid>(a => a == _bookTransaction.Id)),
+          x => x.GetBookTransactionWhereStatusNotNone(
+                 It.Is<Guid>(a => a == _bookTransaction.UserId),
+                 It.Is<Guid>(a => a == _bookTransaction.BookId)),
           Times.Once);
 
 
@@ -249,8 +253,9 @@ namespace Libro.Test.BookTransactions
         {
             //Arrange
             _bookTransactionRepository.Setup(
-              x => x.GetBookTransactionByIdWhereStatusNotNone(
-                  It.IsAny<Guid>()))
+              x => x.GetBookTransactionWhereStatusNotNone(
+                    It.IsAny<Guid>(),
+                    It.IsAny<Guid>()))
               .ReturnsAsync(() => _bookTransaction);
 
             _bookRepository.Setup(
@@ -267,8 +272,9 @@ namespace Libro.Test.BookTransactions
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
             _bookTransactionRepository.Verify(
-          x => x.GetBookTransactionByIdWhereStatusNotNone(
-              It.Is<Guid>(a => a == _bookTransaction.Id)),
+          x => x.GetBookTransactionWhereStatusNotNone(
+                  It.Is<Guid>(a => a == _bookTransaction.UserId),
+                  It.Is<Guid>(a => a == _bookTransaction.BookId)),
           Times.Once);
 
 

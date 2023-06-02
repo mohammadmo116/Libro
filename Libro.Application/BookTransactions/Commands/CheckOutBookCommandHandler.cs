@@ -32,18 +32,18 @@ namespace Libro.Application.BookTransactions.Commands
        public async Task<bool> Handle(CheckOutBookCommand request, CancellationToken cancellationToken)
         {
             
-                var BookTransaction = await _bookTransactionRepository.GetBookTransactionByIdWhereStatusNotNone(request.TransactionId);
+                var BookTransaction = await _bookTransactionRepository.GetBookTransactionWhereStatusNotNone(request.UserId,request.BookId);
                if (BookTransaction is null)
                 {
                     _logger.LogInformation($"CustomNotFoundException (BookTransaction)");
-                    _logger.LogInformation($"TransactionId : {request.TransactionId}");
+                    _logger.LogInformation($"book : {request.BookId}, user: {request.UserId}");
                     throw new CustomNotFoundException("bookTransaction");
                 }
 
                 if (BookTransaction.Status == BookStatus.Borrowed)
                 {
                     _logger.LogInformation($"BookIsBorrowedException");
-                    _logger.LogInformation($"TransactionId : {request.TransactionId}");
+                    _logger.LogInformation($"book : {request.BookId}, user: {request.UserId}");
                     throw new BookIsBorrowedException();
                 }
 

@@ -34,35 +34,9 @@ namespace Libro.Presentation.Controllers
         }
        
 
-        [HasRole("librarian")]
-        [HttpPut("Borrow/{TransactionId}")]
-        public async Task<ActionResult> CheckOutBook(Guid TransactionId, DueDateDto dueDateDto)
-        {   
-            try
-            {
-                var query = new CheckOutBookCommand(TransactionId, dueDateDto.DueDate);
-                var result =  await _mediator.Send(query);
-                return result? Ok("Book has been Borrowed") : BadRequest();
-            }
-            catch (CustomNotFoundException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new NotFoundObjectResult(errorResponse);
-            }
-
-            catch(BookIsBorrowedException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-
-            }
-            
-        }
 
         [HasRole("librarian")]
-        [HttpPut("Return/{TransactionId}")]
+        [HttpPut("{TransactionId}/Return")]
         public async Task<ActionResult> ReturnBook(Guid TransactionId)
         {
             try
@@ -81,7 +55,7 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("librarian")]
-        [HttpPut("TrackTransaction")]
+        [HttpPut("Transactions")]
         public async Task<ActionResult> TrackDueDate(int PageNumber = 0, int Count = 5)
         {
             if (Count > 10)

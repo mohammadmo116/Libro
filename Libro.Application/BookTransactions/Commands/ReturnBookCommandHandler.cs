@@ -33,9 +33,9 @@ namespace Libro.Application.BookTransactions.Commands
     }
         public async Task<bool> Handle(ReturnBookCommand request, CancellationToken cancellationToken)
         {
-
-            var BookTransaction = await _bookTransactionRepository
-                  .GetBookTransactionByIdWhereStatusNotNone(request.TransactionId);
+            throw new NotImplementedException();
+            /*var BookTransaction = await _bookTransactionRepository
+                  .GetBookTransactionWhereStatusNotNone(request.TransactionId);
 
             if (BookTransaction is null)
             {
@@ -70,7 +70,7 @@ namespace Libro.Application.BookTransactions.Commands
             var numberOfRows = await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync(transaction);
 
-            return numberOfRows > 0;
+            return numberOfRows > 0;*/
 
         }
     }
