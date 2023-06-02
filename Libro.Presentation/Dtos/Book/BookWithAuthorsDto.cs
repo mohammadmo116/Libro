@@ -1,4 +1,4 @@
-﻿using Libro.Presentation.Dtos.Author;
+﻿using Libro.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,14 +8,10 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.Book
 {
-    public class BookDto
+    public class BookWithAuthorsDto : CreateBookDto
     {
         public Guid Id { get; set; }
-        [Required]
-        [MaxLength(256)]
-        public string? Title { get; set; }
 
-        public string? Genre { get; set; }
-        public DateTime? PublishedDate { get; set; }
+       
     }
 }

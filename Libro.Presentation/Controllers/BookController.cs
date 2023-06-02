@@ -39,7 +39,7 @@ namespace Libro.Presentation.Controllers
         }
         [HasRole("patron")]
         [HttpGet("{BookId}", Name = "BookById")]
-        public async Task<ActionResult<BookDto>> GetBookById(Guid BookId)
+        public async Task<ActionResult<BookWithAuthorsDto>> GetBookById(Guid BookId)
         {
             
             var query = new GetBookByIdQuery(BookId);
@@ -47,7 +47,7 @@ namespace Libro.Presentation.Controllers
             if (Result is null)
                 return NotFound("Book Not_Found");
           
-            return Ok(Result.Adapt<BookDto>());
+            return Ok(Result.Adapt<BookWithAuthorsDto>());
         }
 
 

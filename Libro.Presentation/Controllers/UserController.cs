@@ -6,6 +6,7 @@ using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
+using Libro.Presentation.Dtos.BookTransaction;
 using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
 using Mapster;
@@ -43,6 +44,31 @@ namespace Libro.Presentation.Controllers
                 var query = new GetUserQuery(parsedUserId);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<UserDto>());
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
+        }
+        [Authorize()]
+        [HttpGet("BorrwingHistory", Name = "GetBorrwingHistory")]
+        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrwingHistory(int PageNumber = 0, int Count = 5)
+        {
+            try
+            {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return BadRequest("Bad user Id");
+                }
+                var query = new GetBorrowingHistoryQuery(parsedUserId, PageNumber, Count);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
 
             }
             catch (CustomNotFoundException e)
