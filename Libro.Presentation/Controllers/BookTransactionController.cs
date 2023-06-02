@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,6 +39,12 @@ namespace Libro.Presentation.Controllers
 
             try
             {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return BadRequest("Bad user Id");
+                }
+                reserveBookDto.UserId= parsedUserId;
                 var bookTransaction = reserveBookDto.Adapt<BookTransaction>();
                 var query = new ReserveBookCommand(bookTransaction);
                 var Result = await _mediator.Send(query);

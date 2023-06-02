@@ -61,7 +61,7 @@ namespace Libro.Test.Users
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
+                x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
 
@@ -72,7 +72,7 @@ namespace Libro.Test.Users
 
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
             Assert.Equal(_user.Id, result.Id);
 
@@ -83,7 +83,7 @@ namespace Libro.Test.Users
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
+                x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => null!);
 
@@ -94,7 +94,7 @@ namespace Libro.Test.Users
 
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
@@ -105,7 +105,7 @@ namespace Libro.Test.Users
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
+                x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
 
@@ -117,7 +117,7 @@ namespace Libro.Test.Users
             CustomNotFoundException ExpectedException = new("User");
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 

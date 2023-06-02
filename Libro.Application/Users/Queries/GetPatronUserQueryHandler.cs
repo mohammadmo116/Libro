@@ -22,9 +22,11 @@ namespace Libro.Application.Users.Queries
         }
         public async Task<User> Handle(GetPatronUserQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserAsync(request.UserId);
+            var user = await _userRepository.GetUserWtithRolesAsync(request.UserId);
             if (user is null || ! user.Roles.Any(r=>r.Name.ToLower()=="patron")) {
+                _logger.LogInformation("CustomNotFoundException (User)");
                 throw new CustomNotFoundException("User");
+              
             }
             return user;
             throw new NotImplementedException();
