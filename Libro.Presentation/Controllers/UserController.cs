@@ -10,10 +10,11 @@ using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-
+using System.Security.Claims;
 
 namespace Libro.Presentation.Controllers
 {
@@ -26,10 +27,35 @@ namespace Libro.Presentation.Controllers
         public UserController(IMediator mediator)
         {
             _mediator = mediator;
-         
+
+        }
+        [Authorize()]
+        [HttpGet(Name = "GetUser")]
+        public async Task<ActionResult<User>> GetUser()
+        {
+            try
+            {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return BadRequest("Bad user Id");
+                }
+                var query = new GetUserQuery(parsedUserId);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<UserDto>());
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
         }
         [HasRole("admin,librarian")]
-        [HttpGet("GetPatronUser/{UserId}", Name = "GetPatronUser")]
+        [HttpGet("{UserId}", Name = "GetPatronUser")]
         public async Task<ActionResult<User>> GetPatronUser(Guid UserId)
         {
             try
@@ -49,7 +75,7 @@ namespace Libro.Presentation.Controllers
         
         }
         [HasRole("admin")]
-        [HttpPost("{UserId}/AssignRole/{RoleId}", Name = "AssignRole")]
+        [HttpPost("{UserId}/Role/{RoleId}", Name = "AssignRole")]
         public async Task<ActionResult<bool>> AssignRoleToUser(Guid UserId, Guid RoleId)
         {
 
