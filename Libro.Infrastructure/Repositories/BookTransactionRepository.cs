@@ -27,6 +27,7 @@ namespace Libro.Infrastructure.Repositories
         public void ChangeBookTransactionStatusToBorrowed(BookTransaction bookTransaction, DateTime DueDate)
         {   
             bookTransaction.Status = BookStatus.Borrowed;
+            bookTransaction.BorrowedDate = DateTime.UtcNow;
             bookTransaction.DueDate = DueDate;
             _context.BookTransactions.Update(bookTransaction);
 
@@ -40,12 +41,14 @@ namespace Libro.Infrastructure.Repositories
         {
             _context.BookTransactions.Remove(Transaction);
         }
-        public async Task<BookTransaction> GetBookTransactionByIdWhereStatusNotNone(Guid TransactionId)
+        public async Task<BookTransaction> GetBookTransactionWhereStatusNotNone(Guid UserId,Guid BookId)
         {
-            return await _context.BookTransactions
+           var bookTransaction= await _context.BookTransactions
                             .Where(a => a.Status != BookStatus.None)
-                            .FirstOrDefaultAsync(a => a.Id == TransactionId);
-
+                            .Where(a=>a.UserId==UserId)
+                            .Where(a=>a.BookId==BookId)
+                            .FirstOrDefaultAsync();
+            return bookTransaction;
         }
 
         public async Task<List<BookTransaction>> TrackDueDateAsync(int PageNumber,int Count)

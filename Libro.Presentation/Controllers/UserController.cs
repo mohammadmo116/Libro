@@ -1,4 +1,5 @@
-﻿using Libro.Application.Users.Commands;
+﻿using Libro.Application.BookTransactions.Commands;
+using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
@@ -50,6 +51,33 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
+        }
+        [HasRole("librarian")]
+        [HttpPut("{UserId}/ReservedBooks/{BookId}/Borrow")]
+        public async Task<ActionResult> CheckOutBook(Guid UserId, Guid BookId, DueDateDto dueDateDto)
+        {
+            try
+            {
+           
+                var query = new CheckOutBookCommand(UserId, BookId, dueDateDto.DueDate);
+                var result = await _mediator.Send(query);
+                return result ? Ok("Book has been Borrowed") : BadRequest();
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new NotFoundObjectResult(errorResponse);
+            }
+
+            catch (BookIsBorrowedException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
                 return new BadRequestObjectResult(errorResponse);
 
             }
