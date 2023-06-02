@@ -32,7 +32,7 @@ namespace Libro.Application.Users.Queries
                 _logger.LogInformation("CustomNotFoundException (User)");
                 throw new CustomNotFoundException("User");
             }
-            return await _userRepository.GetBorrowingHistory(request.UserId, request.PageNumber, request.Count);
+            return await _userRepository.GetBorrowingHistoryAsync(request.UserId, request.PageNumber, request.Count);
 
         }
   

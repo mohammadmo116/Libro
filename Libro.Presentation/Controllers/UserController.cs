@@ -56,7 +56,31 @@ namespace Libro.Presentation.Controllers
             }
 
         }
+        [Authorize()]
+        [HttpGet("BorrwingHistory", Name = "GetBorrwingHistory")]
+        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrwingHistory(int PageNumber = 0, int Count = 5)
+        {
+            try
+            {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return BadRequest("Bad user Id");
+                }
+                var query = new GetBorrowingHistoryQuery(parsedUserId, PageNumber, Count);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
 
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
+        }
         [HasRole("admin,librarian")]
         [HttpGet("{UserId}", Name = "GetPatronUser")]
         public async Task<ActionResult<User>> GetPatronUser(Guid UserId)
@@ -77,6 +101,8 @@ namespace Libro.Presentation.Controllers
             }
 
         }
+
+       
         [HasRole("admin")]
         [HttpPost("{UserId}/Role/{RoleId}", Name = "AssignRole")]
         public async Task<ActionResult<bool>> AssignRoleToUser(Guid UserId, Guid RoleId)
@@ -156,34 +182,7 @@ namespace Libro.Presentation.Controllers
 
         }
 
-        [Authorize()]
-        [HttpGet("BorrwingHistory", Name = "GetBorrwingHistory")]
-        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrwingHistory(int PageNumber = 0, int Count = 5)
-        {
-            try
-            {
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-                if (!Guid.TryParse(userId, out Guid parsedUserId))
-                {
-                    return BadRequest("Bad user Id");
-                }
-                var query = new GetBorrowingHistoryQuery(parsedUserId, PageNumber, Count);
-                var Result = await _mediator.Send(query);
-                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
-
-            }
-            catch (CustomNotFoundException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-
-            }
-
-        }
-        
-       
-        
+     
        
     }
 }

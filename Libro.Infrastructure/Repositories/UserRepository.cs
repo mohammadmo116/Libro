@@ -95,7 +95,7 @@ namespace Libro.Infrastructure.Repositories
                 return true;
             return false;
         }
-        public async Task<List<BookTransaction>> GetBorrowingHistory(Guid UserId, int PageNumber, int Count)
+        public async Task<List<BookTransaction>> GetBorrowingHistoryAsync(Guid UserId, int PageNumber, int Count)
         {
 
 
