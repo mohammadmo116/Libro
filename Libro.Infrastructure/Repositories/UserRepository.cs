@@ -48,6 +48,7 @@ namespace Libro.Infrastructure.Repositories
             await _context.Users.AddAsync(user);
             return user;
         }
+
         public async Task<bool> EmailIsUniqueAsync(string Email)
         {
             if (Email is not null)
@@ -93,6 +94,19 @@ namespace Libro.Infrastructure.Repositories
             if (await _context.Roles.FindAsync(userRole.RoleId) is null)
                 return true;
             return false;
+        }
+        public async Task<List<BookTransaction>> GetBorrowingHistory(Guid UserId, int PageNumber, int Count)
+        {
+
+
+            return await _context.BookTransactions
+                .Include(a => a.Book)
+                .Where(a => a.UserId == UserId)
+                .OrderByDescending(a => a.DueDate)
+                .Skip(PageNumber * Count)
+                .Take(Count)
+                .ToListAsync();
+
         }
     }
 }
