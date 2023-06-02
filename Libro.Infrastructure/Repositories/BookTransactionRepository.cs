@@ -2,6 +2,7 @@
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -18,8 +19,7 @@ namespace Libro.Infrastructure.Repositories
 
         public async Task AddBookTransactionWithReservedStatus(BookTransaction bookTransaction)
         {
-            bookTransaction.Id = Guid.NewGuid();
-            bookTransaction.Status = BookStatus.Reserved;   
+           
             await _context.BookTransactions.AddAsync(bookTransaction);
         }
 

@@ -32,37 +32,7 @@ namespace Libro.Presentation.Controllers
         {
             _mediator = mediator;
         }
-        [HasRole("patron")]
-        [HttpPost("Reserve")]
-        public async Task<ActionResult> ReserveBook(ReserveBookTransactionDto reserveBookDto)
-        {
-
-            try
-            {
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
-                if (!Guid.TryParse(userId, out Guid parsedUserId))
-                {
-                    return BadRequest("Bad user Id");
-                }
-                reserveBookDto.UserId= parsedUserId;
-                var bookTransaction = reserveBookDto.Adapt<BookTransaction>();
-                var query = new ReserveBookCommand(bookTransaction);
-                var Result = await _mediator.Send(query);
-                return Result ? Ok("Book has been reserved") : BadRequest();
-            }
-            catch (CustomNotFoundException e) {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new NotFoundObjectResult(errorResponse);
-            }
-            catch (BookIsNotAvailableException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-            }
-
-        }
+       
 
         [HasRole("librarian")]
         [HttpPut("Borrow/{TransactionId}")]
