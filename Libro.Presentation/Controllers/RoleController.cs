@@ -23,7 +23,7 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
         }
         [HasRole("admin")]
-        [HttpPost("AddRole", Name = "AddRole")]
+        [HttpPost(Name = "AddRole")]
         public async Task<ActionResult<UserDto>> CreateRole(CreateRoleDto createRoleDto)
         {
             try
