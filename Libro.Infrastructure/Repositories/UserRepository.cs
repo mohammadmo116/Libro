@@ -15,13 +15,23 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-         public async Task<User> GetUserAsync(Guid UserId)
+
+        public async Task<User> GetUserAsync(Guid UserId)
         {
 
-            var user= await _context.Users
+            var user = await _context.Users
+                .FindAsync(UserId);
+            return user;
+
+
+        }
+        public async Task<User> GetUserWtithRolesAsync(Guid UserId)
+        {
+
+            var UserWithRoles= await _context.Users
                 .Include(a => a.Roles)
                 .FirstOrDefaultAsync(u=>u.Id==UserId);
-            return user;
+            return UserWithRoles;
 
 
         }

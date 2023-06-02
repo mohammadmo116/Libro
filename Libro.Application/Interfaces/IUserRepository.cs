@@ -12,5 +12,6 @@ namespace Libro.Application.Interfaces
         Task<bool> UserNameIsUniqueAsync(string UserName);
         Task<bool> PhoneNumberIsUniqueAsync(string PhoneNumber);
         Task<User> GetUserAsync(Guid UserId);
+        Task<User> GetUserWtithRolesAsync(Guid UserId);
     }
 }

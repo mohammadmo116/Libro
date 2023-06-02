@@ -28,8 +28,8 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
          
         }
-        [HasRole("admin,librarian,patron")]
-        [HttpPost("GetPatronUser/{UserId}", Name = "GetPatronUser")]
+        [HasRole("admin,librarian")]
+        [HttpGet("GetPatronUser/{UserId}", Name = "GetPatronUser")]
         public async Task<ActionResult<User>> GetPatronUser(Guid UserId)
         {
             try
