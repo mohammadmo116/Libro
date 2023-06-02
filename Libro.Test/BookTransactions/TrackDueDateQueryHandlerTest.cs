@@ -1,18 +1,9 @@
-﻿using Libro.Application.BookTransactions.Commands;
-using Libro.Application.BookTransactions.Queiries;
+﻿using Libro.Application.BookTransactions.Queiries;
 using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
-using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Libro.Test.BookTransactions
