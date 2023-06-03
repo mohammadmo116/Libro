@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.Book
 {
-    public class BookWithAuthorsDto : BookDto
+    public class BookWithAuthorsDto : CreateBookDto
     {
      
         public List<AuthorDto>? Authors { get; set; }

@@ -24,6 +24,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Libro.Presentation.Controllers
 {
@@ -67,13 +68,37 @@ namespace Libro.Presentation.Controllers
         public async Task<ActionResult> CreateBook(CreateBookDto bookDto)
         {
             var book = bookDto.Adapt<Book>();
-            var query = new CreateBookCommand(book);
-            var Result = await _mediator.Send(query);
+            var command = new CreateBookCommand(book);
+            var Result = await _mediator.Send(command);
             var bookWithAuthorsDto = Result.Adapt<BookWithAuthorsDto>();
             return CreatedAtAction(nameof(GetBookById), new { BookId = bookWithAuthorsDto.Id}, bookWithAuthorsDto);
 
 
 
+        }
+
+        [HasRole("librarian")]
+        [HttpPut("{BookId}" ,Name = "UpdateBook")]
+        public async Task<ActionResult> UpdateBook(Guid BookId, UpdateBookDto bookDto)
+        {
+            try
+            {
+                if (BookId != bookDto.Id)
+                {
+                    return BadRequest("bad Id");
+                }
+                var book = bookDto.Adapt<Book>();
+                var command = new UpdateBookCommand(book);
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("Book has been Updated") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
         }
 
         [HasRole("patron")]
