@@ -48,10 +48,9 @@ namespace Libro.Infrastructure.Repositories
             await _context.Users.AddAsync(user);
             return user;
         }
-        public async Task UpdateUser(User user)
+        public void UpdateUser(User user)
         {
            _context.Users.Update(user);
-         
         }
 
         public async Task<bool> EmailIsUniqueAsync(string Email)
