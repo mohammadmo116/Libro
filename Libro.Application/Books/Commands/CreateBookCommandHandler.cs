@@ -28,9 +28,13 @@ namespace Libro.Application.Books.Commands
             _bookRepository = bookRepository;
         }
 
-        public Task<Book> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+        public async Task<Book> Handle(CreateBookCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+          
+            request.book.Id = Guid.NewGuid();
+            await _bookRepository.CreateBookAsync(request.book);
+            await _unitOfWork.SaveChangesAsync();
+            return request.book;
         }
     }
 }
