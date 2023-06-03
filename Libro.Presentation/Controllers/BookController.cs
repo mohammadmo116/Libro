@@ -14,6 +14,7 @@ using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -83,7 +84,7 @@ namespace Libro.Presentation.Controllers
                 };
                 var query = new ReserveBookCommand(bookTransaction);
                 var Result = await _mediator.Send(query);
-                return Result ? Ok("Book has been reserved") : BadRequest();
+                return Result ? Ok("Book has been reserved") : StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (CustomNotFoundException e)
             {
@@ -102,7 +103,7 @@ namespace Libro.Presentation.Controllers
 
         [HasRole("librarian")]
         [HttpGet("Transactions")]
-        public async Task<ActionResult> TrackDueDate(int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<List<BookTransaction>>> TrackDueDate(int PageNumber = 0, int Count = 5)
         {
             if (Count > 10)
                 Count = 10;

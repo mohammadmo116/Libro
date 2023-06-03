@@ -13,6 +13,7 @@ using Libro.Presentation.Dtos.User;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -33,7 +34,7 @@ namespace Libro.Presentation.Controllers
         }
         [Authorize()]
         [HttpGet(Name = "GetUser")]
-        public async Task<ActionResult<User>> GetUser()
+        public async Task<ActionResult<UserDto>> GetUser()
         {
             try
             {
@@ -54,6 +55,7 @@ namespace Libro.Presentation.Controllers
                 return new BadRequestObjectResult(errorResponse);
 
             }
+         
 
         }
         [Authorize()]
@@ -83,7 +85,7 @@ namespace Libro.Presentation.Controllers
         }
         [HasRole("admin,librarian")]
         [HttpGet("{UserId}", Name = "GetPatronUser")]
-        public async Task<ActionResult<User>> GetPatronUser(Guid UserId)
+        public async Task<ActionResult<UserDtoWithId>> GetPatronUser(Guid UserId)
         {
             try
             {
@@ -100,6 +102,39 @@ namespace Libro.Presentation.Controllers
 
             }
 
+        }
+
+        [HasRole("admin,librarian")]
+        [HttpPut("{UserId}", Name = "UpdatePatronUser")]
+        public async Task<ActionResult> UpdatePatronUser(Guid UserId, UpdateUserDto userDto)
+        {
+            try
+            {
+                if (UserId != userDto.Id)
+                { 
+                    return BadRequest();
+                }
+
+                var user = userDto.Adapt<User>();
+                var query = new UpdatePatronUserCommand(user);
+                var Result = await _mediator.Send(query);
+                return Result? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+            catch (UserExistsException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
         }
 
         [HasRole("admin,librarian")]
@@ -124,7 +159,7 @@ namespace Libro.Presentation.Controllers
         }
         [HasRole("admin")]
         [HttpPost("{UserId}/Role/{RoleId}", Name = "AssignRole")]
-        public async Task<ActionResult<bool>> AssignRoleToUser(Guid UserId, Guid RoleId)
+        public async Task<ActionResult> AssignRoleToUser(Guid UserId, Guid RoleId)
         {
 
             AddRoleToUserDto addRoleToUserDto = new()
@@ -137,7 +172,7 @@ namespace Libro.Presentation.Controllers
                 var userRole = addRoleToUserDto.Adapt<UserRole>();
                 var query = new AddRoleToUserCommand(userRole);
                 var Result = await _mediator.Send(query);
-                return Result ? Ok("Role Has Been Assigned") : BadRequest();
+                return Result ? Ok("Role Has Been Assigned") : StatusCode(StatusCodes.Status500InternalServerError);
 
             }
             catch (UserOrRoleNotFoundException e)
@@ -163,7 +198,7 @@ namespace Libro.Presentation.Controllers
            
                 var query = new CheckOutBookCommand(TransactionId, dueDateDto.DueDate);
                 var result = await _mediator.Send(query);
-                return result ? Ok("Book has been Borrowed") : BadRequest();
+                return result ? Ok("Book has been Borrowed") : StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (CustomNotFoundException e)
             {
@@ -190,7 +225,7 @@ namespace Libro.Presentation.Controllers
             {
                 var query = new ReturnBookCommand(TransactionId);
                 var result = await _mediator.Send(query);
-                return result ? Ok("Book has been Returned") : BadRequest();
+                return result ? Ok("Book has been Returned") : StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (CustomNotFoundException e)
             {

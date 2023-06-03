@@ -22,7 +22,7 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
         }
         [HttpPost("Rgister",Name = "Rgister")]
-        public async Task<ActionResult<UserDto>> RgisterUser(CreateUserDto createUserDto)
+        public async Task<ActionResult<UserDtoWithId>> RgisterUser(CreateUserDto createUserDto)
         {
             try
             {

@@ -39,6 +39,22 @@ namespace Libro.Application.Users.Commands
                 throw new CustomNotFoundException("User");
 
             }
+            if (!await _userRepository.EmailIsUniqueForUpdateAsync(user.Id, request.user.Email))
+            {
+                _logger.LogInformation($"UserExistsException : Email is Used");
+                throw new UserExistsException(nameof(request.user.Email));
+            }
+            if (!await _userRepository.UserNameIsUniqueForUpdateAsync(user.Id,request.user.UserName))
+            {
+                _logger.LogInformation($"UserExistsException : UserName is Used");
+                throw new UserExistsException(nameof(request.user.UserName));
+            }
+            if (!await _userRepository.PhoneNumberIsUniqueForUpdateAsync(user.Id,request.user.PhoneNumber))
+            {
+                _logger.LogInformation($"UserExistsException : PhoneNumber is Used");
+                throw new UserExistsException(nameof(request.user.PhoneNumber));
+            }
+
             user.UserName = request.user.UserName is null? 
                 user.UserName : request.user.UserName;
 

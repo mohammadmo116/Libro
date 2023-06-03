@@ -61,6 +61,15 @@ namespace Libro.Infrastructure.Repositories
             return true;
            
         }
+        public async Task<bool> EmailIsUniqueForUpdateAsync(Guid UserId, string Email)
+        {
+            if (Email is not null)
+                if (await _context.Users.Where(u => u.Id != UserId).AnyAsync(e => e.Email == Email.ToLower()))
+                    return false;
+            return true;
+
+        }
+
         public async Task<bool> UserNameIsUniqueAsync(string UserName)
         {
             if (UserName is not null)
@@ -70,6 +79,15 @@ namespace Libro.Infrastructure.Repositories
          
 
         }
+        public async Task<bool> UserNameIsUniqueForUpdateAsync(Guid UserId,string UserName)
+        {
+            if (UserName is not null)
+                if (await _context.Users.Where(u => u.Id != UserId).AnyAsync(e => e.UserName == UserName.ToLower()))
+                    return false;
+            return true;
+
+
+        }
         public async Task<bool> PhoneNumberIsUniqueAsync(string PhoneNumber)
         {
             if (PhoneNumber is not null)
@@ -77,6 +95,15 @@ namespace Libro.Infrastructure.Repositories
                     return false;
             return true;
         
+
+        }
+        public async Task<bool> PhoneNumberIsUniqueForUpdateAsync(Guid UserId, string PhoneNumber)
+        {
+            if (PhoneNumber is not null)
+                if (await _context.Users.Where(u => u.Id != UserId).AnyAsync(e => e.PhoneNumber == PhoneNumber.ToLower()))
+                    return false;
+            return true;
+
 
         }
         public async Task AssignRoleToUserAsync(UserRole userRole)
