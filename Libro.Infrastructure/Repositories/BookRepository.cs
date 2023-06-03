@@ -37,6 +37,10 @@ namespace Libro.Infrastructure.Repositories
         {
             _context.Books.Update(book);
         }
+        public void RemoveBook(Book book)
+        {
+            _context.Books.Remove(book);
+        }
 
         public async Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books, string? AuthorName)
         {
