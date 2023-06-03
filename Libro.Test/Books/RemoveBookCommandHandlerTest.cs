@@ -18,10 +18,10 @@ namespace Libro.Test.Books
     {
 
         private readonly Book _book;
-        private readonly UpdateBookCommand _command;
-        private readonly UpdateBookCommandHandler _handler;
+        private readonly RemoveBookCommand _command;
+        private readonly RemoveBookCommandHandler _handler;
         private readonly Mock<IBookRepository> _bookRepositoryMock;
-        private readonly Mock<ILogger<UpdateBookCommandHandler>> _loggerMock;
+        private readonly Mock<ILogger<RemoveBookCommandHandler>> _loggerMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public RemoveBookCommandHandlerTest()
@@ -36,7 +36,7 @@ namespace Libro.Test.Books
             _unitOfWorkMock = new();
             _bookRepositoryMock = new();
             _loggerMock = new();
-            _command = new(_book);
+            _command = new(_book.Id);
             _handler = new(
                 _loggerMock.Object,
                 _bookRepositoryMock.Object,

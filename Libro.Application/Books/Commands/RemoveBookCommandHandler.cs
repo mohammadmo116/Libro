@@ -1,4 +1,5 @@
 ﻿using Libro.Application.Interfaces;
+using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -27,9 +28,18 @@ namespace Libro.Application.Books.Commands
             _logger = logger;
             _bookRepository = bookRepository;
         }
-        public Task<bool> Handle(RemoveBookCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(RemoveBookCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var book = await _bookRepository.GetBookAsync(request.BookId);
+            if (book is null)
+            {
+                _logger.LogInformation($"CustomNotFoundException BookId:{request.BookId}");
+                throw new CustomNotFoundException("Book");
+            }
+
+            _bookRepository.RemoveBook(book);
+            var numberOfRows = await _unitOfWork.SaveChangesAsync();
+            return numberOfRows > 0;
         }
     }
 }
