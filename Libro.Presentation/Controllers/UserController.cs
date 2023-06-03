@@ -58,6 +58,43 @@ namespace Libro.Presentation.Controllers
          
 
         }
+
+        [Authorize()]
+        [HttpPut(Name = "UpdateUser")]
+        public async Task<ActionResult> UpdateUser(UpdateUserDto userDto)
+        {
+            try
+            {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return BadRequest("Bad user Id");
+                }
+                if (parsedUserId != userDto.Id)
+                {
+                    return BadRequest("Wrong Id");
+                }
+                var user = userDto.Adapt<User>();
+                var query = new UpdateUserCommand(user);
+                var Result = await _mediator.Send(query);
+                return Result ? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+            catch (UserExistsException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
         [Authorize()]
         [HttpGet("BorrowingHistory", Name = "GetBorrowingHistory")]
         public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
@@ -103,7 +140,7 @@ namespace Libro.Presentation.Controllers
             }
 
         }
-
+        
         [HasRole("admin,librarian")]
         [HttpPut("{UserId}", Name = "UpdatePatronUser")]
         public async Task<ActionResult> UpdatePatronUser(Guid UserId, UpdateUserDto userDto)
