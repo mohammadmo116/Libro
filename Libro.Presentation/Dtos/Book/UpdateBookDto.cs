@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.Book
 {
-    public class CreateBookDto : BookDto
+    public class UpdateBookDto : BookDto
     {
-    
-        [Required]
-        public bool IsAvailable { get; set; }
-   
+        public bool? IsAvailable { get; set; }
+
     }
 }

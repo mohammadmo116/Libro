@@ -8,9 +8,15 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.Book
 {
-    public class BookDto : CreateBookDto
+    public class BookDto 
     {
         public Guid Id { get; set; }
-    
+        [Required]
+        [MaxLength(256)]
+        public string Title { get; set; }
+        public string? Genre { get; set; }
+        [Required]
+        public DateTime? PublishedDate { get; set; }
+
     }
 }

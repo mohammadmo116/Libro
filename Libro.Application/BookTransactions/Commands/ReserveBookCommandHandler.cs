@@ -40,7 +40,7 @@ namespace Libro.Application.BookTransactions.Commands
                 _logger.LogInformation($"bookId : {request.BookTransaction.BookId}");
                 throw new CustomNotFoundException("Book");
             }
-            if (!book.IsAvailable)
+            if (!(bool)book.IsAvailable)
             {
                 _logger.LogInformation($"BookIsNotAvailableException");
                 _logger.LogInformation($"bookId : {request.BookTransaction.BookId}");

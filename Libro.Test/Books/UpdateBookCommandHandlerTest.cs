@@ -33,7 +33,7 @@ namespace Libro.Test.Books
             _unitOfWorkMock = new();
             _bookRepositoryMock = new();
             _loggerMock = new();
-            _command = new(_book.Id);
+            _command = new(_book);
             _handler = new(
                 _loggerMock.Object,
                 _bookRepositoryMock.Object,
