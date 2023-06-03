@@ -3,6 +3,7 @@ using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
+using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -22,6 +23,7 @@ namespace Libro.Test.Users
         private readonly UpdatePatronUserCommand _command;
         private readonly UpdatePatronUserCommandHandler _handler;
         private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<ILogger<UpdatePatronUserCommandHandler>> _loggerMock;
         public UpdatePatronUserCommandHandlerTest()
         {
@@ -45,13 +47,14 @@ namespace Libro.Test.Users
                 Name = "patron",
 
             };
-
+            _unitOfWorkMock = new();
             _userRepositoryMock = new();
             _loggerMock = new();
             _command = new(_user);
             _handler = new(
                 _loggerMock.Object,
-                _userRepositoryMock.Object
+                _userRepositoryMock.Object,
+                _unitOfWorkMock.Object
                 );
         }
         [Fact]
@@ -68,6 +71,11 @@ namespace Libro.Test.Users
                 x => x.UpdateUser(
                     It.IsAny<User>()));
 
+            _unitOfWorkMock.Setup(
+               x => x.SaveChangesAsync())
+                .ReturnsAsync(1);
+
+
             _user.Roles.Add(_patron);
 
             //Act
@@ -80,6 +88,9 @@ namespace Libro.Test.Users
             _userRepositoryMock.Verify(
                 x => x.UpdateUser(
                     It.Is<User>(a=>a.Id==_user.Id)),
+                Times.Once);
+            _unitOfWorkMock.Verify(
+                x => x.SaveChangesAsync(),
                 Times.Once);
 
             Assert.True(result);
@@ -109,6 +120,10 @@ namespace Libro.Test.Users
               x => x.UpdateUser(
                   It.Is<User>(a => a.Id == _user.Id)),
               Times.Never);
+
+            _unitOfWorkMock.Verify(
+                x => x.SaveChangesAsync(),
+                Times.Never);
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
         }
@@ -138,6 +153,10 @@ namespace Libro.Test.Users
              x => x.UpdateUser(
                  It.Is<User>(a => a.Id == _user.Id)),
              Times.Never);
+
+            _unitOfWorkMock.Verify(
+                x => x.SaveChangesAsync(),
+                Times.Never);
 
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
