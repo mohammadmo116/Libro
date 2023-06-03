@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Libro.Application.BookTransactions.Commands
+namespace Libro.Application.Users.Commands
 {
-    public sealed record ReserveBookCommand(BookTransaction BookTransaction) :IRequest<bool>;
+    public sealed record class UpdatePatronUserCommand(User user):IRequest<bool>;
     
 }

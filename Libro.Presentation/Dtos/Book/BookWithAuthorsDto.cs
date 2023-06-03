@@ -9,15 +9,10 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.Book
 {
-    public class CreateBookDto
+    public class BookWithAuthorsDto : BookDto
     {
-        [Required]
-        [MaxLength(256)]
-        public string? Title { get; set; }
-
-        public string? Genre { get; set; }
-        public DateTime? PublishedDate { get; set; }
+     
         public List<AuthorDto>? Authors { get; set; }
-        public bool IsAvailable { get; set; } = true;
+
     }
 }

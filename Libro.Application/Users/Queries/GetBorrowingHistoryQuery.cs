@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Libro.Application.BookTransactions.Commands
+namespace Libro.Application.Users.Queries
 {
-    public sealed record ReserveBookCommand(BookTransaction BookTransaction) :IRequest<bool>;
+    public sealed record  GetBorrowingHistoryQuery(Guid UserId, int PageNumber, int Count) :IRequest<List<BookTransaction>>;
     
 }

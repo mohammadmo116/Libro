@@ -17,40 +17,59 @@ namespace Libro.Test.Users
 {
     public class CreateUserCommandHandlerTest
     {
-        private readonly User _user;
+        private User _user;
         private readonly CreateUserCommand _command;
         private readonly CreateUserCommandHandler _handler;
-        private readonly Mock<IAuthenticationRepository> _authenticationRepositoryMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<ILogger<CreateUserCommandHandler>> _loggerMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     
         public CreateUserCommandHandlerTest()
         {
-            _authenticationRepositoryMock = new();
+            _userRepositoryMock = new();
             _loggerMock = new();
             _unitOfWorkMock = new();
-            _user = new()
-            {
-                Id = Guid.NewGuid(),
-                Email = "ads@gmail.com",
-                Password = "password",
-                PhoneNumber = "12345",
-                UserName = "Test"
-            };
+            _user = new();
             _command = new CreateUserCommand(_user);
             _handler = new CreateUserCommandHandler(
                 _loggerMock.Object,
-                _authenticationRepositoryMock.Object,
+                _userRepositoryMock.Object,
                 _unitOfWorkMock.Object
                 );
+
         }
-        [Fact]
-        public async Task Handle_Should_ReturnUserInfo_WhenSuccess()
+        [Theory]
+        [InlineData("ads@gmail.com", "password", "12345", "Test")]
+        [InlineData("ads@gmail.com", "password", null, "Test")]
+        [InlineData("ads@gmail.com", "password", "12345", null)]
+        [InlineData("ads@gmail.com", "password", null, null)]
+        public async Task Handle_Should_ReturnUserInfo_WhenSuccess(string Email,string Password,string PhoneNumber,string UserName)
         {
-       
-           
+
+            _user.Id = Guid.NewGuid();
+            _user.Email = Email;
+            _user.Password = Password;
+            _user.PhoneNumber = PhoneNumber;
+            _user.UserName = UserName;
+
+
             //Arrange
-            _authenticationRepositoryMock.Setup(
+            _userRepositoryMock.Setup(
+               x => x.EmailIsUniqueAsync(
+                   It.IsAny<string>()))
+               .ReturnsAsync(true);
+
+            _userRepositoryMock.Setup(
+               x => x.UserNameIsUniqueAsync(
+                   It.IsAny<string>()))
+               .ReturnsAsync(true);
+
+            _userRepositoryMock.Setup(
+               x => x.PhoneNumberIsUniqueAsync(
+                   It.IsAny<string>()))
+               .ReturnsAsync(true);
+
+            _userRepositoryMock.Setup(
                 x => x.RegisterUserAsync(
                     It.IsAny<User>()))
                 .ReturnsAsync(() => _user);
@@ -63,8 +82,26 @@ namespace Libro.Test.Users
             var result = await _handler.Handle(_command, default);
 
             //Assert
-            _authenticationRepositoryMock.Verify(
-                x => x.RegisterUserAsync(It.Is<User>(u => u.Id == result.Id)),
+            Assert.Equal(_user.Id,result.Id);
+
+            _userRepositoryMock.Verify(
+             x => x.EmailIsUniqueAsync(
+                 It.Is<string>(a => a == _user.Email)),
+             Times.Once);
+
+
+            _userRepositoryMock.Verify(
+             x => x.UserNameIsUniqueAsync(
+                 It.Is<string>(a => a == _user.UserName)),
+             Times.Once);
+
+            _userRepositoryMock.Verify(
+          x => x.PhoneNumberIsUniqueAsync(
+              It.Is<string>(a => a == _user.PhoneNumber)),
+          Times.Once);
+
+            _userRepositoryMock.Verify(
+                x => x.RegisterUserAsync(It.Is<User>(u=>u.Id==result.Id)),
                 Times.Once);
 
             _unitOfWorkMock.Verify(
@@ -72,46 +109,71 @@ namespace Libro.Test.Users
                Times.Once);
 
         }
-        [Fact]
-        public async Task Handle_Should_ThrowUserExistsException_WhenEmailIsNotUnique()
+        [Theory]
+        [InlineData("ads@gmail.com", "password", "12345", "Test")]
+        [InlineData("ads@gmail.com", "password", null, "Test")]
+        [InlineData("ads@gmail.com", "password", "12345", null)]
+        [InlineData("ads@gmail.com", "password", null, null)]
+        public async Task Handle_Should_ThrowUserExistsException_WhenEmailIsNotUnique(string Email, string Password, string PhoneNumber, string UserName)
         {
-        
+            _user.Id = Guid.NewGuid();
+            _user.Email = Email;
+            _user.Password = Password;
+            _user.PhoneNumber = PhoneNumber;
+            _user.UserName = UserName;
+
             //Arrange
-            _authenticationRepositoryMock.Setup(
-                x =>x.ExceptionIfUserExistsAsync(
-                    It.IsAny<User>()))
-                .ThrowsAsync(new UserExistsException(nameof(_user.Email)));
+            _userRepositoryMock.Setup(
+                x => x.EmailIsUniqueAsync(
+                    It.IsAny<string>()))
+                .ReturnsAsync(false);
             
             //Act
             async Task act() => await _handler.Handle(_command, default);
-            UserExistsException Actual = await Assert.ThrowsAsync<UserExistsException>(act);
+            UserExistsException ActualException  = await Assert.ThrowsAsync<UserExistsException>(act);
             UserExistsException ExpectedException = new($"{nameof(_user.Email)}");
 
             //Assert   
-            _authenticationRepositoryMock.Verify(
-              x => x.ExceptionIfUserExistsAsync(_user),
-              Times.Once);
-            _authenticationRepositoryMock.Verify(
+            _userRepositoryMock.Verify(
+          x => x.EmailIsUniqueAsync(
+              It.Is<string>(a => a == _user.Email)),
+          Times.Once);
+            _userRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
                Times.Never);
-            Assert.Equal(ExpectedException.Message, Actual.Message);
+            Assert.Equal(ExpectedException.Message, ActualException .Message);
            
 
         }
 
-        [Fact]
-        public async Task Handle_Should_ThrowUserExistsException_WhenUserNameIsNotUnique()
+       
+        [Theory]
+        [InlineData("ads@gmail.com", "password", "12345", "Test")]
+        [InlineData("ads@gmail.com", "password", null, "Test")]
+        [InlineData("ads@gmail.com", "password", "12345", null)]
+        [InlineData("ads@gmail.com", "password", null, null)]
+        public async Task Handle_Should_ThrowUserExistsException_WhenUserNameIsNotUnique(string Email, string Password, string PhoneNumber, string UserName)
         {
+            _user.Id = Guid.NewGuid();
+            _user.Email = Email;
+            _user.Password = Password;
+            _user.PhoneNumber = PhoneNumber;
+            _user.UserName = UserName;
+            //Arrange
+            //Arrange
+            _userRepositoryMock.Setup(
+              x => x.EmailIsUniqueAsync(
+                  It.IsAny<string>()))
+              .ReturnsAsync(true);
 
-            //Arrange
-            //Arrange
-            _authenticationRepositoryMock.Setup(
-                x => x.ExceptionIfUserExistsAsync(
-                    It.IsAny<User>()))
-                .ThrowsAsync(new UserExistsException(nameof(_user.UserName)));
+            _userRepositoryMock.Setup(
+             x => x.UserNameIsUniqueAsync(
+                 It.IsAny<string>()))
+             .ReturnsAsync(false);
+
 
             //Act
             async Task act() => await _handler.Handle(_command, default);
@@ -119,10 +181,18 @@ namespace Libro.Test.Users
             UserExistsException ExpectedException = new($"{nameof(_user.UserName)}");
 
             //Assert   
-            _authenticationRepositoryMock.Verify(
-            x => x.ExceptionIfUserExistsAsync(_user),
-            Times.Once);
-            _authenticationRepositoryMock.Verify(
+            _userRepositoryMock.Verify(
+              x => x.EmailIsUniqueAsync(
+                  It.Is<string>(a => a == _user.Email)),
+              Times.Once);
+
+
+            _userRepositoryMock.Verify(
+             x => x.UserNameIsUniqueAsync(
+                 It.Is<string>(a => a == _user.UserName)),
+             Times.Once);
+
+            _userRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
             _unitOfWorkMock.Verify(
@@ -132,15 +202,33 @@ namespace Libro.Test.Users
 
 
         }
-        [Fact]
-        public async Task Handle_Should_ThrowUserExistsException_WhenPhoneNumberIsNotUnique()
+        [Theory]
+        [InlineData("ads@gmail.com", "password", "12345", "Test")]
+        [InlineData("ads@gmail.com", "password", null, "Test")]
+        [InlineData("ads@gmail.com", "password", "12345", null)]
+        [InlineData("ads@gmail.com", "password", null, null)]
+        public async Task Handle_Should_ThrowUserExistsException_WhenPhoneNumberIsNotUnique(string Email, string Password, string PhoneNumber, string UserName)
         {
-
+            _user.Id = Guid.NewGuid();
+            _user.Email = Email;
+            _user.Password = Password;
+            _user.PhoneNumber = PhoneNumber;
+            _user.UserName = UserName;
             //Arrange
-            _authenticationRepositoryMock.Setup(
-           x => x.ExceptionIfUserExistsAsync(
-               It.IsAny<User>()))
-           .ThrowsAsync(new UserExistsException(nameof(_user.PhoneNumber)));
+            _userRepositoryMock.Setup(
+              x => x.EmailIsUniqueAsync(
+                  It.IsAny<string>()))
+              .ReturnsAsync(true);
+
+            _userRepositoryMock.Setup(
+               x => x.UserNameIsUniqueAsync(
+                   It.IsAny<string>()))
+               .ReturnsAsync(true);
+
+            _userRepositoryMock.Setup(
+               x => x.PhoneNumberIsUniqueAsync(
+                   It.IsAny<string>()))
+               .ReturnsAsync(false);
 
             //Act
             async Task act() => await _handler.Handle(_command, default);
@@ -148,10 +236,22 @@ namespace Libro.Test.Users
             UserExistsException ExpectedException = new($"{nameof(_user.PhoneNumber)}");
 
             //Assert   
-            _authenticationRepositoryMock.Verify(
-              x => x.ExceptionIfUserExistsAsync(_user),
-              Times.Once);
-            _authenticationRepositoryMock.Verify(
+            _userRepositoryMock.Verify(
+             x => x.EmailIsUniqueAsync(
+                 It.Is<string>(a => a == _user.Email)),
+             Times.Once);
+
+
+            _userRepositoryMock.Verify(
+             x => x.UserNameIsUniqueAsync(
+                 It.Is<string>(a => a == _user.UserName)),
+             Times.Once);
+
+            _userRepositoryMock.Verify(
+          x => x.PhoneNumberIsUniqueAsync(
+              It.Is<string>(a => a == _user.PhoneNumber)),
+          Times.Once);
+            _userRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
             _unitOfWorkMock.Verify(
