@@ -7,6 +7,7 @@ namespace Libro.Application.Interfaces
         Task<Book> GetBookAsync(Guid BookId);
         Task<List<string>> GetAllBooksAsync(int PageNumber, int Count);
         Task CreateBookAsync(Book book);
+        void UpdateBook(Book book);
         Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre);
         Task<List<Book>> GetBooksByTitleAsync(List<Book>? Books, string Title);
         Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books,string? AuthorName);
