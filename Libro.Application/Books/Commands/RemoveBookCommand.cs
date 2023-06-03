@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Libro.Domain.Entities;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.Books.Commands
 {
-    public sealed record RemoveBookCommand : IRequest<bool>;
+    public sealed record RemoveBookCommand(Guid BookId) : IRequest<bool>;
     
 }

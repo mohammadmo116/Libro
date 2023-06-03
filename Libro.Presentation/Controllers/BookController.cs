@@ -101,6 +101,26 @@ namespace Libro.Presentation.Controllers
             }
         }
 
+        [HasRole("librarian")]
+        [HttpDelete("{BookId}", Name = "RemoveBook")]
+        public async Task<ActionResult> RemoveBook(Guid BookId)
+        {
+            try
+            {
+               
+                var command = new RemoveBookCommand(BookId);
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("Book has been Deleted") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
+
         [HasRole("patron")]
         [HttpPost("{BookId}/Reserve", Name = "ReserveBook")]
         public async Task<ActionResult> ReserveBook(Guid BookId)
