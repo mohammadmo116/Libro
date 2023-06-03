@@ -44,7 +44,83 @@ namespace Libro.Test.Users
                 _unitOfWorkMock.Object
                 );
         }
-        
+        [Fact]
+        public async Task Handle_Should_ReturnTrue_WhenUserIsFoundAndEdited()
+        {
+
+            //Arrange
+            _userRepositoryMock.Setup(
+                x => x.GetUserWtithRolesAsync(
+                    It.IsAny<Guid>()))
+                .ReturnsAsync(() => _user);
+
+            _userRepositoryMock.Setup(
+               x => x.EmailIsUniqueForUpdateAsync(
+                   It.IsAny<Guid>(),
+                   It.IsAny<string>()))
+               .ReturnsAsync(() => true);
+
+            _userRepositoryMock.Setup(
+              x => x.UserNameIsUniqueForUpdateAsync(
+                  It.IsAny<Guid>(),
+                  It.IsAny<string>()))
+              .ReturnsAsync(() => true);
+
+            _userRepositoryMock.Setup(
+             x => x.PhoneNumberIsUniqueForUpdateAsync(
+                 It.IsAny<Guid>(),
+                 It.IsAny<string>()))
+             .ReturnsAsync(() => true);
+
+            _userRepositoryMock.Setup(
+                x => x.UpdateUser(
+                    It.IsAny<User>()));
+
+            _unitOfWorkMock.Setup(
+               x => x.SaveChangesAsync())
+                .ReturnsAsync(1);
+
+
+            //Act
+            var result = await _handler.Handle(_command, default);
+
+            //Assert
+            _userRepositoryMock.Verify(
+              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
+              Times.Once);
+
+            _userRepositoryMock.Verify(
+              x => x.EmailIsUniqueForUpdateAsync(
+                  It.Is<Guid>(u => u == _user.Id),
+                  It.Is<string>(e => e == _user.Email)),
+              Times.Once);
+
+            _userRepositoryMock.Verify(
+              x => x.UserNameIsUniqueForUpdateAsync(
+                  It.Is<Guid>(u => u == _user.Id),
+                  It.Is<string>(e => e == _user.UserName)),
+              Times.Once);
+
+
+            _userRepositoryMock.Verify(
+             x => x.PhoneNumberIsUniqueForUpdateAsync(
+                  It.Is<Guid>(u => u == _user.Id),
+                  It.Is<string>(e => e == _user.PhoneNumber)),
+              Times.Once);
+
+
+            _userRepositoryMock.Verify(
+                x => x.UpdateUser(
+                    It.Is<User>(a => a.Id == _user.Id)),
+                Times.Once);
+
+            _unitOfWorkMock.Verify(
+                x => x.SaveChangesAsync(),
+                Times.Once);
+
+            Assert.True(result);
+
+        }
         [Fact]
         public async Task Handle_Should_ThrowCustomNotFoundException_WhenUserIsNotFound()
         {

@@ -33,7 +33,10 @@ namespace Libro.Infrastructure.Repositories
              _context.Books.AddAsync(book);
         }
 
-
+        public void UpdateBook(Book book)
+        {
+            _context.Books.Update(book);
+        }
 
         public async Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books, string? AuthorName)
         {
