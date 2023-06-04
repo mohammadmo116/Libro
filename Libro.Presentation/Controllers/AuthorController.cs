@@ -83,5 +83,25 @@ namespace Libro.Presentation.Controllers
             }
         }
 
+        [HasRole("librarian")]
+        [HttpDelete("{AuthorId}", Name = "RemoveAuthor")]
+        public async Task<ActionResult> RemoveAuthor(Guid AuthorId)
+        {
+            try
+            {
+
+                var command = new RemoveAuthorCommand(AuthorId);
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("Author has been Deleted") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Author", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
+
     }
 }
