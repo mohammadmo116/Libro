@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Commands
 {
-    public class CreateLibrarianUserCommandHandler : IRequestHandler<CreateLibrarianUserCommand, User>
+    public class CreateUserByRoleCommandHandler : IRequestHandler<CreateUserByRoleCommand, User>
     {
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
-        private readonly ILogger<CreateLibrarianUserCommandHandler> _logger;
+        private readonly ILogger<CreateUserByRoleCommandHandler> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        public CreateLibrarianUserCommandHandler(ILogger<CreateLibrarianUserCommandHandler> logger,
+        public CreateUserByRoleCommandHandler(ILogger<CreateUserByRoleCommandHandler> logger,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
             IUnitOfWork unitOfWork)
@@ -28,15 +28,15 @@ namespace Libro.Application.Users.Commands
             _unitOfWork = unitOfWork;
             _roleRepository= roleRepository;
         }
-        public async Task<User> Handle(CreateLibrarianUserCommand request, CancellationToken cancellationToken)
+        public async Task<User> Handle(CreateUserByRoleCommand request, CancellationToken cancellationToken)
         {
 
-           var role = await _roleRepository.GetRoleByNameAsync("librarian".ToLower());
+           var role = await _roleRepository.GetRoleByNameAsync(request.RoleName.ToLower());
 
             if (role is null)
             {
                 _logger.LogInformation($"CustomNotFoundException Role : librarian");
-                throw new CustomNotFoundException("Role");
+                throw new CustomNotFoundException($"Role {request.RoleName}");
             }
           
 
