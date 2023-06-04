@@ -7,5 +7,6 @@ namespace Libro.Application.Repositories
         Task CreateAuthorAsync(Author author);
         Task<Author> GetAuthorAsync(Guid AuthorId);
         void UpdateAuthor(Author author);
+        void RemoveAuthor(Author author);
     }
 }

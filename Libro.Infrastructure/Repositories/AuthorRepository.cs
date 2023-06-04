@@ -33,6 +33,9 @@ namespace Libro.Infrastructure.Repositories
         {
             _context.Authors.Update(author);
         }
-
+        public void RemoveAuthor(Author author)
+        {
+            _context.Authors.Remove(author);
+        }
     }
 }
