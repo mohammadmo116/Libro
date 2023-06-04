@@ -29,6 +29,10 @@ namespace Libro.Infrastructure.Repositories
         {
             _context.Authors.AddAsync(author);
         }
+        public void UpdateAuthor(Author author)
+        {
+            _context.Authors.Update(author);
+        }
 
     }
 }
