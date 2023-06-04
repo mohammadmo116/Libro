@@ -1,4 +1,7 @@
-﻿using Libro.Domain.Entities;
+﻿using Libro.Application.Repositories;
+using Libro.Domain.Entities;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +18,12 @@ namespace Libro.Infrastructure.Repositories
         public AuthorRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public async Task<Author> GetAuthorAsync(Guid AuthorId) 
+        {
+            return await _context.Authors.FirstOrDefaultAsync(b => b.Id == AuthorId);
+
+
         }
         public async Task CreateAuthorAsync(Author author)
         {

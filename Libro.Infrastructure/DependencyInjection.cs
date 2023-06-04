@@ -1,5 +1,6 @@
 ﻿
 using Libro.Application.Interfaces;
+using Libro.Application.Repositories;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Repositories;
