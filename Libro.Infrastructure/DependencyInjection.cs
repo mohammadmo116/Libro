@@ -1,5 +1,6 @@
 ﻿
 using Libro.Application.Interfaces;
+using Libro.Application.Repositories;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Repositories;
@@ -24,6 +25,7 @@ namespace Libro.Infrastracture
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IBookTransactionRepository,BookTransactionRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }

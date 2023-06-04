@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Commands
 {
-    public sealed record class UpdatePatronUserCommand(User user):IRequest<bool>;
-    
+    public sealed record UpdateUserCommand(User user) : IRequest<bool>;
+
+
 }

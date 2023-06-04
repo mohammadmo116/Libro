@@ -1,4 +1,5 @@
-﻿using Libro.Application.BookTransactions.Commands;
+﻿using Libro.Application.Books.Commands;
+using Libro.Application.BookTransactions.Commands;
 using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
@@ -7,6 +8,7 @@ using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
+using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.BookTransaction;
 using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
@@ -58,6 +60,65 @@ namespace Libro.Presentation.Controllers
          
 
         }
+        [HasRole("admin")]
+        [HttpGet("{UserId}",Name = "GetUserById")]
+        public async Task<ActionResult<UserDto>> GetUserById(Guid UserId)
+        {
+            try
+            {
+                
+                var query = new GetUserQuery(UserId);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<UserDto>());
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+
+
+        }
+        
+        [Authorize()]
+        [HttpPut(Name = "UpdateUser")]
+        public async Task<ActionResult> UpdateUser(UpdateUserDto userDto)
+        {
+            try
+            {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return BadRequest("Bad user Id");
+                }
+                if (parsedUserId != userDto.Id)
+                {
+                    return BadRequest("Wrong Id");
+                }
+                var user = userDto.Adapt<User>();
+                var query = new UpdateUserCommand(user);
+                var Result = await _mediator.Send(query);
+                return Result ? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+            catch (UserExistsException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
         [Authorize()]
         [HttpGet("BorrowingHistory", Name = "GetBorrowingHistory")]
         public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
@@ -83,13 +144,88 @@ namespace Libro.Presentation.Controllers
             }
 
         }
-        [HasRole("admin,librarian")]
-        [HttpGet("{UserId}", Name = "GetPatronUser")]
-        public async Task<ActionResult<UserDtoWithId>> GetPatronUser(Guid UserId)
+
+
+        [HasRole("admin")]
+        [HttpPost("Librarian", Name = "CreateLibrarianUser")]
+        public async Task<ActionResult> CreateLibrarianUser(CreateUserDto createUserDto)
         {
             try
             {
-                var query = new GetPatronUserQuery(UserId);
+                var user = createUserDto.Adapt<User>();
+                var query = new CreateUserByRoleCommand(user, "librarian");
+                var Result = await _mediator.Send(query);
+                var ResultUserDto = Result.Adapt<UserDtoWithId>();
+                return CreatedAtAction(nameof(GetUserById), new { UserId = ResultUserDto.Id }, ResultUserDto);
+
+            }
+
+            catch (UserExistsException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
+        [HasRole("admin")]
+        [HttpPut("Librarian/{LibrarianId}", Name = "UpdateLibrarianUser")]
+        public async Task<ActionResult> UpdateLibrarianUser(Guid LibrarianId, UpdateUserDto userDto)
+        {
+            try
+            {
+                if (LibrarianId != userDto.Id)
+                {
+                    return BadRequest();
+                }
+
+                var user = userDto.Adapt<User>();
+                var query = new UpdateUserByRoleCommand(user, "Librarian");
+                var Result = await _mediator.Send(query);
+                return Result ? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+            catch (UserExistsException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
+        [HasRole("admin")]
+        [HttpDelete("librarian/{LibrarianId}", Name = "RemoveLibrarianUser")]
+        public async Task<ActionResult> RemoveLibrarianUser(Guid LibrarianId)
+        {
+            try
+            {
+
+                var command = new RemoveUserByRoleCommand(LibrarianId,"librarian");
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("Librarian User has been Deleted") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
+        [HasRole("admin,librarian")]
+        [HttpGet("Patron/{PatronId}", Name = "GetPatronUser")]
+        public async Task<ActionResult<UserDtoWithId>> GetPatronUser(Guid PatronId)
+        {
+            try
+            {
+                var query = new GetPatronUserQuery(PatronId);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<UserDtoWithId>());
 
@@ -103,20 +239,20 @@ namespace Libro.Presentation.Controllers
             }
 
         }
-
+        
         [HasRole("admin,librarian")]
-        [HttpPut("{UserId}", Name = "UpdatePatronUser")]
-        public async Task<ActionResult> UpdatePatronUser(Guid UserId, UpdateUserDto userDto)
+        [HttpPut("Patron/{PatronId}", Name = "UpdatePatronUser")]
+        public async Task<ActionResult> UpdatePatronUser(Guid PatronId, UpdateUserDto userDto)
         {
             try
             {
-                if (UserId != userDto.Id)
+                if (PatronId != userDto.Id)
                 { 
                     return BadRequest();
                 }
 
                 var user = userDto.Adapt<User>();
-                var query = new UpdatePatronUserCommand(user);
+                var query = new UpdateUserByRoleCommand(user,"patron");
                 var Result = await _mediator.Send(query);
                 return Result? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
 
@@ -138,12 +274,12 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("admin,librarian")]
-        [HttpGet("{UserId}/BorrowingHistory", Name = "GetPatronBorrwingHistory")]
-        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetPatronBorrowingHistory(Guid UserId, int PageNumber = 0, int Count = 5)
+        [HttpGet("Patron/{PatronId}/BorrowingHistory", Name = "GetPatronBorrwingHistory")]
+        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetPatronBorrowingHistory(Guid PatronId, int PageNumber = 0, int Count = 5)
         {
             try
             { 
-                var query = new GetPatronBorrowingHistoryQuery(UserId, PageNumber, Count);
+                var query = new GetPatronBorrowingHistoryQuery(PatronId, PageNumber, Count);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
 
