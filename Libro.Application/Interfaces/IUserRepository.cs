@@ -9,6 +9,7 @@ namespace Libro.Application.Interfaces
         Task<bool> RoleOrUserNotFoundAsync(UserRole userRole);
         Task<User> RegisterUserAsync(User user);
         void UpdateUser(User user);
+        void RemoveUser(User user);
         Task<bool> EmailIsUniqueAsync(string Email);
         Task<bool> EmailIsUniqueForUpdateAsync(Guid UserId, string Email);
         Task<bool> UserNameIsUniqueAsync(string UserName);

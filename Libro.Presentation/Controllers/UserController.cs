@@ -1,4 +1,5 @@
-﻿using Libro.Application.BookTransactions.Commands;
+﻿using Libro.Application.Books.Commands;
+using Libro.Application.BookTransactions.Commands;
 using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
@@ -199,7 +200,25 @@ namespace Libro.Presentation.Controllers
 
             }
         }
+        [HasRole("admin")]
+        [HttpDelete("librarian/{LibrarianId}", Name = "RemoveLibrarianUser")]
+        public async Task<ActionResult> RemoveLibrarianUser(Guid LibrarianId)
+        {
+            try
+            {
 
+                var command = new RemoveUserByRoleCommand(LibrarianId,"librarian");
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("Librarian User has been Deleted") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
         [HasRole("admin,librarian")]
         [HttpGet("Patron/{PatronId}", Name = "GetPatronUser")]
         public async Task<ActionResult<UserDtoWithId>> GetPatronUser(Guid PatronId)

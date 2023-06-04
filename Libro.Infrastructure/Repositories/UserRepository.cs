@@ -55,7 +55,10 @@ namespace Libro.Infrastructure.Repositories
         {
            _context.Users.Update(user);
         }
-
+        public void RemoveUser(User user)
+        {
+            _context.Users.Remove(user);
+        }
         public async Task<bool> EmailIsUniqueAsync(string Email)
         {
             if (Email is not null)
