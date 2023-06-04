@@ -51,7 +51,7 @@ namespace Libro.Application.BookTransactions.Commands
             await _bookTransactionRepository.AddBookTransactionWithReservedStatus(request.BookTransaction);
             var numberOfRows=await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync(dbTransaction);
-            return numberOfRows > 0;
+            return numberOfRows > 1;
 
 
         }

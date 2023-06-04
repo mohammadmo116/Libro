@@ -93,15 +93,11 @@ namespace Libro.Test.Users
                 x => x.RegisterUserAsync(
                     It.IsAny<User>()))
                 .ReturnsAsync(() => _user);
-
-            _userRepositoryMock.Setup(
-               x => x.AssignRoleToUserAsync(
-                   It.IsAny<UserRole>()));
-            
+    
 
             _unitOfWorkMock.Setup(
                x => x.SaveChangesAsync())
-               .ReturnsAsync(1);
+               .ReturnsAsync(2);
 
             //Act
             var result = await _handler.Handle(_command, default);
@@ -136,10 +132,6 @@ namespace Libro.Test.Users
                 x => x.RegisterUserAsync(It.Is<User>(u => u.Id == result.Id)),
                 Times.Once);
 
-            _userRepositoryMock.Verify(
-           x => x.AssignRoleToUserAsync(
-               It.Is<UserRole>(a=>a.RoleId==_role.Id && a.UserId==_user.Id)),
-           Times.Once);
 
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
@@ -185,11 +177,6 @@ namespace Libro.Test.Users
             _userRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
-
-            _userRepositoryMock.Verify(
-          x => x.AssignRoleToUserAsync(
-              It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
-          Times.Never);
 
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
@@ -242,10 +229,6 @@ namespace Libro.Test.Users
               x => x.RegisterUserAsync(_user),
               Times.Never);
 
-            _userRepositoryMock.Verify(
-         x => x.AssignRoleToUserAsync(
-             It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
-         Times.Never);
 
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
@@ -312,11 +295,6 @@ namespace Libro.Test.Users
             _userRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
-
-            _userRepositoryMock.Verify(
-         x => x.AssignRoleToUserAsync(
-             It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
-         Times.Never);
 
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
@@ -390,11 +368,6 @@ namespace Libro.Test.Users
             _userRepositoryMock.Verify(
               x => x.RegisterUserAsync(_user),
               Times.Never);
-
-            _userRepositoryMock.Verify(
-         x => x.AssignRoleToUserAsync(
-             It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
-         Times.Never);
 
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),

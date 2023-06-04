@@ -63,7 +63,7 @@ namespace Libro.Application.Users.Commands
 
             };
             var user = await _userRepository.RegisterUserAsync(request.User);
-            await _userRepository.AssignRoleToUserAsync(userRole);
+            user.Roles.Add(role);
             await _unitOfWork.SaveChangesAsync();
             return user;
         }

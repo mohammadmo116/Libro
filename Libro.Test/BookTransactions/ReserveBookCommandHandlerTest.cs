@@ -89,7 +89,7 @@ namespace Libro.Test.BookTransactions
 
             _unitOfWorkMock.Setup(
                x => x.SaveChangesAsync())
-               .ReturnsAsync(1);
+               .ReturnsAsync(2);
             //Act
             var result = await _handler.Handle(_command, default);
 

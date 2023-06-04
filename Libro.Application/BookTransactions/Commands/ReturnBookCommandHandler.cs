@@ -70,7 +70,7 @@ namespace Libro.Application.BookTransactions.Commands
             var numberOfRows = await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync(transaction);
 
-            return numberOfRows > 0;
+            return numberOfRows > 1;
 
         }
     }
