@@ -2,6 +2,7 @@
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -48,6 +49,8 @@ namespace Libro.Infrastructure.Repositories
             await _context.Users.AddAsync(user);
             return user;
         }
+
+    
         public void UpdateUser(User user)
         {
            _context.Users.Update(user);

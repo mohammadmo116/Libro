@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Libro.Application.Users.Queries
+namespace Libro.Application.Users.Commands
 {
-    public sealed record class GetPatronUserQuery(Guid PatronId):IRequest<User>;
+    public sealed record CreateLibrarianUserCommand(User User):IRequest<User>;
 }

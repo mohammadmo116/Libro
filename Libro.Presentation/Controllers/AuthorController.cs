@@ -55,7 +55,7 @@ namespace Libro.Presentation.Controllers
             var command = new CreateAuthorCommand(author);
             var Result = await _mediator.Send(command);
             var ResultAuthorDto = Result.Adapt<AuthorDto>();
-            return CreatedAtAction(nameof(GetAuthor), new { BookId = ResultAuthorDto.Id }, ResultAuthorDto);
+            return CreatedAtAction(nameof(GetAuthor), new { AuthorId = ResultAuthorDto.Id }, ResultAuthorDto);
 
         }
 
