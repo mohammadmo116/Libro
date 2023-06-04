@@ -1,4 +1,6 @@
-﻿using Libro.Application.Repositories;
+﻿using Libro.Application.Interfaces;
+using Libro.Application.Repositories;
+using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -26,9 +28,25 @@ namespace Libro.Application.Authors.Commands
             _logger = logger;
             _authorRepository = authorRepository;
         }
-        public Task<bool> Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var author = await _authorRepository.GetAuthorAsync(request.author.Id);
+            if (author is null)
+            {
+                _logger.LogInformation($"CustomNotFoundException BookId:{request.author.Id}");
+                throw new CustomNotFoundException("Author");
+
+            }
+            author.Name = request.author.Name is null ?
+              author.Name : request.author.Name;
+
+            author.DateOfBirth = request.author.DateOfBirth is null ?
+                author.DateOfBirth : request.author.DateOfBirth;
+
+
+            _authorRepository.UpdateAuthor(author);
+            var numberOfRows = await _unitOfWork.SaveChangesAsync();
+            return numberOfRows > 0;
         }
     }
 }
