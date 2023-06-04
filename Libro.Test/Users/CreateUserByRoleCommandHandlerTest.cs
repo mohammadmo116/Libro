@@ -13,32 +13,32 @@ using System.Threading.Tasks;
 
 namespace Libro.Test.Users
 {
-    public class CreateLibrarianUserCommandHandlerTest
+    public class CreateUserByRoleCommandHandlerTest
     {
 
         private User _user;
-        private readonly Role _librarian;
+        private readonly Role _role;
         private UserRole _userRole;
-        private readonly CreateLibrarianUserCommand _command;
-        private readonly CreateLibrarianUserCommandHandler _handler;
+        private readonly CreateUserByRoleCommand _command;
+        private readonly CreateUserByRoleCommandHandler _handler;
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IRoleRepository> _roleRepositoryMock;
-        private readonly Mock<ILogger<CreateLibrarianUserCommandHandler>> _loggerMock;
+        private readonly Mock<ILogger<CreateUserByRoleCommandHandler>> _loggerMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
-        public CreateLibrarianUserCommandHandlerTest()
+        public CreateUserByRoleCommandHandlerTest()
         {
             _userRepositoryMock = new();
             _roleRepositoryMock = new();
             _loggerMock = new();
             _unitOfWorkMock = new();
             _user = new();
-            _librarian=new() { 
+            _role=new() { 
             Id=Guid.NewGuid(),
             Name= "librarian"
             };
 
-            _command = new (_user);
+            _command = new (_user, _role.Name);
             _handler = new (
                 _loggerMock.Object,
                 _userRepositoryMock.Object,
@@ -63,7 +63,7 @@ namespace Libro.Test.Users
 
             _userRole = new()
             {
-                RoleId = _librarian.Id,
+                RoleId = _role.Id,
                 UserId = _user.Id
             };
             //Arrange
@@ -72,7 +72,7 @@ namespace Libro.Test.Users
             _roleRepositoryMock.Setup(
                x => x.GetRoleByNameAsync(
                    It.IsAny<string>()))
-               .ReturnsAsync(_librarian);
+               .ReturnsAsync(_role);
 
             _userRepositoryMock.Setup(
                x => x.EmailIsUniqueAsync(
@@ -112,7 +112,7 @@ namespace Libro.Test.Users
 
             _roleRepositoryMock.Verify(
               x => x.GetRoleByNameAsync(
-                  It.Is<string>(a => a == _librarian.Name)),
+                  It.Is<string>(a => a == _role.Name)),
               Times.Once);
            
 
@@ -138,7 +138,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
            x => x.AssignRoleToUserAsync(
-               It.Is<UserRole>(a=>a.RoleId==_librarian.Id && a.UserId==_user.Id)),
+               It.Is<UserRole>(a=>a.RoleId==_role.Id && a.UserId==_user.Id)),
            Times.Once);
 
             _unitOfWorkMock.Verify(
@@ -168,7 +168,7 @@ namespace Libro.Test.Users
             //Act
             async Task act() => await _handler.Handle(_command, default);
             CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
-            CustomNotFoundException ExpectedException = new("Role");
+            CustomNotFoundException ExpectedException = new($"Role {_role.Name}");
 
             //Assert   
 
@@ -188,7 +188,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
           x => x.AssignRoleToUserAsync(
-              It.Is<UserRole>(a => a.RoleId == _librarian.Id && a.UserId == _user.Id)),
+              It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
           Times.Never);
 
             _unitOfWorkMock.Verify(
@@ -216,7 +216,7 @@ namespace Libro.Test.Users
             _roleRepositoryMock.Setup(
              x => x.GetRoleByNameAsync(
                  It.IsAny<string>()))
-             .ReturnsAsync(_librarian);
+             .ReturnsAsync(_role);
 
             _userRepositoryMock.Setup(
                 x => x.EmailIsUniqueAsync(
@@ -231,7 +231,7 @@ namespace Libro.Test.Users
             //Assert   
             _roleRepositoryMock.Verify(
             x => x.GetRoleByNameAsync(
-                It.Is<string>(a => a == _librarian.Name)),
+                It.Is<string>(a => a == _role.Name)),
             Times.Once);
 
             _userRepositoryMock.Verify(
@@ -244,7 +244,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
          x => x.AssignRoleToUserAsync(
-             It.Is<UserRole>(a => a.RoleId == _librarian.Id && a.UserId == _user.Id)),
+             It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
          Times.Never);
 
             _unitOfWorkMock.Verify(
@@ -273,7 +273,7 @@ namespace Libro.Test.Users
             _roleRepositoryMock.Setup(
               x => x.GetRoleByNameAsync(
                   It.IsAny<string>()))
-              .ReturnsAsync(_librarian);
+              .ReturnsAsync(_role);
 
             _userRepositoryMock.Setup(
               x => x.EmailIsUniqueAsync(
@@ -295,7 +295,7 @@ namespace Libro.Test.Users
 
             _roleRepositoryMock.Verify(
             x => x.GetRoleByNameAsync(
-                It.Is<string>(a => a == _librarian.Name)),
+                It.Is<string>(a => a == _role.Name)),
             Times.Once);
 
             _userRepositoryMock.Verify(
@@ -315,7 +315,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
          x => x.AssignRoleToUserAsync(
-             It.Is<UserRole>(a => a.RoleId == _librarian.Id && a.UserId == _user.Id)),
+             It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
          Times.Never);
 
             _unitOfWorkMock.Verify(
@@ -342,7 +342,7 @@ namespace Libro.Test.Users
             _roleRepositoryMock.Setup(
              x => x.GetRoleByNameAsync(
                  It.IsAny<string>()))
-             .ReturnsAsync(_librarian);
+             .ReturnsAsync(_role);
 
 
             _userRepositoryMock.Setup(
@@ -369,7 +369,7 @@ namespace Libro.Test.Users
 
             _roleRepositoryMock.Verify(
             x => x.GetRoleByNameAsync(
-                It.Is<string>(a => a == _librarian.Name)),
+                It.Is<string>(a => a == _role.Name)),
             Times.Once);
 
             _userRepositoryMock.Verify(
@@ -393,7 +393,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
          x => x.AssignRoleToUserAsync(
-             It.Is<UserRole>(a => a.RoleId == _librarian.Id && a.UserId == _user.Id)),
+             It.Is<UserRole>(a => a.RoleId == _role.Id && a.UserId == _user.Id)),
          Times.Never);
 
             _unitOfWorkMock.Verify(

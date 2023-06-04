@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Commands
 {
-    public sealed record CreateLibrarianUserCommand(User User):IRequest<User>;
+    public sealed record UpdateUserByRoleCommand(User user,string RoleName):IRequest<bool>;
+   
 }

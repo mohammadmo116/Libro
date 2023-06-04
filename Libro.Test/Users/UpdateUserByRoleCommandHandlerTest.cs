@@ -1,6 +1,5 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Application.Users.Commands;
-using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
@@ -11,54 +10,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Libro.Test.Users
 {
-    public class UpdatePatronUserCommandHandlerTest
+    public class UpdateUserByRoleCommandHandlerTest
     {
-        private readonly Role _admin;
-        private readonly Role _patron;
-        private readonly User _user;
-        private readonly UpdatePatronUserCommand _command;
-        private readonly UpdatePatronUserCommandHandler _handler;
+        private User _user;
+        private readonly Role _role;
+        private UserRole _userRole;
+        private readonly UpdateUserByRoleCommand _command;
+        private readonly UpdateUserByRoleCommandHandler _handler;
         private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IRoleRepository> _roleRepositoryMock;
+        private readonly Mock<ILogger<UpdateUserByRoleCommandHandler>> _loggerMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<ILogger<UpdatePatronUserCommandHandler>> _loggerMock;
-        public UpdatePatronUserCommandHandlerTest()
+
+        public UpdateUserByRoleCommandHandlerTest()
         {
-            _user = new()
-            {
-                Id = Guid.NewGuid(),
-                Email = "sad@gmail.com",
-                PhoneNumber = "PhoneNumber",
-                UserName = "UserName"
-            };
-            _admin = new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "admin",
-
-            };
-            _patron = new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "patron",
-
-            };
-            _user.Roles.Add(_patron);
-            _unitOfWorkMock = new();
             _userRepositoryMock = new();
+            _roleRepositoryMock = new();
             _loggerMock = new();
-            _command = new(_user);
+            _unitOfWorkMock = new();
+            _user = new();
+            _role = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "librarian"
+            };
+            _user.Roles.Add(_role);
+            _command = new(_user, _role.Name);
             _handler = new(
                 _loggerMock.Object,
                 _userRepositoryMock.Object,
                 _unitOfWorkMock.Object
                 );
+
         }
+
         [Fact]
-        public async Task Handle_Should_ReturnTrue_WhenPatronUserIsFoundAndEdited()
+        public async Task Handle_Should_ReturnTrue_WhenUserByRoleIsFoundAndEdited()
         {
 
             //Arrange
@@ -66,6 +56,7 @@ namespace Libro.Test.Users
                 x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
+           
 
             _userRepositoryMock.Setup(
                x => x.EmailIsUniqueForUpdateAsync(
@@ -94,8 +85,6 @@ namespace Libro.Test.Users
                 .ReturnsAsync(1);
 
 
-            _user.Roles.Add(_patron);
-
             //Act
             var result = await _handler.Handle(_command, default);
 
@@ -106,8 +95,8 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
               x => x.EmailIsUniqueForUpdateAsync(
-                  It.Is<Guid>(u=>u==_user.Id),
-                  It.Is<string>(e=>e==_user.Email)),
+                  It.Is<Guid>(u => u == _user.Id),
+                  It.Is<string>(e => e == _user.Email)),
               Times.Once);
 
             _userRepositoryMock.Verify(
@@ -115,7 +104,7 @@ namespace Libro.Test.Users
                   It.Is<Guid>(u => u == _user.Id),
                   It.Is<string>(e => e == _user.UserName)),
               Times.Once);
-              
+
 
             _userRepositoryMock.Verify(
              x => x.PhoneNumberIsUniqueForUpdateAsync(
@@ -126,7 +115,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
                 x => x.UpdateUser(
-                    It.Is<User>(a=>a.Id==_user.Id)),
+                    It.Is<User>(a => a.Id == _user.Id)),
                 Times.Once);
 
             _unitOfWorkMock.Verify(
@@ -149,7 +138,7 @@ namespace Libro.Test.Users
             //Act
             async Task act() => await _handler.Handle(_command, default);
             CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
-            CustomNotFoundException ExpectedException = new("User");
+            CustomNotFoundException ExpectedException = new($"User - Role {_role.Name}");
 
             //Assert
             _userRepositoryMock.Verify(
@@ -167,9 +156,8 @@ namespace Libro.Test.Users
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
         }
-
         [Fact]
-        public async Task Handle_Should_ThrowCustomNotFoundException_WhenUserIsNotPatron()
+        public async Task Handle_Should_ThrowCustomNotFoundException_WhenUserDoesNotHasTheRole()
         {
 
             //Arrange
@@ -177,30 +165,26 @@ namespace Libro.Test.Users
                 x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
-
-            _user.Roles.Remove(_patron);
-            _user.Roles.Add(_admin);
+            _user.Roles.Remove(_role);
 
             //Act
             async Task act() => await _handler.Handle(_command, default);
             CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
-            CustomNotFoundException ExpectedException = new("User");
-            //Assert
-    
+            CustomNotFoundException ExpectedException = new($"User - Role {_role.Name}");
 
+            //Assert
             _userRepositoryMock.Verify(
               x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
 
             _userRepositoryMock.Verify(
-             x => x.UpdateUser(
-                 It.Is<User>(a => a.Id == _user.Id)),
-             Times.Never);
+              x => x.UpdateUser(
+                  It.Is<User>(a => a.Id == _user.Id)),
+              Times.Never);
 
             _unitOfWorkMock.Verify(
                 x => x.SaveChangesAsync(),
                 Times.Never);
-
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
         }
@@ -233,7 +217,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
           x => x.EmailIsUniqueForUpdateAsync(
-              It.Is<Guid>(a=>a==_user.Id),
+              It.Is<Guid>(a => a == _user.Id),
               It.Is<string>(a => a == _user.Email)),
           Times.Once);
 
@@ -259,7 +243,7 @@ namespace Libro.Test.Users
            x => x.GetUserWtithRolesAsync(
                It.IsAny<Guid>()))
            .ReturnsAsync(() => _user);
-    
+
             _userRepositoryMock.Setup(
                x => x.EmailIsUniqueForUpdateAsync(
                     It.IsAny<Guid>(),
@@ -350,7 +334,7 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
              x => x.EmailIsUniqueForUpdateAsync(
-                 It.Is<Guid>(a=>a==_user.Id),
+                 It.Is<Guid>(a => a == _user.Id),
                  It.Is<string>(a => a == _user.Email)),
              Times.Once);
 
