@@ -1,6 +1,4 @@
-﻿using Libro.Domain.Entities;
-using Libro.Presentation.Dtos.Author;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.Book
 {
-    public class BookWithAuthorsDto : CreateBookDto
+    public class UpdateBookDto : BookDto
     {
-     
-        public List<AuthorDto>? Authors { get; set; }
+        public bool? IsAvailable { get; set; }
 
     }
 }

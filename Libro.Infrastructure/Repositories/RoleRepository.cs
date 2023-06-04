@@ -13,7 +13,11 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-
+        public async Task<Role> GetRoleByNameAsync(string RoleName)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == RoleName);
+         
+        }
         public async Task<Role> AddRoleAsync(Role role)
         {
             role.Name = role.Name.ToLower();
@@ -31,5 +35,7 @@ namespace Libro.Infrastructure.Repositories
                 return false;
             return true;
         }
+
+       
     }
 }

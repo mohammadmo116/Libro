@@ -12,14 +12,13 @@ namespace Libro.Domain.Entities
     {
         [Required]
         [MaxLength(256)]
-        public string? Title { get; set; }
+        public string Title { get; set; }
 
         public string? Genre { get; set; }
         public DateTime? PublishedDate { get; set; }
 
         public List<Author>? Authors { get; set; }
-        public bool IsAvailable { get; set; } = true;
-
+        public bool? IsAvailable { get; set; }
         public List<User>? Users { get; set; }= new();
 
         public List<BookTransaction>? BookTransactions { get; set; } = new();

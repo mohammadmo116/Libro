@@ -107,7 +107,7 @@ namespace Libro.Test.BookTransactions
 
             _unitOfWorkMock.Setup(
                x => x.SaveChangesAsync())
-               .ReturnsAsync(1);
+               .ReturnsAsync(2);
 
             _unitOfWorkMock.Setup(
                x => x.CommitAsync(It.IsAny<IDbContextTransaction>()
@@ -118,6 +118,8 @@ namespace Libro.Test.BookTransactions
             var result = await _handler.Handle(_command, default);
 
             //Assert
+            Assert.True(result);
+
             _bookTransactionRepository.Verify(
           x => x.GetBookTransactionWhereStatusNotNone(
                It.Is<Guid>(a => a == _bookTransaction.Id)
