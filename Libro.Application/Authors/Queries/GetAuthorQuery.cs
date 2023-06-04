@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Libro.Application.Authors.Commands
+namespace Libro.Application.Authors.Queries
 {
-    public sealed record  CreateAuthorCommand(Author author):IRequest<Author>;
+    public sealed record GetAuthorQuery(Guid AuthorId):IRequest<Author>;
     
 }

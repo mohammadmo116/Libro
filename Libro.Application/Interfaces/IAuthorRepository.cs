@@ -5,5 +5,6 @@ namespace Libro.Application.Repositories
     public interface IAuthorRepository
     {
         Task CreateAuthorAsync(Author author);
+        Task<Author> GetAuthorAsync(Guid AuthorId);
     }
 }

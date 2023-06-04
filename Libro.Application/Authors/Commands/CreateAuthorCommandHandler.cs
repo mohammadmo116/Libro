@@ -30,9 +30,12 @@ namespace Libro.Application.Authors.Commands
             _authorRepository = authorRepository;
         }
 
-        public Task<Author> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<Author> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            request.author.Id = Guid.NewGuid();
+            await _authorRepository.CreateAuthorAsync(request.author);
+            await _unitOfWork.SaveChangesAsync();
+            return request.author;
         }
     }
 }
