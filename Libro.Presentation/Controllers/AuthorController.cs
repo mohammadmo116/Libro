@@ -3,12 +3,15 @@ using Libro.Application.Authors.Queries;
 using Libro.Application.Books.Commands;
 using Libro.Application.Books.Queries;
 using Libro.Domain.Entities;
+using Libro.Domain.Exceptions;
+using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Author;
 using Libro.Presentation.Dtos.Book;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -54,8 +57,30 @@ namespace Libro.Presentation.Controllers
             var ResultAuthorDto = Result.Adapt<AuthorDto>();
             return CreatedAtAction(nameof(GetAuthor), new { BookId = ResultAuthorDto.Id }, ResultAuthorDto);
 
+        }
 
+        [HasRole("librarian")]
+        [HttpPut("{AuthorId}", Name = "UpdateAuthor")]
+        public async Task<ActionResult> UpdateAuthor(Guid AuthorId, AuthorDto authorDto)
+        {
+            try
+            {
+                if (AuthorId != authorDto.Id)
+                {
+                    return BadRequest("bad Id");
+                }
+                var author = authorDto.Adapt<Author>();
+                var command = new UpdateAuthorCommand(author);
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("Author has been Updated") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Author", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
 
+            }
         }
 
     }
