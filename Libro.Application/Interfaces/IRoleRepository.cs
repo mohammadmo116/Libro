@@ -5,6 +5,6 @@ namespace Libro.Application.Interfaces
     public interface IRoleRepository
     {
         Task<Role> AddRoleAsync(Role role);
-   
+        Task<Role> GetRoleByNameAsync(string RoleName);
     }
 }
