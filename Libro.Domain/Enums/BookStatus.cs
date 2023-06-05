@@ -11,6 +11,7 @@ namespace Libro.Domain.Enums
         Reserved=0,
         Borrowed=1,
         None=2
-
+// TODO
+//ADD TO DB
     }
 }

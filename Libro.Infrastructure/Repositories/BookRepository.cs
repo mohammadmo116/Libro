@@ -22,6 +22,8 @@ namespace Libro.Infrastructure.Repositories
         public async Task<List<string>> GetAllBooksAsync(int PageNumber, int Count)
         {
             return await _context.Books.Where(b => b.IsAvailable == true).Select(b => b.Title).Skip(PageNumber * Count).Take(Count).ToListAsync();
+          //TODO 
+       
         }
         public async Task<Book> GetBookAsync(Guid BookId)
         {

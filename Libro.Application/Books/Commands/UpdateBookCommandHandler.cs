@@ -46,7 +46,7 @@ namespace Libro.Application.Books.Commands
             book.PublishedDate = request.Book.PublishedDate is null ?
                 book.PublishedDate : request.Book.PublishedDate;
 
-            book.IsAvailable = request.Book.IsAvailable == null ?
+            book.IsAvailable = request.Book.IsAvailable is null ?
                 book.IsAvailable : request.Book.IsAvailable;
 
             _bookRepository.UpdateBook(book);

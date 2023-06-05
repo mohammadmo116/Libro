@@ -1,4 +1,5 @@
 ﻿using Libro.Domain.Common;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,5 +24,6 @@ namespace Libro.Domain.Entities
         public List<Role>? Roles { get; set; } = new();
         public List<Book>? Books { get; set; } = new();
         public List<BookTransaction>? BookTransactions { get; set; } = new();
+        public List <ReadingList>? ReadingLists { get; set; }
     }
 }
