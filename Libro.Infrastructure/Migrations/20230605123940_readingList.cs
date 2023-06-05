@@ -18,7 +18,7 @@ namespace Libro.Infrastructure.Migrations
                 oldType: "bit");
 
             migrationBuilder.CreateTable(
-                name: "ReadingList",
+                name: "ReadingLists",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -27,9 +27,9 @@ namespace Libro.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReadingList", x => x.Id);
+                    table.PrimaryKey("PK_ReadingLists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReadingList_Users_UserId",
+                        name: "FK_ReadingLists_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -52,9 +52,9 @@ namespace Libro.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookReadingList_ReadingList_ReadingListsId",
+                        name: "FK_BookReadingList_ReadingLists_ReadingListsId",
                         column: x => x.ReadingListsId,
-                        principalTable: "ReadingList",
+                        principalTable: "ReadingLists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -65,8 +65,8 @@ namespace Libro.Infrastructure.Migrations
                 column: "ReadingListsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReadingList_UserId",
-                table: "ReadingList",
+                name: "IX_ReadingLists_UserId",
+                table: "ReadingLists",
                 column: "UserId");
         }
 
@@ -76,7 +76,7 @@ namespace Libro.Infrastructure.Migrations
                 name: "BookReadingList");
 
             migrationBuilder.DropTable(
-                name: "ReadingList");
+                name: "ReadingLists");
 
             migrationBuilder.AlterColumn<bool>(
                 name: "IsAvailable",

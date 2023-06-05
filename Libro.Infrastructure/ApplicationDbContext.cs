@@ -15,6 +15,7 @@ namespace Libro.Infrastructure
         public DbSet<BookTransaction>? BookTransactions { get; set; }
         public DbSet<Author>? Authors { get; set; }
         public DbSet<AuthorBook>? AuthorBooks { get; set; }
+        public DbSet<ReadingList>? ReadingLists { get; set; }
         public ApplicationDbContext() 
         {
 
