@@ -12,7 +12,10 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-
+        public async Task<ReadingList> GetReadingListAsync(Guid ReadingListId)
+        {
+            return await _context.ReadingLists.FindAsync(ReadingListId);
+        }
         public async Task<(ReadingList,int)> GetReadingListWithBooksAsync(Guid ReadingListId,int PageNumber, int Count)
         {
           
@@ -40,8 +43,13 @@ namespace Libro.Infrastructure.Repositories
             _context.ReadingLists.AddAsync(readingList);
 
         }
+        public void UpdateReadingList(ReadingList readingList)
+        {
 
+            _context.ReadingLists.Update(readingList);
 
+        }
+       
 
 
     }
