@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Libro.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230605122744_readingList")]
+    [Migration("20230605123940_readingList")]
     partial class readingList
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,7 +142,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReadingList");
+                    b.ToTable("ReadingLists");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.Role", b =>

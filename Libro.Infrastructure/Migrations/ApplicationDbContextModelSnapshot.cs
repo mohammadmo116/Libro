@@ -140,7 +140,7 @@ namespace Libro.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReadingList");
+                    b.ToTable("ReadingLists");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.Role", b =>
