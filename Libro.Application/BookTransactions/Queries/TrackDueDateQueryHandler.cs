@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.BookTransactions.Queiries
 {
-    public sealed class TrackDueDateQueryHandler : IRequestHandler<TrackDueDateQuery, List<BookTransaction>>
+    public sealed class TrackDueDateQueryHandler : IRequestHandler<TrackDueDateQuery, (List<BookTransaction>, int)>
     {
         private readonly ILogger<TrackDueDateQueryHandler> _logger;
         private readonly IBookTransactionRepository _bookTransactionRepository;
@@ -22,7 +22,7 @@ namespace Libro.Application.BookTransactions.Queiries
             _bookTransactionRepository = bookTransactionRepository;
         }
 
-        public async Task<List<BookTransaction>> Handle(TrackDueDateQuery request, CancellationToken cancellationToken)
+        public async Task<(List<BookTransaction>, int)> Handle(TrackDueDateQuery request, CancellationToken cancellationToken)
         {
             return await _bookTransactionRepository.TrackDueDateAsync(request.PageNumber, request.Count);
         }

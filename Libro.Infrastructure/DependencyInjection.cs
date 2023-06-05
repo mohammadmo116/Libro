@@ -26,6 +26,7 @@ namespace Libro.Infrastracture
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IBookTransactionRepository,BookTransactionRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IReadingListRepository, ReadingListRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }

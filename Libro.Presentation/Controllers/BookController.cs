@@ -25,6 +25,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Libro.Presentation.Controllers
 {
@@ -41,13 +42,16 @@ namespace Libro.Presentation.Controllers
 
         [HasRole("librarian,admin,patron")]
         [HttpGet("", Name = "search")]
-        public async Task<ActionResult<List<string>>> Search(string? Title, string? AuthorName, string? Genre, int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookDto>,int)>> Search(string? Title, string? AuthorName, string? Genre, int PageNumber = 0, int Count = 5)
         {
             if (Count > 10)
                 Count = 10;
+            if (Count < 1)
+                Count = 1;
             var query = new GetSearchedBooksQuery(Title, AuthorName, Genre, PageNumber, Count);
             var Result = await _mediator.Send(query);
-            return Ok(Result);
+            
+            return Ok(new { Books = Result.Item1.Adapt<List<BookDto>>(), Pages = Result.Item2 });
         }
 
         [HasRole("librarian,admin,patron")]
@@ -162,13 +166,18 @@ namespace Libro.Presentation.Controllers
 
         [HasRole("librarian")]
         [HttpGet("Transactions")]
-        public async Task<ActionResult<List<BookTransaction>>> TrackDueDate(int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookTransactionWithStatusDto>,int)>> TrackDueDate(int PageNumber = 0, int Count = 5)
         {
             if (Count > 10)
                 Count = 10;
+            if (Count < 1)
+                Count = 1;
             var query = new TrackDueDateQuery(PageNumber, Count);
             var Result = await _mediator.Send(query);
-            return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
+
+
+            return Ok(new { Books = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>()
+                , Pages = Result.Item2});
         }
 
     }

@@ -96,18 +96,17 @@ namespace Libro.Test.Books
                    x => x.GetAllBooksAsync(
                        It.IsAny<int>(),
                        It.IsAny<int>()))
-                   .ReturnsAsync(() =>
-                   _booksList.Select(a => a.Title)
-                   .Skip(pageNumber * count)
+                   .ReturnsAsync(() =>(
+                   _booksList.Skip(pageNumber * count)
                    .Take(count)
-                   .ToList()!);
+                   .ToList()!,1));
 
             GetSearchedBooksQuery _query = new(title, author, genre, pageNumber, count);
 
             //Act
             var result = await _handler.Handle(_query, default);
             //Assert
-            CollectionAssert.AreEqual(_booksList.Select(a => a.Title).Skip(pageNumber * count).Take(count).ToList(), result);
+            CollectionAssert.AreEqual(_booksList.Skip(pageNumber * count).Take(count).ToList(), result.Item1);
 
             _bookRepositoryMock.Verify(
                 x => x.GetAllBooksAsync(
@@ -182,8 +181,8 @@ namespace Libro.Test.Books
 
             //Assert
             CollectionAssert.AreEqual(
-                _booksList.Select(a => a.Title).Skip(pageNumber * count).Take(count).ToList()
-                , result);
+                _booksList.Skip(pageNumber * count).Take(count).ToList()
+                , result.Item1);
 
             _bookRepositoryMock.Verify(
                 x => x.GetAllBooksAsync(

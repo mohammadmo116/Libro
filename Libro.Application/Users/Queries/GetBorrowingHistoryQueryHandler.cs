@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Queries
 {
-    public sealed class GetBorrowingHistoryQueryHandler : IRequestHandler<GetBorrowingHistoryQuery, List<BookTransaction>>
+    public sealed class GetBorrowingHistoryQueryHandler : IRequestHandler<GetBorrowingHistoryQuery, (List<BookTransaction>, int)>
     {
         private readonly IUserRepository _userRepository;
         private readonly ILogger<GetBorrowingHistoryQueryHandler> _logger;
@@ -25,7 +25,7 @@ namespace Libro.Application.Users.Queries
             _userRepository = userRepository;
 
         }
-        public async Task<List<BookTransaction>> Handle(GetBorrowingHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<(List<BookTransaction>,int)> Handle(GetBorrowingHistoryQuery request, CancellationToken cancellationToken)
         {
             var user=await _userRepository.GetUserAsync(request.UserId);
             if (user is null) {

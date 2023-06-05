@@ -22,21 +22,6 @@ namespace Libro.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("BookReadingList", b =>
-                {
-                    b.Property<Guid>("BooksId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ReadingListsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BooksId", "ReadingListsId");
-
-                    b.HasIndex("ReadingListsId");
-
-                    b.ToTable("BookReadingList");
-                });
-
             modelBuilder.Entity("Libro.Domain.Entities.Author", b =>
                 {
                     b.Property<Guid>("Id")
@@ -94,6 +79,21 @@ namespace Libro.Infrastructure.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("Libro.Domain.Entities.BookReadingList", b =>
+                {
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReadingListId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BookId", "ReadingListId");
+
+                    b.HasIndex("ReadingListId");
+
+                    b.ToTable("BookReadingLists");
+                });
+
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -133,7 +133,7 @@ namespace Libro.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -215,21 +215,6 @@ namespace Libro.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("BookReadingList", b =>
-                {
-                    b.HasOne("Libro.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Libro.Domain.Entities.ReadingList", null)
-                        .WithMany()
-                        .HasForeignKey("ReadingListsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Libro.Domain.Entities.AuthorBook", b =>
                 {
                     b.HasOne("Libro.Domain.Entities.Author", null)
@@ -243,6 +228,25 @@ namespace Libro.Infrastructure.Migrations
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.BookReadingList", b =>
+                {
+                    b.HasOne("Libro.Domain.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Libro.Domain.Entities.ReadingList", "ReadingList")
+                        .WithMany()
+                        .HasForeignKey("ReadingListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("ReadingList");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
@@ -268,7 +272,9 @@ namespace Libro.Infrastructure.Migrations
                 {
                     b.HasOne("Libro.Domain.Entities.User", "User")
                         .WithMany("ReadingLists")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

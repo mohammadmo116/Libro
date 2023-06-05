@@ -16,6 +16,7 @@ namespace Libro.Infrastructure
         public DbSet<Author>? Authors { get; set; }
         public DbSet<AuthorBook>? AuthorBooks { get; set; }
         public DbSet<ReadingList>? ReadingLists { get; set; }
+        public DbSet<BookReadingList>? BookReadingLists { get; set; }
         public ApplicationDbContext() 
         {
 
@@ -69,12 +70,23 @@ namespace Libro.Infrastructure
           .HasForeignKey(e => e.UserId)
           .OnDelete(DeleteBehavior.Cascade));
 
+            modelBuilder.Entity<UserRole>().HasKey(e => new { e.UserId, e.RoleId });
+
+            modelBuilder.Entity<ReadingList>()
+       .HasMany(a => a.Books)
+       .WithMany(b => b.ReadingLists)
+       .UsingEntity<BookReadingList>();
+
+
+
+
             modelBuilder.Entity<Role>().HasIndex(e => e.Name).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.UserName).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.PhoneNumber).IsUnique();
 
-            modelBuilder.Entity<UserRole>().HasKey(e => new { e.UserId, e.RoleId });
+        
+           
 
         }
     }
