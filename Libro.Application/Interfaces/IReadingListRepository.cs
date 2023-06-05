@@ -6,5 +6,7 @@ namespace Libro.Infrastructure.Repositories
     {
         Task CreateReadingListAsync(ReadingList readingList);
         Task<(ReadingList, int)> GetReadingListWithBooksAsync(Guid ReadingListId, int PageNumber, int Count);
+        void UpdateReadingList(ReadingList readingList);
+        Task<ReadingList> GetReadingListAsync(Guid ReadingListId);
     }
 }

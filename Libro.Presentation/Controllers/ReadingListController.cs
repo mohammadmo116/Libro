@@ -3,15 +3,19 @@ using Libro.Application.Books.Queries;
 using Libro.Application.ReadingLists.Commands;
 using Libro.Application.ReadingLists.Queries;
 using Libro.Domain.Entities;
+using Libro.Domain.Exceptions;
+using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.ReadingList;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +34,7 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("patron")]
-        [HttpGet("{ReadingListId}", Name = "GetReadingListWithBooks")]
+        [HttpGet("{ReadingListId}/Books", Name = "GetReadingListWithBooks")]
         public async Task<ActionResult<(ReadingListWithBooksDto ,int)>> GetReadingListWithBooks(Guid ReadingListId, int PageNumber=0, int Count = 5)
         {
             if(Count>10)
@@ -70,6 +74,30 @@ namespace Libro.Presentation.Controllers
 
 
         }
+        [HasRole("patron")]
+        [HttpPut("{ReadingListId}", Name = "UpdateReadingList")]
+        public async Task<ActionResult> UpdateReadingList(Guid ReadingListId, ReadingListDto readingListDto)
+        {
+            try
+            {
+                if (ReadingListId != readingListDto.Id)
+                {
+                    return BadRequest("wrong Id");
+                }
+                var readingList = readingListDto.Adapt<ReadingList>();
+                var command = new UpdateReadingListCommand(readingList);
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("ReadingList has been Updated") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "ReadingList", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
+
+            }
+        }
+
 
     }
 }
