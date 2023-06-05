@@ -168,6 +168,7 @@ namespace Libro.Presentation.Controllers
 
             }
         }
+
         [HasRole("admin")]
         [HttpPut("Librarian/{LibrarianId}", Name = "UpdateLibrarianUser")]
         public async Task<ActionResult> UpdateLibrarianUser(Guid LibrarianId, UpdateUserDto userDto)
@@ -315,7 +316,7 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "UserOrRole", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
+                return new NotFoundObjectResult(errorResponse);
             }
             catch (UserHasTheAssignedRoleException e)
             {

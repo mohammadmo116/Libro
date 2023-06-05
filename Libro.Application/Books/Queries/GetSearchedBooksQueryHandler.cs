@@ -26,13 +26,13 @@ namespace Libro.Application.Books.Queries
             if(request.Title is null && request.AuthorName is null && request.Genre is null)
                 return await _bookRepository.GetAllBooksAsync(request.PageNumber,request.Count);
             List<Book> Books= null;
-
+            //TODO
             if (request.Title is not null)
                 Books= await _bookRepository.GetBooksByTitleAsync(Books,request.Title);
 
             if (request.AuthorName is not null)
                 Books =  await _bookRepository.GetBooksByAuthorNameAsync(Books, request.AuthorName);
-
+            
             if (request.Genre is not null)
                 Books =  await _bookRepository.GetBooksByGenreAsync(Books, request.Genre);
            

@@ -69,6 +69,7 @@ namespace Libro.Infrastructure.Repositories
         }
         public async Task<bool> EmailIsUniqueForUpdateAsync(Guid UserId, string Email)
         {
+            //TODO
             if (Email is not null)
                 if (await _context.Users.Where(u => u.Id != UserId).AnyAsync(e => e.Email == Email.ToLower()))
                     return false;
