@@ -43,7 +43,7 @@ namespace Libro.Test.ReadingLists
             _unitOfWorkMock = new();
             _readingListRepositoryMock = new();
             _loggerMock = new();
-            _command = new(_readingList);
+            _command = new(_user.Id,_readingList);
             _handler = new(
                 _readingListRepositoryMock.Object,
                 _loggerMock.Object,
@@ -57,7 +57,8 @@ namespace Libro.Test.ReadingLists
 
             //Arrange
             _readingListRepositoryMock.Setup(
-                x => x.GetReadingListAsync(
+                x => x.GetReadingListByUserAsync(
+                    It.IsAny<Guid>(),
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _readingList);
 
@@ -75,7 +76,10 @@ namespace Libro.Test.ReadingLists
 
             //Assert
             _readingListRepositoryMock.Verify(
-              x => x.GetReadingListAsync(It.Is<Guid>(x => x == _readingList.Id)),
+              x => x.GetReadingListByUserAsync(
+                  It.Is<Guid>(x => x == _user.Id),
+                  It.Is<Guid>(x => x == _readingList.Id)
+                  ),
               Times.Once);
 
             _readingListRepositoryMock.Verify(
@@ -97,9 +101,10 @@ namespace Libro.Test.ReadingLists
 
             //Arrange
             _readingListRepositoryMock.Setup(
-                x => x.GetReadingListAsync(
-                    It.IsAny<Guid>()))
-                .ReturnsAsync(() => null!);
+                 x => x.GetReadingListByUserAsync(
+                     It.IsAny<Guid>(),
+                     It.IsAny<Guid>()))
+                 .ReturnsAsync(() => null!);
 
             //Act
             async Task act() => await _handler.Handle(_command, default);
@@ -108,8 +113,11 @@ namespace Libro.Test.ReadingLists
 
             //Assert
             _readingListRepositoryMock.Verify(
-                x => x.GetReadingListAsync(It.Is<Guid>(x => x == _readingList.Id)),
-                Times.Once);
+           x => x.GetReadingListByUserAsync(
+               It.Is<Guid>(x => x == _user.Id),
+               It.Is<Guid>(x => x == _readingList.Id)
+               ),
+           Times.Once);
 
             _readingListRepositoryMock.Verify(
            x => x.UpdateReadingList(

@@ -20,6 +20,7 @@ namespace Libro.Application.ReadingLists.Commands
 
         public UpdateReadingListCommandHandler(
              IReadingListRepository readingListRepository,
+
              ILogger<UpdateReadingListCommandHandler> logger,
              IUnitOfWork unitOfWork
             )
@@ -27,11 +28,11 @@ namespace Libro.Application.ReadingLists.Commands
             _readingListRepository = readingListRepository;
             _logger = logger;
             _unitOfWork = unitOfWork;
+
         }
         public async Task<bool> Handle(UpdateReadingListCommand request, CancellationToken cancellationToken)
-        {
-
-            var readingList = await _readingListRepository.GetReadingListAsync(request.ReadingList.Id);
+        { 
+            var readingList = await _readingListRepository.GetReadingListByUserAsync(request.UserId,request.ReadingList.Id);
             if (readingList is null)
             {
                 _logger.LogInformation($"CustomNotFoundException readingListId:{request.ReadingList.Id}");

@@ -42,7 +42,12 @@ namespace Libro.Presentation.Controllers
             if (Count < 1)
                 Count = 1;
 
-            var query = new GetReadingListWithBooksQuery(ReadingListId,PageNumber, Count);
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
+            {
+                return Forbid();
+            }
+            var query = new GetReadingListWithBooksQuery(parsedUserId,ReadingListId, PageNumber, Count);
             var Result = await _mediator.Send(query);
 
             if (Result.Item1 is null)
@@ -80,12 +85,17 @@ namespace Libro.Presentation.Controllers
         {
             try
             {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return Forbid();
+                }
                 if (ReadingListId != readingListDto.Id)
                 {
                     return BadRequest("wrong Id");
                 }
                 var readingList = readingListDto.Adapt<ReadingList>();
-                var command = new UpdateReadingListCommand(readingList);
+                var command = new UpdateReadingListCommand(parsedUserId,readingList);
                 var Result = await _mediator.Send(command);
                 return Result ? Ok("ReadingList has been Updated") : StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -97,7 +107,29 @@ namespace Libro.Presentation.Controllers
 
             }
         }
+        [HasRole("patron")]
+        [HttpDelete("{ReadingListId}", Name = "RemoveReadingList")]
+        public async Task<ActionResult> RemoveReadingList(Guid ReadingListId)
+        {
+            try
+            {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                if (!Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    return Forbid();
+                }
+                var command = new RemoveReadingListCommand(parsedUserId,ReadingListId);
+                var Result = await _mediator.Send(command);
+                return Result ? Ok("Reading List has been Deleted") : StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Reading List", Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
 
+            }
+        }
 
     }
 }

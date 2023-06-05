@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.ReadingLists.Queries
 {
-    public sealed record GetReadingListWithBooksQuery(Guid ReadingListId, int PageNumber, int Count):IRequest<(ReadingList,int)>;
+    public sealed record GetReadingListWithBooksQuery(Guid UserId,Guid ReadingListId, int PageNumber, int Count):IRequest<(ReadingList,int)>;
     
 }
