@@ -19,11 +19,17 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<List<string>> GetAllBooksAsync(int PageNumber, int Count)
+        public async Task<(List<Book>,int)> GetAllBooksAsync(int PageNumber, int Count)
         {
-            return await _context.Books.Where(b => b.IsAvailable == true).Select(b => b.Title).Skip(PageNumber * Count).Take(Count).ToListAsync();
-          //TODO 
-       
+            var booksCount= await _context.Books.Where(b => b.IsAvailable == true).CountAsync();
+            var books= await _context.Books.Where(b => b.IsAvailable == true).Skip(PageNumber * Count).Take(Count).ToListAsync();
+         
+            var NumberOfPages = 1;
+            if (booksCount > 0)
+                NumberOfPages = (int)Math.Ceiling((double)booksCount / Count);
+
+            return (books, NumberOfPages);
+
         }
         public async Task<Book> GetBookAsync(Guid BookId)
         {

@@ -1,16 +1,10 @@
 ﻿using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Infrastructure.Repositories
 {
-    
-    public class ReadingListRepository
+
+    public class ReadingListRepository : IReadingListRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -18,10 +12,36 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-       /* public async Task<Role> CreateReadingList(ReadingList readingList)
+
+        public async Task<(ReadingList,int)> GetReadingListWithBooksAsync(Guid ReadingListId,int PageNumber, int Count)
         {
-         //   _context
-        }*/
+          
+            var booksCount= await _context.BookReadingLists
+                .Where(a => a.ReadingListId == ReadingListId)
+                .CountAsync();
+
+            var readingList= await _context.ReadingLists
+                .Include(
+                 a => a.Books
+                 .Skip(PageNumber * Count)
+                 .Take(Count)
+                )
+                .FirstOrDefaultAsync(a => a.Id == ReadingListId);
+
+            var NumberOfPages = 1;
+            if (booksCount > 0)
+                NumberOfPages = (int)Math.Ceiling((double)booksCount / Count);
+
+            return (readingList, NumberOfPages);
+        }
+        public async Task CreateReadingListAsync(ReadingList readingList)
+        {
+
+            _context.ReadingLists.AddAsync(readingList);
+
+        }
+
+
 
 
     }

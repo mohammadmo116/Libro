@@ -23,7 +23,7 @@ namespace Libro.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,37 +32,38 @@ namespace Libro.Infrastructure.Migrations
                         name: "FK_ReadingLists_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookReadingList",
+                name: "BookReadingLists",
                 columns: table => new
                 {
-                    BooksId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReadingListsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReadingListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookReadingList", x => new { x.BooksId, x.ReadingListsId });
+                    table.PrimaryKey("PK_BookReadingLists", x => new { x.BookId, x.ReadingListId });
                     table.ForeignKey(
-                        name: "FK_BookReadingList_Books_BooksId",
-                        column: x => x.BooksId,
+                        name: "FK_BookReadingLists_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookReadingList_ReadingLists_ReadingListsId",
-                        column: x => x.ReadingListsId,
+                        name: "FK_BookReadingLists_ReadingLists_ReadingListId",
+                        column: x => x.ReadingListId,
                         principalTable: "ReadingLists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookReadingList_ReadingListsId",
-                table: "BookReadingList",
-                column: "ReadingListsId");
+                name: "IX_BookReadingLists_ReadingListId",
+                table: "BookReadingLists",
+                column: "ReadingListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReadingLists_UserId",
@@ -73,7 +74,7 @@ namespace Libro.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookReadingList");
+                name: "BookReadingLists");
 
             migrationBuilder.DropTable(
                 name: "ReadingLists");

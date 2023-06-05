@@ -1,8 +1,5 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
-using Libro.Domain.Exceptions;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -133,17 +130,27 @@ namespace Libro.Infrastructure.Repositories
                 return true;
             return false;
         }
-        public async Task<List<BookTransaction>> GetBorrowingHistoryAsync(Guid UserId, int PageNumber, int Count)
+        public async Task<(List<BookTransaction>,int)> GetBorrowingHistoryAsync(Guid UserId, int PageNumber, int Count)
         {
+  
+             var bookTransactionsCount= await _context.BookTransactions
+                .Include(a => a.Book)
+                .Where(a => a.UserId == UserId)
+                .CountAsync();
 
-
-            return await _context.BookTransactions
+            var bookTransactions= await _context.BookTransactions
                 .Include(a => a.Book)
                 .Where(a => a.UserId == UserId)
                 .OrderByDescending(a => a.DueDate)
                 .Skip(PageNumber * Count)
                 .Take(Count)
                 .ToListAsync();
+
+            var NumberOfPages = 1;
+            if (bookTransactionsCount > 0)
+                NumberOfPages = (int)Math.Ceiling((double)bookTransactionsCount / Count);
+
+            return (bookTransactions, NumberOfPages);
 
         }
     }

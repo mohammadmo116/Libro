@@ -61,11 +61,12 @@ namespace Libro.Test.BookTransactions
                         It.IsAny<int>()
                     )
                 )
-                .ReturnsAsync(_bookTransactionsList
+                .ReturnsAsync((_bookTransactionsList
                                 .Skip(PageNumber*Count)
                                 .Take(Count)
-                                .ToList()
-                                );
+                                .ToList(),
+                                1
+                               ) );
 
 
             //Act
@@ -79,7 +80,7 @@ namespace Libro.Test.BookTransactions
                     It.Is<int>(a=>a== PageNumber),
                     It.Is<int>(a => a == Count)),
                 Times.Once);
-            CollectionAssert.AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result);
+            CollectionAssert.AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result.Item1);
 
           
         }
