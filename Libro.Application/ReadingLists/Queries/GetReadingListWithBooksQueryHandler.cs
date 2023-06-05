@@ -31,7 +31,7 @@ namespace Libro.Application.ReadingLists.Queries
 
         public async Task<(ReadingList,int)> Handle(GetReadingListWithBooksQuery request, CancellationToken cancellationToken)
         {
-            return await _readingListRepository.GetReadingListWithBooksAsync(request.ReadingListId, request.PageNumber, request.Count);
+            return await _readingListRepository.GetReadingListWithBooksAsync(request.UserId,request.ReadingListId, request.PageNumber, request.Count);
          
         }
 

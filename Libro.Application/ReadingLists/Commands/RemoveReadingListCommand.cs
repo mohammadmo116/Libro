@@ -1,5 +1,4 @@
-﻿using Libro.Domain.Entities;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.ReadingLists.Commands
 {
-    public sealed record UpdateReadingListCommand(Guid UserId,ReadingList ReadingList):IRequest<bool>;
-    
+    public sealed record RemoveReadingListCommand(Guid UserId,Guid ReadingListId) : IRequest<bool>;
+  
 }

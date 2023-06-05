@@ -16,6 +16,7 @@ namespace Libro.Test.ReadingLists
 {
     public class GetReadingListWithBooksQueryHandlerTest
     {
+        private readonly User _user;
         private readonly ReadingList _readingList;
         private readonly GetReadingListWithBooksQuery _Query;
         private readonly GetReadingListWithBooksQueryHandler _handler;
@@ -29,11 +30,18 @@ namespace Libro.Test.ReadingLists
                 Id = Guid.NewGuid(),
                 Name = "readingList1"
             };
-            
+            _user = new()
+            {
+                Id = Guid.NewGuid(),
+                Email = "ads@gmail.com",
+                Password = "password",
+                PhoneNumber = "12345",
+                UserName = "Test"
+            };
             _unitOfWorkMock = new();
             _readingListRepositoryMock = new();
             _loggerMock = new();
-            _Query = new(_readingList.Id,1,1);
+            _Query = new(_user.Id,_readingList.Id,1,1);
             _handler = new(
                 _readingListRepositoryMock.Object,
                 _loggerMock.Object,
@@ -47,6 +55,7 @@ namespace Libro.Test.ReadingLists
             //Arrange
             _readingListRepositoryMock.Setup(
                 x => x.GetReadingListWithBooksAsync(
+                     It.IsAny<Guid>(),
                     It.IsAny<Guid>(),
                     It.IsAny<int>(),
                     It.IsAny<int>()))
@@ -58,6 +67,7 @@ namespace Libro.Test.ReadingLists
             //Assert
             _readingListRepositoryMock.Verify(
               x => x.GetReadingListWithBooksAsync(
+                   It.Is<Guid>(x => x == _user.Id),
                   It.Is<Guid>(x => x == _readingList.Id),
                   It.IsAny<int>(),
                  It.IsAny<int>()
@@ -72,11 +82,12 @@ namespace Libro.Test.ReadingLists
 
             //Arrange
             _readingListRepositoryMock.Setup(
-               x => x.GetReadingListWithBooksAsync(
-                   It.IsAny<Guid>(),
-                   It.IsAny<int>(),
-                   It.IsAny<int>()))
-               .ReturnsAsync(() => (null!,0));
+                 x => x.GetReadingListWithBooksAsync(
+                      It.IsAny<Guid>(),
+                     It.IsAny<Guid>(),
+                     It.IsAny<int>(),
+                     It.IsAny<int>()))
+                .ReturnsAsync(() => (null!,0));
 
             //Act
             var result = await _handler.Handle(_Query, default);
@@ -85,6 +96,7 @@ namespace Libro.Test.ReadingLists
 
             _readingListRepositoryMock.Verify(
             x => x.GetReadingListWithBooksAsync(
+                 It.Is<Guid>(x => x == _user.Id),
                 It.Is<Guid>(x => x == _readingList.Id),
                 It.IsAny<int>(),
                It.IsAny<int>()
