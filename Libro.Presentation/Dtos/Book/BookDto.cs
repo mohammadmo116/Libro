@@ -10,7 +10,7 @@ namespace Libro.Presentation.Dtos.Book
 {
     public class BookDto 
     {
-        public Guid Id { get; set; }
+
         [Required]
         [MaxLength(256)]
         public string Title { get; set; }

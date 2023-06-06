@@ -35,7 +35,7 @@ namespace Libro.Presentation.Controllers
 
         [HasRole("patron")]
         [HttpGet("{ReadingListId}/Books", Name = "GetReadingListWithBooks")]
-        public async Task<ActionResult<(ReadingListWithBooksDto ,int)>> GetReadingListWithBooks(Guid ReadingListId, int PageNumber=0, int Count = 5)
+        public async Task<ActionResult<(GetReadingListWithBooksDto ,int)>> GetReadingListWithBooks(Guid ReadingListId, int PageNumber=0, int Count = 5)
         {
             if(Count>10)
                 Count=10;
@@ -54,7 +54,7 @@ namespace Libro.Presentation.Controllers
                 return NotFound("ReadingList Not_Found");
             
             return Ok(new {
-                ReadingList= Result.Item1.Adapt<ReadingListWithBooksDto>(),
+                ReadingList= Result.Item1.Adapt<GetReadingListWithBooksDto>(),
                 Pages=Result.Item2 }
             );
 
@@ -73,7 +73,7 @@ namespace Libro.Presentation.Controllers
             var readingList = readingListDto.Adapt<ReadingList>();
             var command = new CreateReadingListCommand(parsedUserId, readingList);
             var Result = await _mediator.Send(command);
-            var bookWithAuthorsDto = Result.Adapt<ReadingListDto>();
+            var bookWithAuthorsDto = Result.Adapt<GetReadingListDto>();
             return CreatedAtAction(nameof(GetReadingListWithBooks), new { ReadingListId = bookWithAuthorsDto.Id }, bookWithAuthorsDto);
 
 
@@ -81,7 +81,7 @@ namespace Libro.Presentation.Controllers
         }
         [HasRole("patron")]
         [HttpPut("{ReadingListId}", Name = "UpdateReadingList")]
-        public async Task<ActionResult> UpdateReadingList(Guid ReadingListId, ReadingListDto readingListDto)
+        public async Task<ActionResult> UpdateReadingList(Guid ReadingListId, UpdateReadingListDto readingListDto)
         {
             try
             {

@@ -42,6 +42,8 @@ namespace Libro.Application.ReadingLists.Commands
             readingList.Name = request.ReadingList.Name is null ?
               readingList.Name : request.ReadingList.Name;
 
+            readingList.Private = request.ReadingList.Private is null ?
+              readingList.Private : request.ReadingList.Private;
 
             _readingListRepository.UpdateReadingList(readingList);
             var numberOfRows = await _unitOfWork.SaveChangesAsync();

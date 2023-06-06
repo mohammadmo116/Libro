@@ -51,7 +51,7 @@ namespace Libro.Presentation.Controllers
             var query = new GetSearchedBooksQuery(Title, AuthorName, Genre, PageNumber, Count);
             var Result = await _mediator.Send(query);
             
-            return Ok(new { Books = Result.Item1.Adapt<List<BookDto>>(), Pages = Result.Item2 });
+            return Ok(new { Books = Result.Item1.Adapt<List<GetBookDto>>(), Pages = Result.Item2 });
         }
 
         [HasRole("librarian,admin,patron")]
