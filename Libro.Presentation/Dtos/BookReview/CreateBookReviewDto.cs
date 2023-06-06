@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.BookReview
 {
-    public class BookReviewDto
+    public class CreateBookReviewDto:BookReviewDto
     {
-        [Range(1, 5)]
-        [Required]
-        public short Rate { get; set; }
-        public string? Review { get; set; }
+  
+     
     }
 }

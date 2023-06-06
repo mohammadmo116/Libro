@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using MediatR;
 using Mapster;
+using Libro.Application.BookReviews.Queries;
 
 namespace Libro.Presentation.Controllers
 {
@@ -31,9 +32,34 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
         }
 
-         [HasRole("patron")]
+        [HasRole("patron")]
+        [HttpGet("{BookId}/Reviews", Name = "GetBookReviews")]
+        public async Task<ActionResult> GetBookReviews(Guid BookId, int PageNumber = 0, int Count = 5)
+        {
+
+            try
+            {
+                if (Count > 10)
+                    Count = 10;
+                if (Count < 1)
+                    Count = 1;
+
+                var query = new GetBookReviewsQuery(BookId,PageNumber,Count);
+                var Result = await _mediator.Send(query);
+                return Ok(new {Reviews = Result.Item1.Adapt<List<GetBookReviewWithUserDto>>(), Pages= Result.Item2 });
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                return new NotFoundObjectResult(errorResponse);
+            }
+           
+        }
+
+        [HasRole("patron")]
          [HttpPost("{BookId}/Review", Name = "ReviewBook")]
-         public async Task<ActionResult> ReviewBook(Guid BookId, BookReviewDto bookReviewDto)
+         public async Task<ActionResult> ReviewBook(Guid BookId, CreateBookReviewDto bookReviewDto)
          {
 
              try
@@ -48,7 +74,7 @@ namespace Libro.Presentation.Controllers
                  bookReview.BookId = BookId;
                  var query = new CreateBookReviewCommand(bookReview);
                  var Result = await _mediator.Send(query);
-                 return Ok(Result.Adapt<BookReviewDto>());
+                 return Ok(Result.Adapt<CreateBookReviewDto>());
              }
              catch (CustomNotFoundException e)
              {
