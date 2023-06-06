@@ -18,7 +18,7 @@ namespace Libro.Application.Interfaces
         Task<bool> PhoneNumberIsUniqueForUpdateAsync(Guid UserId, string PhoneNumber);
         Task<User> GetUserAsync(Guid UserId);
         Task<User> GetUserWtithRolesAsync(Guid UserId);
-        Task<List<BookTransaction>> GetBorrowingHistoryAsync(Guid UserId, int PageNumber, int Count);
+        Task<(List<BookTransaction>, int)> GetBorrowingHistoryAsync(Guid UserId, int PageNumber, int Count);
 
     }
 }

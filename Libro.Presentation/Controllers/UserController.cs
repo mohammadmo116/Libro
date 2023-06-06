@@ -10,6 +10,7 @@ using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.BookTransaction;
+using Libro.Presentation.Dtos.ReadingList;
 using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
 using Mapster;
@@ -121,10 +122,15 @@ namespace Libro.Presentation.Controllers
         }
         [Authorize()]
         [HttpGet("BorrowingHistory", Name = "GetBorrowingHistory")]
-        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookTransactionWithStatusDto>,int)>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
         {
             try
             {
+
+                if (Count > 10)
+                    Count = 10;
+                if (Count < 1)
+                    Count = 1;
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
                 if (!Guid.TryParse(userId, out Guid parsedUserId))
                 {
@@ -132,7 +138,15 @@ namespace Libro.Presentation.Controllers
                 }
                 var query = new GetBorrowingHistoryQuery(parsedUserId, PageNumber, Count);
                 var Result = await _mediator.Send(query);
-                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
+
+                return Ok(new
+                {
+                    ReadingList = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>(),
+                    Pages = Result.Item2
+                });
+
+
+
 
             }
             catch (CustomNotFoundException e)
@@ -168,6 +182,7 @@ namespace Libro.Presentation.Controllers
 
             }
         }
+
         [HasRole("admin")]
         [HttpPut("Librarian/{LibrarianId}", Name = "UpdateLibrarianUser")]
         public async Task<ActionResult> UpdateLibrarianUser(Guid LibrarianId, UpdateUserDto userDto)
@@ -254,6 +269,7 @@ namespace Libro.Presentation.Controllers
                 var user = userDto.Adapt<User>();
                 var query = new UpdateUserByRoleCommand(user,"patron");
                 var Result = await _mediator.Send(query);
+
                 return Result? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
 
             }
@@ -278,10 +294,21 @@ namespace Libro.Presentation.Controllers
         public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetPatronBorrowingHistory(Guid PatronId, int PageNumber = 0, int Count = 5)
         {
             try
-            { 
+            {
+                if (Count > 10)
+                    Count = 10;
+                if (Count < 1)
+                    Count = 1;
+
                 var query = new GetPatronBorrowingHistoryQuery(PatronId, PageNumber, Count);
                 var Result = await _mediator.Send(query);
-                return Ok(Result.Adapt<List<BookTransactionWithStatusDto>>());
+
+                return Ok(new
+                {
+                    ReadingList = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>(),
+                    Pages = Result.Item2
+                });
+
 
             }
             catch (CustomNotFoundException e)
@@ -315,7 +342,7 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "UserOrRole", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
+                return new NotFoundObjectResult(errorResponse);
             }
             catch (UserHasTheAssignedRoleException e)
             {

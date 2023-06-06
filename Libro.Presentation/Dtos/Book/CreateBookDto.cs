@@ -9,8 +9,7 @@ namespace Libro.Presentation.Dtos.Book
 {
     public class CreateBookDto : BookDto
     {
-    
-        [Required]
+
         public bool IsAvailable { get; set; }
    
     }

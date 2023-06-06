@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Libro.Domain.Entities;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Libro.Application.Books.Queries
         string? AuthorName,
         string? Genre,
         int PageNumber,
-        int Count ) : IRequest<List<string>>;
+        int Count ) : IRequest<(List<Book>, int)>;
 
 
 }

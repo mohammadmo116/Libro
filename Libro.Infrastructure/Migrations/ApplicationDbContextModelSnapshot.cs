@@ -63,7 +63,7 @@ namespace Libro.Infrastructure.Migrations
                     b.Property<string>("Genre")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsAvailable")
+                    b.Property<bool?>("IsAvailable")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("PublishedDate")
@@ -77,6 +77,21 @@ namespace Libro.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.BookReadingList", b =>
+                {
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReadingListId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BookId", "ReadingListId");
+
+                    b.HasIndex("ReadingListId");
+
+                    b.ToTable("BookReadingLists");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
@@ -106,6 +121,29 @@ namespace Libro.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("BookTransactions");
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.ReadingList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<bool?>("Private")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReadingLists");
                 });
 
             modelBuilder.Entity("Libro.Domain.Entities.Role", b =>
@@ -195,6 +233,25 @@ namespace Libro.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Libro.Domain.Entities.BookReadingList", b =>
+                {
+                    b.HasOne("Libro.Domain.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Libro.Domain.Entities.ReadingList", "ReadingList")
+                        .WithMany()
+                        .HasForeignKey("ReadingListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("ReadingList");
+                });
+
             modelBuilder.Entity("Libro.Domain.Entities.BookTransaction", b =>
                 {
                     b.HasOne("Libro.Domain.Entities.Book", "Book")
@@ -210,6 +267,17 @@ namespace Libro.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Libro.Domain.Entities.ReadingList", b =>
+                {
+                    b.HasOne("Libro.Domain.Entities.User", "User")
+                        .WithMany("ReadingLists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -237,6 +305,8 @@ namespace Libro.Infrastructure.Migrations
             modelBuilder.Entity("Libro.Domain.Entities.User", b =>
                 {
                     b.Navigation("BookTransactions");
+
+                    b.Navigation("ReadingLists");
                 });
 #pragma warning restore 612, 618
         }

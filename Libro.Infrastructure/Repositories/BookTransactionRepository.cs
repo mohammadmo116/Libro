@@ -49,9 +49,15 @@ namespace Libro.Infrastructure.Repositories
             return bookTransaction;
         }
 
-        public async Task<List<BookTransaction>> TrackDueDateAsync(int PageNumber,int Count)
+        public async Task<(List<BookTransaction>, int)> TrackDueDateAsync(int PageNumber,int Count)
         {
-            return await _context.BookTransactions
+            var bookTransactionsCount = await _context.BookTransactions
+                .Include(a => a.User)
+                .Include(a => a.Book)
+                .Where(a => a.Status == BookStatus.Borrowed)             
+                .CountAsync();
+
+            var bookTransactions= await _context.BookTransactions
                 .Include(a=>a.User)
                 .Include(a=>a.Book)
                 .Where(a => a.Status == BookStatus.Borrowed)
@@ -59,7 +65,13 @@ namespace Libro.Infrastructure.Repositories
                 .Skip(PageNumber*Count)
                 .Take(Count)
                 .ToListAsync();
-            
+
+            var NumberOfPages = 1;
+            if (bookTransactionsCount > 0)
+                NumberOfPages = (int)Math.Ceiling((double)bookTransactionsCount / Count);
+
+            return (bookTransactions, NumberOfPages);
+
         }
 
     }

@@ -87,7 +87,7 @@ namespace Libro.Test.Users
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
+                x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
 
@@ -98,10 +98,12 @@ namespace Libro.Test.Users
                     It.IsAny<Guid>(),
                     It.IsAny<int>(),
                     It.IsAny<int>()))
-                .ReturnsAsync(() => _bookTransactionsList
+                .ReturnsAsync(() => (
+                _bookTransactionsList
                     .Skip(PageNumber * Count)
                     .Take(Count)
-                    .ToList()
+                    .ToList(),
+                    1)
                     );
 
 
@@ -111,7 +113,7 @@ namespace Libro.Test.Users
 
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
 
             _userRepositoryMock.Verify(
@@ -122,7 +124,7 @@ namespace Libro.Test.Users
                 Times.Once);
 
             CollectionAssert
-                .AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result);
+                .AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result.Item1);
 
 
         }
@@ -132,7 +134,7 @@ namespace Libro.Test.Users
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
+                x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => null!);
 
@@ -144,7 +146,7 @@ namespace Libro.Test.Users
 
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
             _userRepositoryMock.Verify(
               x => x.GetBorrowingHistoryAsync(
@@ -162,7 +164,7 @@ namespace Libro.Test.Users
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
+                x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
 
@@ -176,7 +178,7 @@ namespace Libro.Test.Users
 
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
             _userRepositoryMock.Verify(
               x => x.GetBorrowingHistoryAsync(

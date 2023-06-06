@@ -5,7 +5,7 @@ namespace Libro.Application.Interfaces
     public interface IBookRepository
     {
         Task<Book> GetBookAsync(Guid BookId);
-        Task<List<string>> GetAllBooksAsync(int PageNumber, int Count);
+        Task<(List<Book>, int)> GetAllBooksAsync(int PageNumber, int Count);
         Task CreateBookAsync(Book book);
         void UpdateBook(Book book);
         void RemoveBook(Book book);
