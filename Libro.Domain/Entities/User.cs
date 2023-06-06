@@ -24,6 +24,7 @@ namespace Libro.Domain.Entities
         public List<Role>? Roles { get; set; } = new();
         public List<Book>? Books { get; set; } = new();
         public List<BookTransaction>? BookTransactions { get; set; } = new();
-        public List <ReadingList>? ReadingLists { get; set; }
+        public List<ReadingList>? ReadingLists { get; set; }
+        public List<BookReviews>? Reviews { get; set; }
     }
 }
