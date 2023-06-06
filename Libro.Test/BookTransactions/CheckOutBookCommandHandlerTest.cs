@@ -3,6 +3,7 @@ using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;

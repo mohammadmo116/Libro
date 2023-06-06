@@ -16,7 +16,14 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-
+        public async Task<bool> BookIsReturnedAsync(Guid UserId,Guid BookId)
+        {
+            return await _context.BookTransactions
+                    .Where(a => a.UserId == UserId)
+                    .Where(a => a.BookId == BookId)
+                    .Where(a=>a.Status==BookStatus.Returned)
+                    .AnyAsync();
+        }
         public async Task AddBookTransactionWithReservedStatus(BookTransaction bookTransaction)
         {
            
@@ -34,7 +41,7 @@ namespace Libro.Infrastructure.Repositories
         }
         public void ChangeBookTransactionStatusToNone(BookTransaction bookTransaction)
         {
-                 bookTransaction.Status = BookStatus.None;
+                 bookTransaction.Status = BookStatus.Returned;
                 _context.BookTransactions.Update(bookTransaction);
         }
         public void DeleteBookTransaction(BookTransaction Transaction, Book book)
@@ -44,7 +51,7 @@ namespace Libro.Infrastructure.Repositories
         public async Task<BookTransaction> GetBookTransactionWhereStatusNotNone(Guid TransactionId)
         {
            var bookTransaction= await _context.BookTransactions
-                            .Where(a => a.Status != BookStatus.None) 
+                            .Where(a => a.Status != BookStatus.Returned) 
                             .FirstOrDefaultAsync(a=>a.Id==TransactionId);
             return bookTransaction;
         }

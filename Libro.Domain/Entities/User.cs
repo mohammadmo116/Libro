@@ -8,8 +8,10 @@ namespace Libro.Domain.Entities
     public class User : BaseEntity
     {
 
+        
+        [Required]
         [MaxLength(256)]
-        public string? UserName { get; set; } 
+        public string UserName { get; set; } 
         [Required]
         [MaxLength(256)]
         [EmailAddress]
@@ -24,6 +26,7 @@ namespace Libro.Domain.Entities
         public List<Role>? Roles { get; set; } = new();
         public List<Book>? Books { get; set; } = new();
         public List<BookTransaction>? BookTransactions { get; set; } = new();
-        public List <ReadingList>? ReadingLists { get; set; }
+        public List<ReadingList>? ReadingLists { get; set; }
+        public List<BookReview>? Reviews { get; set; }
     }
 }

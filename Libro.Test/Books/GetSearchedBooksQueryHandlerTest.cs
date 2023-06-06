@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assert = Xunit.Assert;
 using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Libro.Test.Books
@@ -97,17 +98,16 @@ namespace Libro.Test.Books
                        It.IsAny<int>(),
                        It.IsAny<int>()))
                    .ReturnsAsync(() =>(
-                   _booksList.Skip(pageNumber * count)
-                   .Take(count)
-                   .ToList()!,1));
+                   _booksList,1));
 
             GetSearchedBooksQuery _query = new(title, author, genre, pageNumber, count);
 
             //Act
             var result = await _handler.Handle(_query, default);
             //Assert
-            CollectionAssert.AreEqual(_booksList.Skip(pageNumber * count).Take(count).ToList(), result.Item1);
 
+            CollectionAssert.AreEqual(_booksList, result.Item1);
+            Assert.Equal(1, result.Item2);
             _bookRepositoryMock.Verify(
                 x => x.GetAllBooksAsync(
                 It.Is<int>(a => a == pageNumber),
@@ -115,24 +115,13 @@ namespace Libro.Test.Books
                 Times.Once);
 
             _bookRepositoryMock.Verify(
-               x => x.GetBooksByTitleAsync(
-                       It.IsAny<List<Book>>(),
-                       It.IsAny<string>()),
+               x => x.GetSearchedBooksAsync(
+                       It.IsAny<string>(),
+                       It.IsAny<string>(),
+                       It.IsAny<string>(),
+                       It.IsAny<int>(),
+                       It.IsAny<int>()),
                Times.Never);
-
-            _bookRepositoryMock.Verify(
-                x => x.GetBooksByAuthorNameAsync(
-                It.IsAny<List<Book>>(),
-                It.IsAny<string>()),
-                Times.Never);
-
-            _bookRepositoryMock.Verify(
-                x => x.GetBooksByGenreAsync(
-                       It.IsAny<List<Book>>(),
-                       It.IsAny<string>()),
-                Times.Never);
-           
-             
 
         }
 
@@ -147,42 +136,31 @@ namespace Libro.Test.Books
 
         public async Task Handle_Should_ReturnSearchedBooks(
           string title,
-          string author,
+          string authorName,
           string genre,
           int pageNumber,
           int count)
         {
             //Arrange
-            if (title is not null)
-                _bookRepositoryMock.Setup(
-                       x => x.GetBooksByTitleAsync(
-                           It.IsAny<List<Book>>(),
-                           It.IsAny<string>()))
-                       .ReturnsAsync(() => _booksList);
 
-            if (author is not null)
                 _bookRepositoryMock.Setup(
-                       x => x.GetBooksByAuthorNameAsync(
-                           It.IsAny<List<Book>>(),
-                           It.IsAny<string>()))
-                       .ReturnsAsync(() => _booksList);
+                       x => x.GetSearchedBooksAsync(
+                           It.IsAny<string>(),
+                           It.IsAny<string>(),
+                           It.IsAny<string>(),
+                           It.IsAny<int>(),
+                           It.IsAny<int>()))
+                       .ReturnsAsync(() => (_booksList, 1));
 
-            if (genre is not null)
-                _bookRepositoryMock.Setup(
-                 x => x.GetBooksByGenreAsync(
-                     It.IsAny<List<Book>>(),
-                     It.IsAny<string>()))
-                  .ReturnsAsync(() => _booksList);
-
-            GetSearchedBooksQuery _query = new(title, author, genre, pageNumber, count);
+            
+            GetSearchedBooksQuery _query = new(title, authorName, genre, pageNumber, count);
 
             //Act
             var result = await _handler.Handle(_query, default);
 
             //Assert
-            CollectionAssert.AreEqual(
-                _booksList.Skip(pageNumber * count).Take(count).ToList()
-                , result.Item1);
+              CollectionAssert.AreEqual(_booksList, result.Item1);
+              Assert.Equal(1, result.Item2);
 
             _bookRepositoryMock.Verify(
                 x => x.GetAllBooksAsync(
@@ -190,58 +168,16 @@ namespace Libro.Test.Books
                 It.Is<int>(a=>a==count)),
                 Times.Never);
 
-            if (title is null)
-            {
-                _bookRepositoryMock.Verify(
-                     x => x.GetBooksByTitleAsync(
-                    It.IsAny<List<Book>>(),
-                    It.Is<string>(a=>a==title)),
-                    Times.Never);
+            _bookRepositoryMock.Verify(
+              x => x.GetSearchedBooksAsync(
+                      It.Is<string>(a=>a== title),
+                      It.Is<string>(a => a == authorName),
+                      It.Is<string>(a => a == genre),
+                      It.Is<int>(a => a == pageNumber),
+                      It.Is<int>(a => a == count)
+                      ),
+              Times.Once);
 
-            }
-            else
-            {
-                _bookRepositoryMock.Verify(
-                    x => x.GetBooksByTitleAsync(
-                        It.IsAny<List<Book>>(),
-                        It.Is<string>(a => a == title)),
-                        Times.Once);
-            }
-
-            if (author is null)
-            {
-                _bookRepositoryMock.Verify(
-                     x => x.GetBooksByAuthorNameAsync(
-                        It.IsAny<List<Book>>(),
-                        It.Is<string>(a => a == author)),
-                        Times.Never);
-            }
-            else
-            {
-                _bookRepositoryMock.Verify(
-                    x => x.GetBooksByAuthorNameAsync(
-                         It.IsAny<List<Book>>(),
-                         It.Is<string>(a => a == author)),
-                         Times.Once);
-            }
-
-
-            if (genre is null)
-            {
-                _bookRepositoryMock.Verify(
-                    x => x.GetBooksByGenreAsync(
-                        It.IsAny<List<Book>>(),
-                        It.Is<string>(a => a == genre)),
-                        Times.Never);
-            }
-            else
-            {
-                _bookRepositoryMock.Verify(
-                     x => x.GetBooksByGenreAsync(
-                        It.IsAny<List<Book>>(),
-                        It.Is<string>(a => a == genre)),
-                        Times.Once);
-            }
 
 
 

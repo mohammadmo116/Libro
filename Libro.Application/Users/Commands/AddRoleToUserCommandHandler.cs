@@ -1,6 +1,6 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;

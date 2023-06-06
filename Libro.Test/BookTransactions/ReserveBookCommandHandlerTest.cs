@@ -3,6 +3,7 @@ using Libro.Application.Interfaces;
 using Libro.Application.Users.Commands;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Test.BookTransactions
 {
-   
+
     public class ReserveBookCommandHandlerTest
     {
         private readonly Book _book;

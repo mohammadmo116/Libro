@@ -1,7 +1,7 @@
 ﻿using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.User;
 using Mapster;

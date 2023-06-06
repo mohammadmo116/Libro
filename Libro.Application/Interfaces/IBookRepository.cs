@@ -9,10 +9,11 @@ namespace Libro.Application.Interfaces
         Task CreateBookAsync(Book book);
         void UpdateBook(Book book);
         void RemoveBook(Book book);
-        Task<List<Book>> GetBooksByGenreAsync(List<Book>? Books, string Genre);
-        Task<List<Book>> GetBooksByTitleAsync(List<Book>? Books, string Title);
-        Task<List<Book>> GetBooksByAuthorNameAsync(List<Book> Books,string? AuthorName);
+        Task<(List<Book>, int)> GetSearchedBooksAsync(string? Title, string? AuthorName, string? Genre, int PageNumber, int Count);
         void MakeBookNotAvailable(Book book);
         void MakeBookAvailable(Book book);
+        Task CreateReviewAsync(BookReview bookReview);
+        Task<bool> BookIsReviewedByUser(Guid UserId, Guid BookId);
+        Task<(List<BookReview>, int)> GetReviewsAsync(Guid BookId, int PageNumber, int Count);
     }
 }

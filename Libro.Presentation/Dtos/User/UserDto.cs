@@ -6,6 +6,7 @@ namespace Libro.Presentation.Dtos.User
     {
        
         [MaxLength(256)]
+        [Required]
         public string? UserName { get; set; }
         [Required]
         [MaxLength(256)]

@@ -177,7 +177,7 @@ namespace Libro.Test.BookTransactions
         [Theory]
         [InlineData(BookStatus.Reserved)]
         [InlineData(BookStatus.Borrowed)]
-        [InlineData(BookStatus.None)]
+        [InlineData(BookStatus.Returned)]
         public async Task Handle_Should_ThrowCustomNotFoundException_WhenBookTransactionNotFound(
           BookStatus status)
         {
@@ -249,7 +249,7 @@ namespace Libro.Test.BookTransactions
         [Theory]
         [InlineData(BookStatus.Reserved)]
         [InlineData(BookStatus.Borrowed)]
-        [InlineData(BookStatus.None)]
+        [InlineData(BookStatus.Returned)]
         public async Task Handle_Should_ThrowCustomNotFoundException_WhenBookNotFound(
          BookStatus status)
         {
