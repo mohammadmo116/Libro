@@ -14,5 +14,6 @@ namespace Libro.Application.Interfaces
         void MakeBookAvailable(Book book);
         Task CreateReviewAsync(BookReview bookReview);
         Task<bool> BookIsReviewedByUser(Guid UserId, Guid BookId);
+        Task<(List<BookReview>, int)> GetReviewsAsync(Guid BookId, int PageNumber, int Count);
     }
 }

@@ -107,7 +107,23 @@ namespace Libro.Infrastructure.Repositories
         {
             return await _context.BookReviews.Where(r => r.UserId == UserId).Where(r => r.BookId == BookId).AnyAsync();
         }
+        public async Task<(List<BookReview>,int)> GetReviewsAsync(Guid BookId, int PageNumber, int Count)
+        {
+            var BookReviewsCount = await _context.BookReviews.Include(a => a.User).Where(r => r.BookId == BookId).CountAsync();
+            var BookReviews= await _context.BookReviews
+                .Include(a=>a.User)
+                .Where(r=>r.BookId==BookId)
+                .Skip(PageNumber * Count)
+                .Take(Count)
+                .ToListAsync();
+            
+            var NumberOfPages = 1;
+            if (BookReviewsCount > 0)
+                NumberOfPages = (int)Math.Ceiling((double)BookReviewsCount / Count);
 
+            return (BookReviews, NumberOfPages);
+        }
+      
 
     }
 }
