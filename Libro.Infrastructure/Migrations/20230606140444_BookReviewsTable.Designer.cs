@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Libro.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230606134826_BookReviewsTable")]
+    [Migration("20230606140444_BookReviewsTable")]
     partial class BookReviewsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,7 +96,7 @@ namespace Libro.Infrastructure.Migrations
                     b.ToTable("BookReadingLists");
                 });
 
-            modelBuilder.Entity("Libro.Domain.Entities.BookReviews", b =>
+            modelBuilder.Entity("Libro.Domain.Entities.BookReview", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -275,7 +275,7 @@ namespace Libro.Infrastructure.Migrations
                     b.Navigation("ReadingList");
                 });
 
-            modelBuilder.Entity("Libro.Domain.Entities.BookReviews", b =>
+            modelBuilder.Entity("Libro.Domain.Entities.BookReview", b =>
                 {
                     b.HasOne("Libro.Domain.Entities.Book", "Book")
                         .WithMany("Reviews")

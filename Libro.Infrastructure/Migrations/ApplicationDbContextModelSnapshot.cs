@@ -94,7 +94,7 @@ namespace Libro.Infrastructure.Migrations
                     b.ToTable("BookReadingLists");
                 });
 
-            modelBuilder.Entity("Libro.Domain.Entities.BookReviews", b =>
+            modelBuilder.Entity("Libro.Domain.Entities.BookReview", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -273,7 +273,7 @@ namespace Libro.Infrastructure.Migrations
                     b.Navigation("ReadingList");
                 });
 
-            modelBuilder.Entity("Libro.Domain.Entities.BookReviews", b =>
+            modelBuilder.Entity("Libro.Domain.Entities.BookReview", b =>
                 {
                     b.HasOne("Libro.Domain.Entities.Book", "Book")
                         .WithMany("Reviews")
