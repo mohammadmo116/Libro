@@ -18,7 +18,7 @@ namespace Libro.Domain.Entities
         [Required]
         [MaxLength(250)]
         public string Name { get; set; }
-
+        public bool? Private { get; set; }
         public List<Book> Books { get; set; }
         [Required]
         public Guid UserId { get; set; }

@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Libro.Presentation.Dtos.ReadingList
 {
-    public class ReadingListDto
+    public class UpdateReadingListDto 
     {
-        public string Name { get; set; }
+        public Guid Id { get; set; }
         [Required]
-        public bool Private { get; set; }
+        [MaxLength(250)]
+        public string Name { get; set; }
+        public bool? Private { get; set; }
     }
 }
