@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Queries
 {
-    public sealed record GetPatronBorrowingHistoryQuery(Guid PatronId, int PageNumber, int Count) : IRequest<List<BookTransaction>>;
+    public sealed record GetPatronBorrowingHistoryQuery(Guid PatronId, int PageNumber, int Count) 
+        : IRequest<(List<BookTransaction>,int)>;
    
 }

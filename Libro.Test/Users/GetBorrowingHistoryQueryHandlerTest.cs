@@ -76,10 +76,12 @@ namespace Libro.Test.Users
                     It.IsAny<Guid>(),
                     It.IsAny<int>(),
                     It.IsAny<int>()))
-                .ReturnsAsync(() => _bookTransactionsList
+                .ReturnsAsync(() => (
+                _bookTransactionsList
                     .Skip(PageNumber * Count)
                     .Take(Count)
-                    .ToList()
+                    .ToList(),
+                    1)
                     );
 
 
@@ -99,7 +101,7 @@ namespace Libro.Test.Users
                     It.Is<int>(c=>c==Count)),
                 Times.Once);
 
-            CollectionAssert.AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result);
+            CollectionAssert.AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result.Item1);
                
 
         }
