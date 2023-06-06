@@ -12,5 +12,7 @@ namespace Libro.Application.Interfaces
         Task<(List<Book>, int)> GetSearchedBooksAsync(string? Title, string? AuthorName, string? Genre, int PageNumber, int Count);
         void MakeBookNotAvailable(Book book);
         void MakeBookAvailable(Book book);
+        Task CreateReviewAsync(BookReview bookReview);
+        Task<bool> BookIsReviewedByUser(Guid UserId, Guid BookId);
     }
 }
