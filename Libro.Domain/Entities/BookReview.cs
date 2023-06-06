@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Libro.Domain.Entities
 {
-    public class BookReviews 
+    public class BookReview 
     {
-        public BookReviews() {
+        public BookReview() {
             Book=new Book();
             User=new User();
         }

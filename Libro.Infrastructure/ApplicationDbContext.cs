@@ -17,7 +17,7 @@ namespace Libro.Infrastructure
         public DbSet<AuthorBook>? AuthorBooks { get; set; }
         public DbSet<ReadingList>? ReadingLists { get; set; }
         public DbSet<BookReadingList>? BookReadingLists { get; set; }
-        public DbSet<BookReviews>? BookReviews { get; set; }
+        public DbSet<BookReview>? BookReviews { get; set; }
         public ApplicationDbContext() 
         {
 
@@ -80,7 +80,7 @@ namespace Libro.Infrastructure
 
 
 
-            modelBuilder.Entity<BookReviews>().HasKey(e => new { e.UserId, e.BookId });
+            modelBuilder.Entity<BookReview>().HasKey(e => new { e.UserId, e.BookId });
             modelBuilder.Entity<Role>().HasIndex(e => e.Name).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.UserName).IsUnique();
