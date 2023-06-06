@@ -2,6 +2,7 @@
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

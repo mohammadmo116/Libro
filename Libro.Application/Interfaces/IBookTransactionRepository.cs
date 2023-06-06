@@ -10,6 +10,7 @@ namespace Libro.Application.Interfaces
         Task<(List<BookTransaction>, int)> TrackDueDateAsync(int PageNumber,int Count);
         Task<BookTransaction> GetBookTransactionWhereStatusNotNone(Guid TransactionId);
         void DeleteBookTransaction(BookTransaction Transaction, Book book);
+        Task<bool> BookIsReturnedAsync(Guid UserId, Guid BookId);
 
 
     }

@@ -2,6 +2,7 @@
 using Libro.Application.Users.Commands;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;

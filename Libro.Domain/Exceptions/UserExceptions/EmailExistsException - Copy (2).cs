@@ -1,4 +1,4 @@
-﻿namespace Libro.Domain.Exceptions
+﻿namespace Libro.Domain.Exceptions.UserExceptions
 {
     public class EmailExistsException : UserExistsException
     {
