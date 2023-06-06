@@ -2,6 +2,7 @@
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.BookTransaction;

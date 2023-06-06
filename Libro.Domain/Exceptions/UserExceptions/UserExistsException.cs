@@ -1,6 +1,6 @@
-﻿namespace Libro.Domain.Exceptions
+﻿namespace Libro.Domain.Exceptions.UserExceptions
 {
-    public class UserExistsException: Exception
+    public class UserExistsException : Exception
     {
         public string _message;
         public string _field;

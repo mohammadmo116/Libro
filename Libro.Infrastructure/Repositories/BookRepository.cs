@@ -99,8 +99,16 @@ namespace Libro.Infrastructure.Repositories
             book.IsAvailable = true;
             _context.Books.Update(book);
         }
-
+        public async Task CreateReviewAsync(BookReview bookReview)
+        {
+          await _context.BookReviews.AddAsync(bookReview);
+        }
+        public async Task<bool> BookIsReviewedByUser(Guid UserId, Guid BookId) 
+        {
+            return await _context.BookReviews.Where(r => r.UserId == UserId).Where(r => r.BookId == BookId).AnyAsync();
+        }
 
 
     }
 }
+

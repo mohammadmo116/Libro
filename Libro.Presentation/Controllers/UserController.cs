@@ -5,6 +5,8 @@ using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.BookExceptions;
+using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
@@ -175,52 +177,7 @@ namespace Libro.Presentation.Controllers
             }
         }
 
-        [HasRole("librarian")]
-        [HttpPut("Transactions/{TransactionId}/Borrow", Name = "BorrowBook")]
-        public async Task<ActionResult> CheckOutBook(Guid TransactionId, DueDateDto dueDateDto)
-        {
-            try
-            {
-           
-                var query = new CheckOutBookCommand(TransactionId, dueDateDto.DueDate);
-                var result = await _mediator.Send(query);
-                return result ? Ok("Book has been Borrowed") : StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (CustomNotFoundException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new NotFoundObjectResult(errorResponse);
-            }
-
-            catch (BookIsBorrowedException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-
-            }
-
-        }
-
-        [HasRole("librarian")]
-        [HttpPut("Transactions/{TransactionId}/Return", Name = "ReturnBook")]
-        public async Task<ActionResult> ReturnBook(Guid TransactionId)
-        {
-            try
-            {
-                var query = new ReturnBookCommand(TransactionId);
-                var result = await _mediator.Send(query);
-                return result ? Ok("Book has been Returned") : StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (CustomNotFoundException e)
-            {
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new NotFoundObjectResult(errorResponse);
-            }
-
-        }
+       
 
      
        
