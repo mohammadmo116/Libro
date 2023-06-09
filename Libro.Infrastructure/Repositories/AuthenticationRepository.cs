@@ -31,7 +31,7 @@ namespace Libro.Infrastructure.Repositories
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claimsForToken = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim("Email", user.Email),
                 new Claim("UserName", user.UserName),
                 new Claim("Roles", JsonConvert.SerializeObject(roles),JsonClaimValueTypes.JsonArray)

@@ -111,6 +111,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHub<NotificationHub>("/NotificationHub");
+app.MapHub<NotificationHub>("/NotificationHub").RequireAuthorization();
 app.Run();
    

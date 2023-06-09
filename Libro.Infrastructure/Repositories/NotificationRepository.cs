@@ -1,4 +1,5 @@
 ﻿
+using Libro.Domain.Entities;
 using Libro.Infrastructure.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +28,20 @@ namespace Libro.Infrastructure.Repositories
         public async Task NotifyAll(string method, string message) 
         {
             await _hubContext.Clients.All.SendAsync(method, message);
+            
         }
         public async Task NotifyUser(string UserId,string method, string message)
         {
-            await _hubContext.Clients.Users(UserId).SendAsync(method, message);
+            await _hubContext.Clients.User(UserId).SendAsync(method, message);
+        }
+        public async Task NotifyUsers(List<string> UserIds, string method, string message)
+        {
+            await _hubContext.Clients.Users(UserIds).SendAsync(method, message);
+        }
+   
+        public async Task DataBaseNotify(List<Notification> notification)
+        {
+            await _context.Notifications.AddRangeAsync(notification);
         }
     }
 }

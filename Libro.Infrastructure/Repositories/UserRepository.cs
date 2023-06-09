@@ -1,5 +1,6 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
+using Libro.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -33,8 +34,31 @@ namespace Libro.Infrastructure.Repositories
 
 
         }
-      
+        public async Task<List<Guid>> GetPatronIdsForReservedBooksAsync() {
 
+            return await _context.Users
+                 .Include(a => a.Roles)
+                 .Include(a=>a.BookTransactions)
+                 .Where(u => u.Roles.Any(a => a.Name == "patron"))
+                 .Where(u=>u.BookTransactions.Any(a=>a.Status==BookStatus.Reserved))
+                 .Select(a=>a.Id).ToListAsync();
+
+           
+
+        }
+        public async Task<List<Guid>> GetPatronIdsForDueDatesAsync()
+        {
+
+            return await _context.Users
+                 .Include(a => a.Roles)
+                 .Include(a => a.BookTransactions)
+                 .Where(u => u.Roles.Any(a => a.Name == "patron"))
+                 .Where(u => u.BookTransactions.Any(a => a.Status == BookStatus.Borrowed))
+                 .Select(a => a.Id).ToListAsync();
+
+
+
+        }
         public async Task<User> RegisterUserAsync(User user)
         {
 
