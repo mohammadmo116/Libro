@@ -1,6 +1,7 @@
-﻿using FluentValidation;
-using FluentValidation.AspNetCore;
+﻿
 using Microsoft.Extensions.DependencyInjection;
+
+using Amazon.Runtime;
 
 namespace Libro.Application
 {
@@ -12,7 +13,7 @@ namespace Libro.Application
             services.AddMediatR(config=>
                 config.RegisterServicesFromAssemblies(
                   assembly));
-           
+     
             return services;
         }
     }
