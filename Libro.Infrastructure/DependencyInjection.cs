@@ -27,7 +27,15 @@ namespace Libro.Infrastracture
             services.AddScoped<IBookTransactionRepository,BookTransactionRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IReadingListRepository, ReadingListRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSignalR();
+
+            /*   var awsOptions = configuration.GetAWSOptions();
+               awsOptions.Credentials = new BasicAWSCredentials(configuration.GetValue<string>("AWS:AccessKey"), configuration.GetValue<string>("AWS:SecretKey"));
+               awsOptions.Region = Amazon.RegionEndpoint.EUCentral1;
+               services.AddAWSService<IAmazonSimpleNotificationService>(awsOptions);
+            */
             return services;
         }
     }

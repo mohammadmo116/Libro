@@ -43,7 +43,7 @@ namespace Libro.Presentation.Controllers
         {
             try
             {
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (!Guid.TryParse(userId, out Guid parsedUserId))
                 {
                     return BadRequest("Bad user Id");
@@ -71,7 +71,7 @@ namespace Libro.Presentation.Controllers
         {
             try
             {
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (!Guid.TryParse(userId, out Guid parsedUserId))
                 {
                     return BadRequest("Bad user Id");
@@ -113,7 +113,7 @@ namespace Libro.Presentation.Controllers
                     Count = 10;
                 if (Count < 1)
                     Count = 1;
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (!Guid.TryParse(userId, out Guid parsedUserId))
                 {
                     return BadRequest("Bad user Id");
