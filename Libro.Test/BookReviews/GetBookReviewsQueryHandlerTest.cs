@@ -71,7 +71,7 @@ namespace Libro.Test.BookReviews
         }
 
         [Fact]
-        public async Task Handle_Should_ReturnBookReviews_WhenBookIsFount()
+        public async Task Handle_Should_ReturnBookReviews_WhenBookIsFound()
         {
             //Arrange
 

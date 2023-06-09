@@ -4,6 +4,7 @@ using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -29,7 +30,6 @@ namespace Libro.Application.BookTransactions.Commands
             _bookTransactionRepository = bookTransactionRepository;
             _bookRepository = bookRepository;
             _unitOfWork = unitOfWork;
-
         }
         public async Task<bool> Handle(ReserveBookCommand request, CancellationToken cancellationToken)
         {

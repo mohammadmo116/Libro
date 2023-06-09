@@ -42,7 +42,7 @@ namespace Libro.Presentation.Controllers
             if (Count < 1)
                 Count = 1;
 
-            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid parsedUserId))
             {
                 return Forbid();
@@ -65,7 +65,7 @@ namespace Libro.Presentation.Controllers
         public async Task<ActionResult> CreateReadingList(CreateReadingListDto readingListDto)
         {
 
-            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid parsedUserId))
             {
                 return Forbid();
@@ -85,7 +85,7 @@ namespace Libro.Presentation.Controllers
         {
             try
             {
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (!Guid.TryParse(userId, out Guid parsedUserId))
                 {
                     return Forbid();
@@ -113,7 +113,7 @@ namespace Libro.Presentation.Controllers
         {
             try
             {
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (!Guid.TryParse(userId, out Guid parsedUserId))
                 {
                     return Forbid();
