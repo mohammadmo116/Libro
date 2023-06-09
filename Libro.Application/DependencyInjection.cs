@@ -1,8 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
 
-using Amazon.Runtime;
-
 namespace Libro.Application
 {
     public static class DependencyInjection

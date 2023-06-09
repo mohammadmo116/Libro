@@ -17,7 +17,7 @@ namespace Libro.Infrastructure.Authorization
             AuthorizationHandlerContext context,
             RoleRequirement requirement)
         {
-            string? userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+            string? userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid parsedUserId))
             {
                 return;
