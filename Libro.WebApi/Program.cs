@@ -12,23 +12,26 @@ using System.Text;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Libro.Infrastructure.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
-    .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Libro.Presentation.AssemblyReference>())
+var services = builder.Services;
+services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddApplicationPart(typeof(Libro.Presentation.AssemblyReference).Assembly)
     .AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
    .ConfigureApiBehaviorOptions(options =>
     options.SuppressModelStateInvalidFilter = true);
 
+services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssemblyContaining<Libro.Presentation.AssemblyReference>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = new() { 
     ValidateIssuer = true,
     ValidateAudience = true,
@@ -39,13 +42,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
-builder.Services.AddAuthorization();
-builder.Services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
+services.AddAuthorization();
+services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
+services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
 //builder.Services.AddScoped<ValidationFilter>();
 
 
-builder.Services.AddSwaggerGen(options =>
+services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Libro.WebApi", Version = "V1" });
 
@@ -73,7 +76,7 @@ builder.Services.AddSwaggerGen(options =>
 
 });
 
-builder.Services
+services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
     .AddPresentaion();
@@ -105,10 +108,9 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
+app.MapHub<NotificationHub>("/NotificationHub");
 app.Run();
    

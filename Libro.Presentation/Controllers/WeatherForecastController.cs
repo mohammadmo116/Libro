@@ -3,8 +3,9 @@ using MediatR;
 using Libro.Application.WeatherForecasts.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Libro.Infrastructure.Authorization;
-using Microsoft.AspNetCore.Authorization;
-using System.Runtime.CompilerServices;
+using Libro.Infrastructure.Repositories;
+using Microsoft.AspNetCore.SignalR;
+using Libro.Infrastructure.Hubs;
 
 namespace Libro.WebApi.Controllers
 {
@@ -14,11 +15,16 @@ namespace Libro.WebApi.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly INotificationRepository _notificationRepository;
 
 
-        public WeatherForecastController(IMediator mediator)
+
+        public WeatherForecastController(IMediator mediator, INotificationRepository notificationRepository
+            , IHubContext<NotificationHub> hubContext)
         {
             _mediator = mediator;
+            _notificationRepository = notificationRepository;
+
         }
         //pass array of roles
 
@@ -30,13 +36,11 @@ namespace Libro.WebApi.Controllers
             var Result = await _mediator.Send(query);
             return Ok(Result);
         }
-       /* [HttpGet("d")]
-        public async Task<ActionResult<List<string>>> Geta()
-        {
-           return _context.Roles.Include(e=>e.Users.Where(e=>e.Id==new Guid("1C4C200A-F632-11ED-B67E-0242AC120002"))).Select(e=>e.Name).ToList();
-       
-        }*/
+  
 
 
     }
+
+
 }
+
