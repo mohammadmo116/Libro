@@ -12,6 +12,7 @@ namespace Libro.Domain.Entities
     {
         [Required]
         public string Message { get; set; }
+        public bool IsRead { get; set; } = false;
         public Guid? UserId { get; set; }
         public User? User { get; set; }
     }

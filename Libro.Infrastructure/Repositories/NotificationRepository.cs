@@ -43,5 +43,20 @@ namespace Libro.Infrastructure.Repositories
         {
             await _context.Notifications.AddRangeAsync(notification);
         }
+
+        public async Task<(List<Notification>,int)> GetNotifications(Guid UserId, int PageNumber, int Count)
+        {
+            var notificationsCount = await _context.Notifications.Where(a => a.UserId == UserId).CountAsync();
+
+            var notifications = await _context.Notifications.Where(a => a.UserId == UserId)
+                .Skip(PageNumber * Count).Take(Count).ToListAsync();
+
+            var NumberOfPages = 1;
+            if (notificationsCount > 0)
+                NumberOfPages = (int)Math.Ceiling((double)notificationsCount / Count);
+
+            return (notifications, NumberOfPages);
+    
+        }
     }
 }
