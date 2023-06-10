@@ -96,13 +96,13 @@ namespace Libro.Test.Users
 
             _userRepositoryMock.Verify(
                 x => x.GetBorrowingHistoryAsync(
-                    It.Is<Guid>(u=>u ==_user.Id),
-                    It.Is<int>(p=>p==PageNumber),
-                    It.Is<int>(c=>c==Count)),
+                    It.Is<Guid>(u => u == _user.Id),
+                    It.Is<int>(p => p == PageNumber),
+                    It.Is<int>(c => c == Count)),
                 Times.Once);
 
             CollectionAssert.AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result.Item1);
-               
+
 
         }
         [Fact]

@@ -1,6 +1,5 @@
 ﻿using Libro.Application.BookTransactions.Commands;
 using Libro.Application.Interfaces;
-using Libro.Application.Users.Commands;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
@@ -8,13 +7,6 @@ using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.BookTransactions
 {
@@ -50,7 +42,7 @@ namespace Libro.Test.BookTransactions
                 BookId = Guid.NewGuid(),
                 UserId = Guid.NewGuid(),
             };
-        
+
             _command = new ReserveBookCommand(_bookTransaction);
 
             _handler = new ReserveBookCommandHandler(
@@ -59,7 +51,7 @@ namespace Libro.Test.BookTransactions
                _bookRepository.Object,
                _unitOfWorkMock.Object
                );
-            
+
         }
 
         [Fact]
@@ -71,8 +63,8 @@ namespace Libro.Test.BookTransactions
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _book);
 
-            _book.IsAvailable= true;
-           
+            _book.IsAvailable = true;
+
             _unitOfWorkMock.Setup(
                x => x.BeginTransactionAsync())
                .ReturnsAsync(It.IsAny<IDbContextTransaction>);
@@ -110,12 +102,12 @@ namespace Libro.Test.BookTransactions
 
             _bookRepository.Verify(
               x => x.MakeBookNotAvailable(
-                  It.Is<Book>(a=>a==_book)),
+                  It.Is<Book>(a => a == _book)),
               Times.Once);
 
             _bookTransactionRepository.Verify(
              x => x.AddBookTransactionWithReservedStatus(
-                 It.Is<BookTransaction>(a=>a==_bookTransaction)),
+                 It.Is<BookTransaction>(a => a == _bookTransaction)),
              Times.Once);
 
             _unitOfWorkMock.Verify(
@@ -198,7 +190,7 @@ namespace Libro.Test.BookTransactions
                   Times.Once);
 
 
-            Assert.False( _book.IsAvailable);
+            Assert.False(_book.IsAvailable);
 
 
             _unitOfWorkMock.Verify(

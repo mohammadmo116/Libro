@@ -1,6 +1,5 @@
 ﻿using Libro.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 
 namespace Libro.Infrastructure
@@ -19,7 +18,7 @@ namespace Libro.Infrastructure
         public DbSet<BookReadingList>? BookReadingLists { get; set; }
         public DbSet<BookReview>? BookReviews { get; set; }
         public DbSet<Notification>? Notifications { get; set; }
-        public ApplicationDbContext() 
+        public ApplicationDbContext()
         {
 
         }
@@ -37,23 +36,14 @@ namespace Libro.Infrastructure
         .HasMany(a => a.Users)
         .WithMany(b => b.Books)
         .UsingEntity<BookTransaction>();
-  
+
 
 
             modelBuilder.Entity<Book>()
           .HasMany(a => a.Authors)
           .WithMany(b => b.Books)
-          .UsingEntity<AuthorBook>(
-          join => join
-          .HasOne<Author>()
-          .WithMany()
-          .HasForeignKey(ca => ca.AuthorId)
-          .OnDelete(DeleteBehavior.Cascade),
-         join => join
-          .HasOne<Book>()
-          .WithMany()
-          .HasForeignKey(e => e.BookId)
-          .OnDelete(DeleteBehavior.Cascade));
+          .UsingEntity<AuthorBook>();
+
 
             modelBuilder.Entity<AuthorBook>().HasKey(e => new { e.BookId, e.AuthorId });
 
@@ -80,15 +70,15 @@ namespace Libro.Infrastructure
        .UsingEntity<BookReadingList>();
 
 
-  
+
             modelBuilder.Entity<BookReview>().HasKey(e => new { e.UserId, e.BookId });
             modelBuilder.Entity<Role>().HasIndex(e => e.Name).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.UserName).IsUnique();
             modelBuilder.Entity<User>().HasIndex(e => e.PhoneNumber).IsUnique();
 
-        
-           
+
+
 
         }
     }

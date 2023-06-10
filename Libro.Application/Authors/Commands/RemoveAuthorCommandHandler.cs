@@ -1,14 +1,8 @@
-﻿using Libro.Application.Interfaces;
-using Libro.Application.Repositories;
+﻿using Libro.Application.Repositories;
 using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.Authors.Commands
 {

@@ -1,14 +1,9 @@
 ﻿using Libro.Application.Interfaces;
-using Libro.Infrastructure.Repositories;
+using Libro.Domain.Entities;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Libro.Domain.Entities;
 
 namespace Libro.Application.Notifications.Commands
 {
@@ -63,5 +58,5 @@ namespace Libro.Application.Notifications.Commands
             return NumberOfRows > 0;
         }
     }
-    
+
 }

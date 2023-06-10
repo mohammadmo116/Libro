@@ -1,17 +1,9 @@
 ﻿using Libro.Application.Interfaces;
-using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Authentication;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Users
 {
@@ -40,9 +32,9 @@ namespace Libro.Test.Users
 
             _Email = "ads@gmail.com";
             _Password = "password";
-   
-            _command = new (_Email, _Password);
-            _handler = new (
+
+            _command = new(_Email, _Password);
+            _handler = new(
                 _loggerMock.Object,
                 _authenticationRepositoryMock.Object
                 );
@@ -67,16 +59,16 @@ namespace Libro.Test.Users
 
             //Assert
             _authenticationRepositoryMock.Verify(
-                x => x.ValidateUserCredentialsAsync(_Email,_Password),
+                x => x.ValidateUserCredentialsAsync(_Email, _Password),
                 Times.Once);
             _authenticationRepositoryMock.Verify(
                x => x.Authenticate(_user),
                Times.Once);
-            Assert.Equal("JwtTest",result);
+            Assert.Equal("JwtTest", result);
 
 
         }
-        
+
         [Fact]
         public async Task Handle_Should_ThrowInvalidCredentialException_WhenInvalidCredentials()
         {
@@ -98,7 +90,7 @@ namespace Libro.Test.Users
 
             //Assert   
             _authenticationRepositoryMock.Verify(
-              x => x.ValidateUserCredentialsAsync(_Email,_Password),
+              x => x.ValidateUserCredentialsAsync(_Email, _Password),
               Times.Once);
             _authenticationRepositoryMock.Verify(
             x => x.Authenticate(_user),
@@ -107,6 +99,6 @@ namespace Libro.Test.Users
 
 
         }
-        
+
     }
 }

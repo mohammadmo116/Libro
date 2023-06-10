@@ -1,14 +1,8 @@
-﻿using Libro.Presentation.Dtos.Author;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Libro.Presentation.Dtos.Book
 {
-    public class BookDto 
+    public class BookDto
     {
 
         [Required]

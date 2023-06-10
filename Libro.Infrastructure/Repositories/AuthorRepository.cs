@@ -1,12 +1,6 @@
 ﻿using Libro.Application.Repositories;
 using Libro.Domain.Entities;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Infrastructure.Repositories
 {
@@ -19,7 +13,7 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<Author> GetAuthorAsync(Guid AuthorId) 
+        public async Task<Author> GetAuthorAsync(Guid AuthorId)
         {
             return await _context.Authors.FirstOrDefaultAsync(b => b.Id == AuthorId);
 

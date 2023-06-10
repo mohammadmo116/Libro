@@ -8,10 +8,10 @@ namespace Libro.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             var assembly = typeof(DependencyInjection).Assembly;
-            services.AddMediatR(config=>
+            services.AddMediatR(config =>
                 config.RegisterServicesFromAssemblies(
                   assembly));
-     
+
             return services;
         }
     }

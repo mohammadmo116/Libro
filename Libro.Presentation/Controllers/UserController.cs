@@ -1,18 +1,11 @@
-﻿using Libro.Application.Books.Commands;
-using Libro.Application.BookTransactions.Commands;
-using Libro.Application.Users.Commands;
+﻿using Libro.Application.Users.Commands;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
-using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Domain.Responses;
-using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.BookTransaction;
-using Libro.Presentation.Dtos.ReadingList;
 using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
 using Mapster;
@@ -20,7 +13,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Claims;
 
@@ -60,11 +52,11 @@ namespace Libro.Presentation.Controllers
                 return new BadRequestObjectResult(errorResponse);
 
             }
-         
+
 
         }
-     
-        
+
+
         [Authorize()]
         [HttpPut(Name = "UpdateUser")]
         public async Task<ActionResult> UpdateUser(UpdateUserDto userDto)
@@ -104,7 +96,7 @@ namespace Libro.Presentation.Controllers
 
         [Authorize()]
         [HttpGet("BorrowingHistory", Name = "GetBorrowingHistory")]
-        public async Task<ActionResult<(List<BookTransactionWithStatusDto>,int)>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookTransactionWithStatusDto>, int)>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
         {
             try
             {
@@ -142,9 +134,6 @@ namespace Libro.Presentation.Controllers
         }
 
 
-      
-     
-
         [HasRole("admin")]
         [HttpPost("{UserId}/Role/{RoleId}", Name = "AssignRole")]
         public async Task<ActionResult> AssignRoleToUser(Guid UserId, Guid RoleId)
@@ -177,9 +166,9 @@ namespace Libro.Presentation.Controllers
             }
         }
 
-       
 
-     
-       
+
+
+
     }
 }

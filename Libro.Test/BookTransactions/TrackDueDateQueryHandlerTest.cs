@@ -39,7 +39,7 @@ namespace Libro.Test.BookTransactions
             },
             };
 
-  
+
             _handler = new TrackDueDateQueryHandler(
                _loggerMock.Object,
                _bookTransactionRepository.Object
@@ -48,9 +48,9 @@ namespace Libro.Test.BookTransactions
 
         [Theory]
         [InlineData(0, 1)]
-        [InlineData(1,1)]
+        [InlineData(1, 1)]
         [InlineData(5, 5)]
-        public async Task Handle_Should_ReturnListOfBookTransactions(int PageNumber,int Count)
+        public async Task Handle_Should_ReturnListOfBookTransactions(int PageNumber, int Count)
         {
             //Arrange
             _bookTransactionRepository.Setup
@@ -62,27 +62,27 @@ namespace Libro.Test.BookTransactions
                     )
                 )
                 .ReturnsAsync((_bookTransactionsList
-                                .Skip(PageNumber*Count)
+                                .Skip(PageNumber * Count)
                                 .Take(Count)
                                 .ToList(),
                                 1
-                               ) );
+                               ));
 
 
             //Act
-            var _query = new TrackDueDateQuery(PageNumber,Count);
+            var _query = new TrackDueDateQuery(PageNumber, Count);
             var result = await _handler.Handle(_query, default);
 
 
             //Assert
             _bookTransactionRepository.Verify(
                 x => x.TrackDueDateAsync(
-                    It.Is<int>(a=>a== PageNumber),
+                    It.Is<int>(a => a == PageNumber),
                     It.Is<int>(a => a == Count)),
                 Times.Once);
             CollectionAssert.AreEqual(_bookTransactionsList.Skip(PageNumber * Count).Take(Count).ToList(), result.Item1);
 
-          
+
         }
 
     }

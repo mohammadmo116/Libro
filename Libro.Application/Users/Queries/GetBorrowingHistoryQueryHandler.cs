@@ -3,11 +3,6 @@ using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Queries
 {
@@ -25,16 +20,17 @@ namespace Libro.Application.Users.Queries
             _userRepository = userRepository;
 
         }
-        public async Task<(List<BookTransaction>,int)> Handle(GetBorrowingHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<(List<BookTransaction>, int)> Handle(GetBorrowingHistoryQuery request, CancellationToken cancellationToken)
         {
-            var user=await _userRepository.GetUserAsync(request.UserId);
-            if (user is null) {
+            var user = await _userRepository.GetUserAsync(request.UserId);
+            if (user is null)
+            {
                 _logger.LogInformation("CustomNotFoundException (User)");
                 throw new CustomNotFoundException("User");
             }
             return await _userRepository.GetBorrowingHistoryAsync(request.UserId, request.PageNumber, request.Count);
 
         }
-  
+
     }
 }

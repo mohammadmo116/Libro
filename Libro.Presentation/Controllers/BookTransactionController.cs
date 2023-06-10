@@ -1,23 +1,18 @@
 ﻿using Libro.Application.BookTransactions.Commands;
 using Libro.Application.BookTransactions.Queiries;
-using Libro.Domain.Exceptions.BookExceptions;
+using Libro.Domain.Entities;
+using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.BookTransaction;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Libro.Domain.Enums;
 using System.Security.Claims;
-using Libro.Domain.Entities;
-using Mapster;
 
 namespace Libro.Presentation.Controllers
 {
@@ -120,7 +115,7 @@ namespace Libro.Presentation.Controllers
 
         }
 
-       
+
 
 
         [HasRole("librarian")]

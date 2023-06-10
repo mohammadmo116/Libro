@@ -1,19 +1,10 @@
-﻿using Libro.Application.BookReviews.Commands;
-using Libro.Application.BookReviews.Queries;
+﻿using Libro.Application.BookReviews.Queries;
 using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
-using Libro.Infrastructure;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Assert = Xunit.Assert;
 
 namespace Libro.Test.BookReviews
@@ -42,13 +33,13 @@ namespace Libro.Test.BookReviews
 
             _bookReviewsList = new()
             {
-                
+
                new() {
                 UserId = Guid.NewGuid(),
                 BookId = _book.Id,
                 Rate = 5,
                 Review = "Greate" },
-                 new(){ 
+                 new(){
                 UserId = Guid.NewGuid(),
                 BookId = _book.Id,
                 Rate = 3,
@@ -63,10 +54,10 @@ namespace Libro.Test.BookReviews
 
             _bookRepositoryMock = new();
             _loggerMock = new();
-            _query = new(_book.Id,1,1);
+            _query = new(_book.Id, 1, 1);
             _handler = new(
                 _loggerMock.Object,
-                _bookRepositoryMock.Object 
+                _bookRepositoryMock.Object
                 );
         }
 
@@ -85,7 +76,7 @@ namespace Libro.Test.BookReviews
                   It.IsAny<Guid>(),
                   It.IsAny<int>(),
                   It.IsAny<int>()))
-                .ReturnsAsync((_bookReviewsList,1));
+                .ReturnsAsync((_bookReviewsList, 1));
 
             //Act
             var result = await _handler.Handle(_query, default);
@@ -128,7 +119,7 @@ namespace Libro.Test.BookReviews
             CustomNotFoundException ExpectedException = new("Book");
 
             //Assert
-  
+
 
             _bookRepositoryMock.Verify(
               x => x.GetBookAsync(

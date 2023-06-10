@@ -1,16 +1,10 @@
-﻿using Libro.Application.Books.Commands;
-using Libro.Application.Interfaces;
+﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.BookReviews.Commands
 {
@@ -51,7 +45,7 @@ namespace Libro.Application.BookReviews.Commands
                 throw new CustomNotFoundException("Book");
 
             }
-            if ( ! await _bookTransactionRepository.BookIsReturnedAsync(request.BookReview.UserId, request.BookReview.BookId))
+            if (!await _bookTransactionRepository.BookIsReturnedAsync(request.BookReview.UserId, request.BookReview.BookId))
             {
                 throw new NotAllowedToReviewBookException();
 
@@ -59,7 +53,7 @@ namespace Libro.Application.BookReviews.Commands
             if (await _bookRepository.BookIsReviewedByUser(request.BookReview.UserId, request.BookReview.BookId))
             {
                 throw new BookIsAlreadyReviewedException();
-            
+
             }
             await _bookRepository.CreateReviewAsync(request.BookReview);
             await _unitOfWork.SaveChangesAsync();
