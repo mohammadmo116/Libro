@@ -12,30 +12,25 @@ namespace Libro.Infrastracture
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-        
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
-       
+
             services.AddScoped<IWeatherRepository, WeatherRepository>();
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IBookRepository, BookRepository>();
-            services.AddScoped<IBookTransactionRepository,BookTransactionRepository>();
+            services.AddScoped<IBookTransactionRepository, BookTransactionRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IReadingListRepository, ReadingListRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSignalR();
 
-            /*   var awsOptions = configuration.GetAWSOptions();
-               awsOptions.Credentials = new BasicAWSCredentials(configuration.GetValue<string>("AWS:AccessKey"), configuration.GetValue<string>("AWS:SecretKey"));
-               awsOptions.Region = Amazon.RegionEndpoint.EUCentral1;
-               services.AddAWSService<IAmazonSimpleNotificationService>(awsOptions);
-            */
             return services;
         }
     }

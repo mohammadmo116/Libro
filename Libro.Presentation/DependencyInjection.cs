@@ -6,7 +6,7 @@ namespace Libro.Presentation
     {
         public static IServiceCollection AddPresentaion(this IServiceCollection services)
         {
-         
+
             return services;
         }
     }

@@ -1,21 +1,11 @@
-﻿using Libro.Application.BookTransactions.Queiries;
-using Libro.Application.Interfaces;
+﻿using Libro.Application.Interfaces;
 using Libro.Application.Notifications.Commands;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Repositories;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Assert = Xunit.Assert;
-using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Libro.Test.Notifications
 {
@@ -45,7 +35,7 @@ namespace Libro.Test.Notifications
                 Id = _user.Id,
                 Message = "Test",
                 UserId = _user.Id,
-                
+
             };
             _notificationRepositoryMock = new();
             _userRepositoryMock = new();
@@ -69,10 +59,10 @@ namespace Libro.Test.Notifications
                 ).ReturnsAsync(new List<Guid>()
                 { Guid.NewGuid(),
                     Guid.NewGuid(),
-                
-                } );
 
-            _notificationRepositoryMock.Setup (x =>
+                });
+
+            _notificationRepositoryMock.Setup(x =>
                 x.NotifyUsers(
                     It.IsAny<List<string>>(),
                     It.IsAny<string>(),
@@ -80,7 +70,7 @@ namespace Libro.Test.Notifications
                 ));
 
             _notificationRepositoryMock.Setup(x =>
-                x.DataBaseNotify (
+                x.DataBaseNotify(
                     It.IsAny<List<Notification>>()
                     ));
 
@@ -126,7 +116,7 @@ namespace Libro.Test.Notifications
                 x.GetPatronIdsForReservedBooksAsync()
                 ).ReturnsAsync(new List<Guid>());
 
-           
+
             //Act
             var result = await _handler.Handle(_command, default);
 
@@ -155,7 +145,7 @@ namespace Libro.Test.Notifications
                 x => x.SaveChangesAsync(),
                 Times.Never);
 
-         
+
 
         }
 

@@ -1,16 +1,9 @@
 ﻿using Libro.Application.Books.Commands;
-using Libro.Application.Books.Queries;
 using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Libro.Test.Books
 {
@@ -68,5 +61,5 @@ namespace Libro.Test.Books
             Assert.Equal(_book.Id, result.Id);
         }
 
-        }
     }
+}

@@ -6,11 +6,6 @@ using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Users
 {
@@ -34,13 +29,14 @@ namespace Libro.Test.Users
             _loggerMock = new();
             _unitOfWorkMock = new();
             _user = new();
-            _role=new() { 
-            Id=Guid.NewGuid(),
-            Name= "librarian"
+            _role = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "librarian"
             };
 
-            _command = new (_user, _role.Name);
-            _handler = new (
+            _command = new(_user, _role.Name);
+            _handler = new(
                 _loggerMock.Object,
                 _userRepositoryMock.Object,
                 _roleRepositoryMock.Object,
@@ -94,7 +90,7 @@ namespace Libro.Test.Users
                 x => x.RegisterUserAsync(
                     It.IsAny<User>()))
                 .ReturnsAsync(() => _user);
-    
+
 
             _unitOfWorkMock.Setup(
                x => x.SaveChangesAsync())
@@ -111,7 +107,7 @@ namespace Libro.Test.Users
               x => x.GetRoleByNameAsync(
                   It.Is<string>(a => a == _role.Name)),
               Times.Once);
-           
+
 
             _userRepositoryMock.Verify(
              x => x.EmailIsUniqueAsync(
@@ -156,7 +152,7 @@ namespace Libro.Test.Users
             _roleRepositoryMock.Setup(
                x => x.GetRoleByNameAsync(
                    It.IsAny<string>()))
-               .ReturnsAsync(()=>null!);
+               .ReturnsAsync(() => null!);
 
             //Act
             async Task act() => await _handler.Handle(_command, default);

@@ -1,5 +1,4 @@
 ﻿using Libro.Application.BookReviews.Commands;
-using Libro.Application.Books.Commands;
 using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
@@ -7,11 +6,6 @@ using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.BookReviews
 {
@@ -29,7 +23,7 @@ namespace Libro.Test.BookReviews
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         public CreateBookReviewCommandHandlerTest()
         {
-            
+
             _user = new()
             {
                 Id = Guid.NewGuid(),
@@ -49,10 +43,10 @@ namespace Libro.Test.BookReviews
 
             _bookReview = new()
             {
-               UserId= _user.Id,
-               BookId=_book.Id,
-               Rate=5,
-               Review="Greate"
+                UserId = _user.Id,
+                BookId = _book.Id,
+                Rate = 5,
+                Review = "Greate"
 
             };
             _bookTransactionRepositoryMock = new();
@@ -73,11 +67,11 @@ namespace Libro.Test.BookReviews
         public async Task Handle_Should_ReturnBookReview_WhenBookReviewIsCreated()
         {
             //Arrange
-           
-             _userRepositoryMock.Setup(
-              x => x.GetUserAsync(
-                  It.IsAny<Guid>()))
-                .ReturnsAsync(_user);
+
+            _userRepositoryMock.Setup(
+             x => x.GetUserAsync(
+                 It.IsAny<Guid>()))
+               .ReturnsAsync(_user);
 
             _bookRepositoryMock.Setup(
               x => x.GetBookAsync(
@@ -115,7 +109,7 @@ namespace Libro.Test.BookReviews
 
             _bookRepositoryMock.Verify(
               x => x.GetBookAsync(
-                  It.Is<Guid>(a=>a==_book.Id)),
+                  It.Is<Guid>(a => a == _book.Id)),
               Times.Once);
 
             _bookTransactionRepositoryMock.Verify(
@@ -126,12 +120,12 @@ namespace Libro.Test.BookReviews
 
             _bookRepositoryMock.Verify(
               x => x.BookIsReviewedByUser(
-                  It.Is<Guid>(a => a  == _bookReview.UserId),
+                  It.Is<Guid>(a => a == _bookReview.UserId),
                   It.Is<Guid>(a => a == _bookReview.BookId)),
               Times.Once);
 
             _bookRepositoryMock.Verify(
-              x => x.CreateReviewAsync(It.Is<BookReview>(x => x.UserId == _bookReview.UserId && x.BookId==_bookReview.BookId)),
+              x => x.CreateReviewAsync(It.Is<BookReview>(x => x.UserId == _bookReview.UserId && x.BookId == _bookReview.BookId)),
               Times.Once);
 
             _unitOfWorkMock.Verify(
@@ -294,7 +288,7 @@ namespace Libro.Test.BookReviews
                 It.Is<Guid>(a => a == _user.Id),
                 It.Is<Guid>(a => a == _book.Id)),
             Times.Once);
-          
+
 
 
             _bookRepositoryMock.Verify(

@@ -12,12 +12,12 @@ namespace Libro.Application.Users.Queries
         private readonly ILogger<LoginUserQueryHandler> _logger;
 
         public LoginUserQueryHandler(ILogger<LoginUserQueryHandler> logger,
-            IAuthenticationRepository authenticationRepository) 
+            IAuthenticationRepository authenticationRepository)
         {
             _authenticationRepository = authenticationRepository;
             _logger = logger;
         }
-        public async Task<string> Handle(LoginUserQuery query, CancellationToken cancellationToken) 
+        public async Task<string> Handle(LoginUserQuery query, CancellationToken cancellationToken)
         {
 
             var user = await _authenticationRepository.ValidateUserCredentialsAsync(query.Email, query.Password);
@@ -25,8 +25,9 @@ namespace Libro.Application.Users.Queries
             {
                 throwInvalidCredentialException(query);
             }
-                var jwt = await _authenticationRepository.Authenticate(user);
-            if (jwt is null) {
+            var jwt = await _authenticationRepository.Authenticate(user);
+            if (jwt is null)
+            {
                 throwInvalidCredentialException(query);
             }
             return jwt;
@@ -34,7 +35,8 @@ namespace Libro.Application.Users.Queries
 
 
         }
-        private void throwInvalidCredentialException(LoginUserQuery query) {
+        private void throwInvalidCredentialException(LoginUserQuery query)
+        {
             var message = $"Invalid Credentials,\n email : {query.Email} \n password: {query.Password}";
             _logger.LogInformation(message);
             throw new InvalidCredentialException(message);

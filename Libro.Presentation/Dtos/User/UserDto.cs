@@ -4,7 +4,7 @@ namespace Libro.Presentation.Dtos.User
 {
     public class UserDto
     {
-       
+
         [MaxLength(256)]
         [Required]
         public string? UserName { get; set; }
@@ -14,7 +14,7 @@ namespace Libro.Presentation.Dtos.User
         public string Email { get; set; } = string.Empty;
 
         [Phone]
-        public string? PhoneNumber { get; set; } 
+        public string? PhoneNumber { get; set; }
 
 
     }

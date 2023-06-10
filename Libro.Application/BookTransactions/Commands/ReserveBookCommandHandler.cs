@@ -1,21 +1,13 @@
 ﻿using Libro.Application.Interfaces;
-using Libro.Domain.Entities;
-using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
-using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.BookTransactions.Commands
 {
-    public sealed class ReserveBookCommandHandler : IRequestHandler<ReserveBookCommand,bool>
+    public sealed class ReserveBookCommandHandler : IRequestHandler<ReserveBookCommand, bool>
     {
         private readonly ILogger<ReserveBookCommandHandler> _logger;
         private readonly IBookTransactionRepository _bookTransactionRepository;
@@ -25,7 +17,8 @@ namespace Libro.Application.BookTransactions.Commands
         public ReserveBookCommandHandler(ILogger<ReserveBookCommandHandler> logger,
            IBookTransactionRepository bookTransactionRepository,
            IBookRepository bookRepository,
-           IUnitOfWork unitOfWork) {
+           IUnitOfWork unitOfWork)
+        {
             _logger = logger;
             _bookTransactionRepository = bookTransactionRepository;
             _bookRepository = bookRepository;
@@ -48,9 +41,9 @@ namespace Libro.Application.BookTransactions.Commands
                 throw new BookIsNotAvailableException(book.Title!);
             }
             var dbTransaction = await _unitOfWork.BeginTransactionAsync();
-             _bookRepository.MakeBookNotAvailable(book);
+            _bookRepository.MakeBookNotAvailable(book);
             await _bookTransactionRepository.AddBookTransactionWithReservedStatus(request.BookTransaction);
-            var numberOfRows=await _unitOfWork.SaveChangesAsync();
+            var numberOfRows = await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync(dbTransaction);
             return numberOfRows > 1;
 

@@ -1,10 +1,7 @@
 ﻿using Libro.Application.Interfaces;
-using Libro.Application.Roles.Commands;
-using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using static System.Reflection.Metadata.BlobBuilder;
 
 
 namespace Libro.Application.Books.Queries
@@ -20,17 +17,17 @@ namespace Libro.Application.Books.Queries
             _bookRepository = bookRepository;
 
         }
-  
 
-        public async Task<(List<Book>,int)> Handle(GetSearchedBooksQuery request, CancellationToken cancellationToken)
+
+        public async Task<(List<Book>, int)> Handle(GetSearchedBooksQuery request, CancellationToken cancellationToken)
         {
             if (request.Title is null && request.AuthorName is null && request.Genre is null)
                 return await _bookRepository.GetAllBooksAsync(request.PageNumber, request.Count);
 
 
-           var a= await _bookRepository.GetSearchedBooksAsync(request.Title,request.AuthorName,request.Genre,request.PageNumber,request.Count);
+            var a = await _bookRepository.GetSearchedBooksAsync(request.Title, request.AuthorName, request.Genre, request.PageNumber, request.Count);
             return a;
-           
+
         }
     }
 }

@@ -1,17 +1,10 @@
-﻿using Castle.Components.DictionaryAdapter.Xml;
-using Castle.Core.Logging;
-using Libro.Application.Interfaces;
+﻿using Libro.Application.Interfaces;
 using Libro.Application.Users.Commands;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Users
 {
@@ -23,7 +16,7 @@ namespace Libro.Test.Users
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<ILogger<CreateUserCommandHandler>> _loggerMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    
+
         public CreateUserCommandHandlerTest()
         {
             _userRepositoryMock = new();
@@ -43,7 +36,7 @@ namespace Libro.Test.Users
         [InlineData("ads@gmail.com", "password", null, "Test")]
         [InlineData("ads@gmail.com", "password", "12345", null)]
         [InlineData("ads@gmail.com", "password", null, null)]
-        public async Task Handle_Should_ReturnUserInfo_WhenSuccess(string Email,string Password,string PhoneNumber,string UserName)
+        public async Task Handle_Should_ReturnUserInfo_WhenSuccess(string Email, string Password, string PhoneNumber, string UserName)
         {
 
             _user.Id = Guid.NewGuid();
@@ -82,7 +75,7 @@ namespace Libro.Test.Users
             var result = await _handler.Handle(_command, default);
 
             //Assert
-            Assert.Equal(_user.Id,result.Id);
+            Assert.Equal(_user.Id, result.Id);
 
             _userRepositoryMock.Verify(
              x => x.EmailIsUniqueAsync(
@@ -101,7 +94,7 @@ namespace Libro.Test.Users
           Times.Once);
 
             _userRepositoryMock.Verify(
-                x => x.RegisterUserAsync(It.Is<User>(u=>u.Id==result.Id)),
+                x => x.RegisterUserAsync(It.Is<User>(u => u.Id == result.Id)),
                 Times.Once);
 
             _unitOfWorkMock.Verify(
@@ -127,10 +120,10 @@ namespace Libro.Test.Users
                 x => x.EmailIsUniqueAsync(
                     It.IsAny<string>()))
                 .ReturnsAsync(false);
-            
+
             //Act
             async Task act() => await _handler.Handle(_command, default);
-            UserExistsException ActualException  = await Assert.ThrowsAsync<UserExistsException>(act);
+            UserExistsException ActualException = await Assert.ThrowsAsync<UserExistsException>(act);
             UserExistsException ExpectedException = new($"{nameof(_user.Email)}");
 
             //Assert   
@@ -144,12 +137,12 @@ namespace Libro.Test.Users
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
                Times.Never);
-            Assert.Equal(ExpectedException.Message, ActualException .Message);
-           
+            Assert.Equal(ExpectedException.Message, ActualException.Message);
+
 
         }
 
-       
+
         [Theory]
         [InlineData("ads@gmail.com", "password", "12345", "Test")]
         [InlineData("ads@gmail.com", "password", null, "Test")]

@@ -4,17 +4,11 @@ using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.BookTransactions.Commands
 {
-    public class ReturnBookCommandHandler : IRequestHandler<ReturnBookCommand,bool>
+    public class ReturnBookCommandHandler : IRequestHandler<ReturnBookCommand, bool>
     {
 
         private readonly ILogger<ReturnBookCommandHandler> _logger;
@@ -28,12 +22,12 @@ namespace Libro.Application.BookTransactions.Commands
         {
             _logger = logger;
             _bookTransactionRepository = bookTransactionRepository;
-            _bookRepository= bookRepository;
-            _unitOfWork= unitOfWork;
-    }
+            _bookRepository = bookRepository;
+            _unitOfWork = unitOfWork;
+        }
         public async Task<bool> Handle(ReturnBookCommand request, CancellationToken cancellationToken)
         {
-            
+
             var BookTransaction = await _bookTransactionRepository
                   .GetBookTransactionWhereStatusNotNone(request.TransactionId);
 
@@ -53,18 +47,18 @@ namespace Libro.Application.BookTransactions.Commands
             }
 
             var transaction = await _unitOfWork.BeginTransactionAsync();
-             _bookRepository.MakeBookAvailable(book);
+            _bookRepository.MakeBookAvailable(book);
 
             if (BookTransaction.Status == BookStatus.Reserved)
-            {   
-                     _bookTransactionRepository
-                        .DeleteBookTransaction(BookTransaction, book);
+            {
+                _bookTransactionRepository
+                   .DeleteBookTransaction(BookTransaction, book);
             }
 
             if (BookTransaction.Status == BookStatus.Borrowed)
             {
- 
-                 _bookTransactionRepository.ChangeBookTransactionStatusToNone(BookTransaction);
+
+                _bookTransactionRepository.ChangeBookTransactionStatusToNone(BookTransaction);
             }
 
             var numberOfRows = await _unitOfWork.SaveChangesAsync();

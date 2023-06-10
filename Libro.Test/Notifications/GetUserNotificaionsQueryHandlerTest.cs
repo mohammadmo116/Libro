@@ -1,21 +1,11 @@
 ﻿using Libro.Application.Interfaces;
-using Libro.Application.Notifications.Commands;
+using Libro.Application.Notifications.Queries;
 using Libro.Domain.Entities;
+using Libro.Domain.Exceptions;
 using Libro.Infrastructure.Repositories;
-using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
-using System.Reflection.Metadata;
-using Libro.Application.Notifications.Queries;
-using Libro.Domain.Exceptions;
 using NUnit.Framework;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Assert = Xunit.Assert;
 
 namespace Libro.Test.Notifications
@@ -57,11 +47,11 @@ namespace Libro.Test.Notifications
 
             },
             };
-         
+
             _notificationRepositoryMock = new();
             _userRepositoryMock = new();
             _loggerMock = new();
-            _query = new(_user.Id,1,1);
+            _query = new(_user.Id, 1, 1);
             _handler = new(
                 _notificationRepositoryMock.Object,
                 _userRepositoryMock.Object,
@@ -118,7 +108,7 @@ namespace Libro.Test.Notifications
             _userRepositoryMock.Setup(
              x => x.GetUserAsync(
                  It.IsAny<Guid>()))
-               .ReturnsAsync(()=>null!);
+               .ReturnsAsync(() => null!);
 
 
             //Act

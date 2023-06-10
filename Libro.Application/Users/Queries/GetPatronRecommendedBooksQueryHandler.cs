@@ -6,13 +6,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Libro.Application.Users.Queries
 {
-    public class GetPatronUserQueryHandler : IRequestHandler<GetPatronUserQuery, User>
+    public sealed class GetPatronRecommendedBooksQueryHandler : IRequestHandler<GetPatronRecommendedBooksQuery, (List<Book>, int)>
     {
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<GetPatronUserQueryHandler> _logger;
+        private readonly ILogger<GetPatronRecommendedBooksQueryHandler> _logger;
 
-        public GetPatronUserQueryHandler(
-            ILogger<GetPatronUserQueryHandler> logger,
+        public GetPatronRecommendedBooksQueryHandler(
+            ILogger<GetPatronRecommendedBooksQueryHandler> logger,
             IUserRepository userRepository
             )
         {
@@ -20,17 +20,16 @@ namespace Libro.Application.Users.Queries
             _userRepository = userRepository;
 
         }
-        public async Task<User> Handle(GetPatronUserQuery request, CancellationToken cancellationToken)
+
+        public async Task<(List<Book>, int)> Handle(GetPatronRecommendedBooksQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserWtithRolesAsync(request.PatronId);
             if (user is null || !user.Roles.Any(r => r.Name.ToLower() == "patron"))
             {
                 _logger.LogInformation("CustomNotFoundException (User)");
                 throw new CustomNotFoundException("User");
-
             }
-            return user;
-
+            return await _userRepository.GetRecommendedBooksAsync(user.Id, request.PageNumber, request.Count);
         }
     }
 }

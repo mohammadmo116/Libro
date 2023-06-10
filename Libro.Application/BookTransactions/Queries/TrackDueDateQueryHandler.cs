@@ -2,11 +2,6 @@
 using Libro.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.BookTransactions.Queiries
 {
@@ -15,7 +10,7 @@ namespace Libro.Application.BookTransactions.Queiries
         private readonly ILogger<TrackDueDateQueryHandler> _logger;
         private readonly IBookTransactionRepository _bookTransactionRepository;
 
-        public TrackDueDateQueryHandler(ILogger<TrackDueDateQueryHandler> logger, 
+        public TrackDueDateQueryHandler(ILogger<TrackDueDateQueryHandler> logger,
             IBookTransactionRepository bookTransactionRepository)
         {
             _logger = logger;
