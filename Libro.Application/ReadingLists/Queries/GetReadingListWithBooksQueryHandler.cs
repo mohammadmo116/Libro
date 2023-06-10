@@ -1,14 +1,8 @@
-﻿using Libro.Application.ReadingLists.Commands;
-using Libro.Domain.Entities;
-using Libro.Infrastructure.Repositories;
+﻿using Libro.Domain.Entities;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.ReadingLists.Queries
 {
@@ -29,10 +23,10 @@ namespace Libro.Application.ReadingLists.Queries
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<(ReadingList,int)> Handle(GetReadingListWithBooksQuery request, CancellationToken cancellationToken)
+        public async Task<(ReadingList, int)> Handle(GetReadingListWithBooksQuery request, CancellationToken cancellationToken)
         {
-            return await _readingListRepository.GetReadingListWithBooksAsync(request.UserId,request.ReadingListId, request.PageNumber, request.Count);
-         
+            return await _readingListRepository.GetReadingListWithBooksAsync(request.UserId, request.ReadingListId, request.PageNumber, request.Count);
+
         }
 
 

@@ -1,6 +1,9 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Libro.Application;
 using Libro.Infrastracture;
 using Libro.Infrastructure.Authorization;
+using Libro.Infrastructure.Hubs;
 using Libro.Presentation;
 using Libro.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,9 +13,6 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Libro.Infrastructure.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,12 +32,13 @@ services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapte
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => options.TokenValidationParameters = new() { 
-    ValidateIssuer = true,
-    ValidateAudience = true,
-    ValidateIssuerSigningKey= true,
-    ValidIssuer = builder.Configuration["Authentication:Issuer"],
-    ValidAudience= builder.Configuration["Authentication:Audience"],
+    .AddJwtBearer(options => options.TokenValidationParameters = new()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Authentication:Issuer"],
+        ValidAudience = builder.Configuration["Authentication:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
     });
 
@@ -45,7 +46,6 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 services.AddAuthorization();
 services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
 services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
-//builder.Services.AddScoped<ValidationFilter>();
 
 
 services.AddSwaggerGen(options =>
@@ -62,7 +62,7 @@ services.AddSwaggerGen(options =>
         Scheme = "bearer"
     });
 
-   options.AddSecurityRequirement(new OpenApiSecurityRequirement {{
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement {{
                                         new OpenApiSecurityScheme{
                                             Reference=new OpenApiReference{
                                                  Type=ReferenceType.SecurityScheme,
@@ -113,4 +113,3 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationHub>("/NotificationHub").RequireAuthorization();
 app.Run();
-   

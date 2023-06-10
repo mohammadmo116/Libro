@@ -2,20 +2,15 @@
 using Libro.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.Books.Queries
 {
-    public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery,Book>
+    public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, Book>
     {
         private readonly ILogger<GetBookByIdQueryHandler> _logger;
         private readonly IBookRepository _bookRepository;
         public GetBookByIdQueryHandler(ILogger<GetBookByIdQueryHandler> logger,
-            IBookRepository bookRepository) 
+            IBookRepository bookRepository)
         {
             _logger = logger;
             _bookRepository = bookRepository;
@@ -24,7 +19,7 @@ namespace Libro.Application.Books.Queries
         public async Task<Book> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
         {
             return await _bookRepository.GetBookAsync(request.BookId);
- 
+
         }
     }
 }

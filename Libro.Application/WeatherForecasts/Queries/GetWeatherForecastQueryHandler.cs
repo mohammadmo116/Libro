@@ -21,7 +21,7 @@ namespace Libro.Application.WeatherForecasts.Queries
         {
             _logger.LogInformation("getting weather forecast...");
             return _weatherRepository.Get();
-           
+
 
 
 

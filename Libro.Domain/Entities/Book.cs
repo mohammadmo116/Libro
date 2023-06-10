@@ -1,10 +1,5 @@
 ﻿using Libro.Domain.Common;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Domain.Entities
 {
@@ -19,7 +14,7 @@ namespace Libro.Domain.Entities
 
         public List<Author>? Authors { get; set; }
         public bool? IsAvailable { get; set; }
-        public List<User>? Users { get; set; }= new();
+        public List<User>? Users { get; set; } = new();
         public List<ReadingList>? ReadingLists { get; set; }
         public List<BookTransaction>? BookTransactions { get; set; } = new();
         public List<BookReview>? Reviews { get; set; }

@@ -9,6 +9,6 @@ namespace Libro.Infrastructure.Repositories
         Task CreateReadingListAsync(ReadingList readingList);
         void UpdateReadingList(ReadingList readingList);
         void RemoveReadingList(ReadingList readingList);
- 
+
     }
 }

@@ -1,24 +1,15 @@
-﻿using Libro.Application.Books.Queries;
-using Libro.Application.Notifications.Commands;
+﻿using Libro.Application.Notifications.Commands;
 using Libro.Application.Notifications.Queries;
-using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.Notifications;
 using Mapster;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Presentation.Controllers
 {
@@ -55,7 +46,8 @@ namespace Libro.Presentation.Controllers
 
                 return Ok(new { Books = Result.Item1.Adapt<List<GetNotificationsDto>>(), Pages = Result.Item2 });
             }
-            catch (CustomNotFoundException e) {
+            catch (CustomNotFoundException e)
+            {
 
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
@@ -69,12 +61,13 @@ namespace Libro.Presentation.Controllers
         {
             try
             {
-                
+
                 var request = new NotifyPatronsForReservedBooksCommand();
                 var Result = await _mediator.Send(request);
                 return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
             }
-            catch (CustomNotFoundException e){
+            catch (CustomNotFoundException e)
+            {
 
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });

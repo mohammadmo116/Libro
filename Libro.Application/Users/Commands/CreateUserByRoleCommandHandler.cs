@@ -5,11 +5,6 @@ using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Commands
 {
@@ -27,19 +22,19 @@ namespace Libro.Application.Users.Commands
             _userRepository = userRepository;
             _logger = logger;
             _unitOfWork = unitOfWork;
-            _roleRepository= roleRepository;
+            _roleRepository = roleRepository;
         }
         public async Task<User> Handle(CreateUserByRoleCommand request, CancellationToken cancellationToken)
         {
 
-           var role = await _roleRepository.GetRoleByNameAsync(request.RoleName.ToLower());
+            var role = await _roleRepository.GetRoleByNameAsync(request.RoleName.ToLower());
 
             if (role is null)
             {
                 _logger.LogInformation($"CustomNotFoundException Role : librarian");
                 throw new CustomNotFoundException($"Role {request.RoleName}");
             }
-          
+
 
             if (!await _userRepository.EmailIsUniqueAsync(request.User.Email))
             {

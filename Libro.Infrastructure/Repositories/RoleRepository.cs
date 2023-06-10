@@ -1,5 +1,5 @@
-﻿using Libro.Domain.Entities;
-using Libro.Application.Interfaces;
+﻿using Libro.Application.Interfaces;
+using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +16,7 @@ namespace Libro.Infrastructure.Repositories
         public async Task<Role> GetRoleByNameAsync(string RoleName)
         {
             return await _context.Roles.FirstOrDefaultAsync(r => r.Name == RoleName);
-         
+
         }
         public async Task<Role> AddRoleAsync(Role role)
         {
@@ -31,11 +31,11 @@ namespace Libro.Infrastructure.Repositories
 
         private async Task<bool> RoleNameExistsAsync(string RoleName)
         {
-            if (await _context.Roles.FirstOrDefaultAsync(r=>r.Name== RoleName) is null)
+            if (await _context.Roles.FirstOrDefaultAsync(r => r.Name == RoleName) is null)
                 return false;
             return true;
         }
 
-       
+
     }
 }

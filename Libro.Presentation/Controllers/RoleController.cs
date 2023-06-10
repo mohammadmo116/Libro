@@ -33,14 +33,15 @@ namespace Libro.Presentation.Controllers
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<RoleDto>());
             }
-            catch (RoleExistsException e) {
+            catch (RoleExistsException e)
+            {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName ="Role", Message = e.Message }) ;
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Role", Message = e.Message });
                 return new BadRequestObjectResult(errorResponse);
 
             }
 
         }
-      
+
     }
 }

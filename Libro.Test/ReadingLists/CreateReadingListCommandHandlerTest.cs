@@ -1,16 +1,10 @@
-﻿using Libro.Application.Books.Commands;
-using Libro.Application.Interfaces;
+﻿using Libro.Application.Interfaces;
 using Libro.Application.ReadingLists.Commands;
 using Libro.Domain.Entities;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.ReadingLists
 {
@@ -38,7 +32,7 @@ namespace Libro.Test.ReadingLists
             _readingList = new()
             {
                 Id = Guid.NewGuid(),
-                Name="readingList1"      
+                Name = "readingList1"
             };
 
             _unitOfWorkMock = new();
@@ -78,7 +72,7 @@ namespace Libro.Test.ReadingLists
 
             _userRepositoryMock.Verify(
           x => x.GetUserAsync(
-              It.Is<Guid>(a=>a==_user.Id)),
+              It.Is<Guid>(a => a == _user.Id)),
           Times.Once);
 
 

@@ -1,5 +1,4 @@
-﻿using Libro.Domain.Entities;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace Libro.Infrastructure.Hubs
@@ -10,11 +9,12 @@ namespace Libro.Infrastructure.Hubs
         {
         }
 
-        public override Task OnConnectedAsync() {
+        public override Task OnConnectedAsync()
+        {
             Console.WriteLine("--------------------------------------------------------------");
-         
-            Console.WriteLine(Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value+  "/dslmnfdkl");
-        return Task.CompletedTask;
+
+            Console.WriteLine(Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value + "/dslmnfdkl");
+            return Task.CompletedTask;
         }
 
     }

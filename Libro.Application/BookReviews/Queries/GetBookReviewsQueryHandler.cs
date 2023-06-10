@@ -1,19 +1,12 @@
-﻿using Libro.Application.BookReviews.Commands;
-using Libro.Application.Interfaces;
+﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
-using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.BookReviews.Queries
 {
-    public sealed class GetBookReviewsQueryHandler:IRequestHandler<GetBookReviewsQuery, (List<BookReview>, int)>
+    public sealed class GetBookReviewsQueryHandler : IRequestHandler<GetBookReviewsQuery, (List<BookReview>, int)>
     {
         private readonly ILogger<GetBookReviewsQueryHandler> _logger;
         private readonly IBookRepository _bookRepository;
@@ -38,7 +31,7 @@ namespace Libro.Application.BookReviews.Queries
                 throw new CustomNotFoundException("Book");
 
             }
-            return await _bookRepository.GetReviewsAsync(request.BookId,request.PageNumber,request.Count);
+            return await _bookRepository.GetReviewsAsync(request.BookId, request.PageNumber, request.Count);
         }
     }
 }

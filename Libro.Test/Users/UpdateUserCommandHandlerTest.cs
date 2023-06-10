@@ -1,18 +1,11 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Application.Users.Commands;
-using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Libro.Test.Users
 {
@@ -34,7 +27,7 @@ namespace Libro.Test.Users
                 PhoneNumber = "PhoneNumber",
                 UserName = "UserName"
             };
-          
+
             _unitOfWorkMock = new();
             _userRepositoryMock = new();
             _loggerMock = new();
@@ -153,7 +146,7 @@ namespace Libro.Test.Users
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
         }
-  
+
         [Fact]
         public async Task Handle_Should_ThrowUserExistsException_WhenEmailIsNotUnique()
         {

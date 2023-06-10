@@ -1,24 +1,16 @@
 ﻿using Libro.Application.Authors.Commands;
 using Libro.Application.Authors.Queries;
-using Libro.Application.Books.Commands;
-using Libro.Application.Books.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Author;
-using Libro.Presentation.Dtos.Book;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Presentation.Controllers
 {

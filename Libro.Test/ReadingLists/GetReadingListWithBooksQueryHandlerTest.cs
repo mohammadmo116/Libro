@@ -1,16 +1,9 @@
-﻿using Libro.Application.ReadingLists.Commands;
+﻿using Libro.Application.ReadingLists.Queries;
 using Libro.Domain.Entities;
-using Libro.Infrastructure.Repositories;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Libro.Application.ReadingLists.Queries;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Libro.Test.ReadingLists
 {
@@ -41,7 +34,7 @@ namespace Libro.Test.ReadingLists
             _unitOfWorkMock = new();
             _readingListRepositoryMock = new();
             _loggerMock = new();
-            _Query = new(_user.Id,_readingList.Id,1,1);
+            _Query = new(_user.Id, _readingList.Id, 1, 1);
             _handler = new(
                 _readingListRepositoryMock.Object,
                 _loggerMock.Object,
@@ -59,7 +52,7 @@ namespace Libro.Test.ReadingLists
                     It.IsAny<Guid>(),
                     It.IsAny<int>(),
                     It.IsAny<int>()))
-                .ReturnsAsync(() => (_readingList,1));
+                .ReturnsAsync(() => (_readingList, 1));
 
             //Act
             var result = await _handler.Handle(_Query, default);
@@ -87,7 +80,7 @@ namespace Libro.Test.ReadingLists
                      It.IsAny<Guid>(),
                      It.IsAny<int>(),
                      It.IsAny<int>()))
-                .ReturnsAsync(() => (null!,0));
+                .ReturnsAsync(() => (null!, 0));
 
             //Act
             var result = await _handler.Handle(_Query, default);
