@@ -4,11 +4,6 @@ using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Users
 {
@@ -29,7 +24,7 @@ namespace Libro.Test.Users
                 PhoneNumber = "PhoneNumber",
                 UserName = "UserName"
             };
-  
+
             _userRepositoryMock = new();
             _loggerMock = new();
             _query = new(_user.Id);

@@ -5,11 +5,6 @@ using Libro.Infrastructure;
 using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.ReadingLists.Commands
 {
@@ -25,7 +20,8 @@ namespace Libro.Application.ReadingLists.Commands
              IUserRepository userRepository,
              ILogger<CreateReadingListCommandHandler> logger,
              IUnitOfWork unitOfWork
-            ) {
+            )
+        {
             _readingListRepository = readingListRepository;
             _logger = logger;
             _unitOfWork = unitOfWork;
@@ -33,8 +29,9 @@ namespace Libro.Application.ReadingLists.Commands
         }
         public async Task<ReadingList> Handle(CreateReadingListCommand request, CancellationToken cancellationToken)
         {
-           var user =await _userRepository.GetUserAsync(request.UserId);
-            if (user is null) {
+            var user = await _userRepository.GetUserAsync(request.UserId);
+            if (user is null)
+            {
                 _logger.LogInformation("CustomNotFoundException (User)");
                 throw new CustomNotFoundException("User");
             }

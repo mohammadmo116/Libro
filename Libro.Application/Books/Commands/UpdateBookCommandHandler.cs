@@ -1,14 +1,8 @@
 ﻿using Libro.Application.Interfaces;
-using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.Books.Commands
 {
@@ -30,7 +24,7 @@ namespace Libro.Application.Books.Commands
         }
         public async Task<bool> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
         {
-           var book =await _bookRepository.GetBookAsync(request.Book.Id);
+            var book = await _bookRepository.GetBookAsync(request.Book.Id);
             if (book is null)
             {
                 _logger.LogInformation($"CustomNotFoundException BookId:{request.Book.Id}");

@@ -1,16 +1,9 @@
 ﻿using Libro.Application.Authors.Commands;
-using Libro.Application.Books.Commands;
-using Libro.Application.Interfaces;
 using Libro.Application.Repositories;
 using Libro.Domain.Entities;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Authors
 {
@@ -27,9 +20,9 @@ namespace Libro.Test.Authors
         {
             _author = new()
             {
-              Id = Guid.NewGuid(),
-              Name = "Test",
-              DateOfBirth = DateTime.UtcNow
+                Id = Guid.NewGuid(),
+                Name = "Test",
+                DateOfBirth = DateTime.UtcNow
             };
             _unitOfWorkMock = new();
             _authorRepositoryMock = new();

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Domain.Entities
 {
@@ -13,9 +8,12 @@ namespace Libro.Domain.Entities
         [Required]
         [ForeignKey(nameof(Book))]
         public Guid BookId { get; set; }
+        public Book Book { get; set; }
 
         [Required]
         [ForeignKey(nameof(Author))]
         public Guid AuthorId { get; set; }
+        public Author author { get; set; }
+
     }
 }

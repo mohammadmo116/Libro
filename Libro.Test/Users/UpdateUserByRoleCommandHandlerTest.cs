@@ -6,11 +6,6 @@ using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Users
 {
@@ -57,7 +52,7 @@ namespace Libro.Test.Users
                 x => x.GetUserWtithRolesAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
-           
+
 
             _userRepositoryMock.Setup(
                x => x.EmailIsUniqueForUpdateAsync(

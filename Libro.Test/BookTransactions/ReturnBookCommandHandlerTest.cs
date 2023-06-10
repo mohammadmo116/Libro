@@ -7,11 +7,6 @@ using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.BookTransactions
 {
@@ -58,7 +53,7 @@ namespace Libro.Test.BookTransactions
                _unitOfWorkMock.Object
                );
         }
-     
+
         /////Handle_Should_ReturnTrue_WhenReturnBookWhenStatusIsReservedOrBorrowed
         [Theory]
         [InlineData(BookStatus.Reserved)]
@@ -113,7 +108,7 @@ namespace Libro.Test.BookTransactions
                x => x.CommitAsync(It.IsAny<IDbContextTransaction>()
                ));
 
-            
+
             //Act
             var result = await _handler.Handle(_command, default);
 
@@ -139,17 +134,17 @@ namespace Libro.Test.BookTransactions
 
             _bookRepository.Verify(
               x => x.MakeBookAvailable(
-                  It.Is<Book>(a=>a==_book)),
+                  It.Is<Book>(a => a == _book)),
               Times.Once);
 
 
             if (_bookTransaction.Status == BookStatus.Reserved)
             {
-                Assert.Equal(BookStatus.Reserved,_bookTransaction.Status);
+                Assert.Equal(BookStatus.Reserved, _bookTransaction.Status);
                 _bookTransactionRepository.Verify(
                  x => x.DeleteBookTransaction(
-                     It.Is<BookTransaction>(a=>a==_bookTransaction),
-                     It.Is<Book>(a=>a==_book)),
+                     It.Is<BookTransaction>(a => a == _bookTransaction),
+                     It.Is<Book>(a => a == _book)),
                  Times.Once);
             }
 
@@ -158,7 +153,7 @@ namespace Libro.Test.BookTransactions
                 Assert.Equal(BookStatus.Borrowed, _bookTransaction.Status);
                 _bookTransactionRepository.Verify(
                   x => x.ChangeBookTransactionStatusToNone(
-                      It.Is<BookTransaction>(a=>a==_bookTransaction)),
+                      It.Is<BookTransaction>(a => a == _bookTransaction)),
                   Times.Once);
             }
 
@@ -219,17 +214,17 @@ namespace Libro.Test.BookTransactions
               x => x.MakeBookAvailable(
                   It.Is<Book>(a => a == _book)),
               Times.Never);
-    
-                _bookTransactionRepository.Verify(
-                 x => x.DeleteBookTransaction(
-                     It.Is<BookTransaction>(a => a == _bookTransaction),
-                     It.Is<Book>(a => a == _book)),
-                 Times.Never);  
-           
-                _bookTransactionRepository.Verify(
-                  x => x.ChangeBookTransactionStatusToNone(
-                      It.Is<BookTransaction>(a => a == _bookTransaction)),
-                  Times.Never);
+
+            _bookTransactionRepository.Verify(
+             x => x.DeleteBookTransaction(
+                 It.Is<BookTransaction>(a => a == _bookTransaction),
+                 It.Is<Book>(a => a == _book)),
+             Times.Never);
+
+            _bookTransactionRepository.Verify(
+              x => x.ChangeBookTransactionStatusToNone(
+                  It.Is<BookTransaction>(a => a == _bookTransaction)),
+              Times.Never);
 
 
             _unitOfWorkMock.Verify(

@@ -1,14 +1,8 @@
 ﻿using Libro.Application.Books.Queries;
 using Libro.Application.Interfaces;
-using Libro.Application.Users.Commands;
 using Libro.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Books
 {
@@ -31,8 +25,8 @@ namespace Libro.Test.Books
 
             _bookRepositoryMock = new();
             _loggerMock = new();
-            _Query = new (_book.Id);
-            _handler = new (
+            _Query = new(_book.Id);
+            _handler = new(
                 _loggerMock.Object,
                 _bookRepositoryMock.Object
                 );
@@ -52,15 +46,15 @@ namespace Libro.Test.Books
 
             //Assert
             _bookRepositoryMock.Verify(
-              x => x.GetBookAsync(It.Is<Guid>(x=>x == _book.Id)),
+              x => x.GetBookAsync(It.Is<Guid>(x => x == _book.Id)),
               Times.Once);
             Assert.Equal(_book.Id, result.Id);
-          
+
         }
         [Fact]
         public async Task Handle_Should_ReturnNull_WhenBookNotFound()
         {
-            
+
             //Arrange
             _bookRepositoryMock.Setup(
                 x => x.GetBookAsync(
@@ -71,7 +65,7 @@ namespace Libro.Test.Books
             var result = await _handler.Handle(_Query, default);
 
             //Assert
- 
+
             _bookRepositoryMock.Verify(
             x => x.GetBookAsync(It.Is<Guid>(x => x == _book.Id)),
             Times.Once);

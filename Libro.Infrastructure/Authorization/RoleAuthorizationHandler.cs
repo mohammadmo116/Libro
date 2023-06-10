@@ -9,10 +9,10 @@ namespace Libro.Infrastructure.Authorization
     public class RoleAuthorizationHandler : AuthorizationHandler<RoleRequirement>
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        public RoleAuthorizationHandler(IServiceScopeFactory serviceScopeFactory) 
+        public RoleAuthorizationHandler(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
-                }
+        }
         protected override async Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             RoleRequirement requirement)

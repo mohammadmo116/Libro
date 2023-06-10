@@ -21,5 +21,6 @@ namespace Libro.Application.Interfaces
         Task<(List<BookTransaction>, int)> GetBorrowingHistoryAsync(Guid UserId, int PageNumber, int Count);
         Task<List<Guid>> GetPatronIdsForReservedBooksAsync();
         Task<List<Guid>> GetPatronIdsForDueDatesAsync();
+        Task<(List<Book>, int)> GetRecommendedBooksAsync(Guid UserId, int PageNumber, int Count);
     }
 }

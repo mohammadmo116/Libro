@@ -2,6 +2,6 @@
 {
     public interface IRoleService
     {
-    Task<HashSet<string>> GetRolesAsync(Guid UserId);
+        Task<HashSet<string>> GetRolesAsync(Guid UserId);
     }
 }

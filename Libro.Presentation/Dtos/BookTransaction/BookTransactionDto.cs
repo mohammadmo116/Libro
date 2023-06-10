@@ -1,9 +1,5 @@
-﻿
-using Libro.Domain.Entities;
-using Libro.Domain.Enums;
-using Libro.Presentation.Dtos.Book;
+﻿using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.User;
-using System.ComponentModel.DataAnnotations;
 
 
 namespace Libro.Presentation.Dtos.BookTransaction

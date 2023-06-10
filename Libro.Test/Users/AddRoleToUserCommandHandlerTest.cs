@@ -3,15 +3,8 @@ using Libro.Application.Users.Commands;
 using Libro.Domain.Entities;
 using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.Users
 {
@@ -19,7 +12,7 @@ namespace Libro.Test.Users
     {
         private readonly User _user;
         private readonly Role _role;
-        
+
         private readonly UserRole _userRole;
         private readonly AddRoleToUserCommand _command;
         private readonly AddRoleToUserCommandHandler _handler;
@@ -111,7 +104,7 @@ namespace Libro.Test.Users
             _unitOfWorkMock.Verify(
                 x => x.SaveChangesAsync(),
               Times.Once);
-    
+
             Assert.True(result);
         }
         [Fact]

@@ -24,12 +24,12 @@ namespace Libro.WebApi.Filters
                         var errorModel = new ErrorModel()
                         {
                             FieldName = error.Key,
-                            Message= subError
+                            Message = subError
                         };
                         errorResponse.Errors.Add(errorModel);
                     }
                 }
-                context.Result=new BadRequestObjectResult(errorResponse);
+                context.Result = new BadRequestObjectResult(errorResponse);
                 return;
             }
             await next();

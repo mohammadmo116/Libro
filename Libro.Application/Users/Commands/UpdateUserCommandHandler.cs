@@ -4,15 +4,10 @@ using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Application.Users.Commands
 {
-    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand,bool>
+    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, bool>
     {
 
         private readonly ILogger<UpdateUserCommandHandler> _logger;

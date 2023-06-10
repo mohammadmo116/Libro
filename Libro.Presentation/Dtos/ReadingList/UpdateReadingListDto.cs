@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Libro.Presentation.Dtos.ReadingList
 {
-    public class UpdateReadingListDto 
+    public class UpdateReadingListDto
     {
         public Guid Id { get; set; }
         [Required]

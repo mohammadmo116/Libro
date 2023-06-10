@@ -5,21 +5,20 @@ using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Libro.Test.BookTransactions
 {
     public class CheckOutBookCommandHandlerTest
-    {  
+    {
         private readonly BookTransaction _bookTransaction;
         private readonly CheckOutBookCommand _command;
         private readonly CheckOutBookCommandHandler _handler;
         private readonly Mock<IBookTransactionRepository> _bookTransactionRepository;
         private readonly Mock<ILogger<CheckOutBookCommandHandler>> _loggerMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-       
+
         public CheckOutBookCommandHandlerTest()
         {
 
@@ -27,10 +26,10 @@ namespace Libro.Test.BookTransactions
             _loggerMock = new();
             _unitOfWorkMock = new();
 
-           
+
             _bookTransaction = new()
             {
-                Id= Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 BookId = Guid.NewGuid(),
                 UserId = Guid.NewGuid(),
             };
@@ -54,7 +53,7 @@ namespace Libro.Test.BookTransactions
                 )
                 .ReturnsAsync(() => _bookTransaction);
 
-             _bookTransaction.Status = BookStatus.Reserved;
+            _bookTransaction.Status = BookStatus.Reserved;
 
             _bookTransactionRepository.Setup(
                 x => x.ChangeBookTransactionStatusToBorrowed(
@@ -78,18 +77,18 @@ namespace Libro.Test.BookTransactions
                    ),
                Times.Once);
 
-            Assert.Equal(BookStatus.Reserved,_bookTransaction.Status);
+            Assert.Equal(BookStatus.Reserved, _bookTransaction.Status);
 
             _bookTransactionRepository.Verify(
                 x => x.ChangeBookTransactionStatusToBorrowed(
-                    It.Is<BookTransaction>(a=>a==_bookTransaction),
+                    It.Is<BookTransaction>(a => a == _bookTransaction),
                     It.Is<DateTime>(a => a > DateTime.UtcNow)
                     ),
                 Times.Once
                 );
 
             _unitOfWorkMock.Verify(
-             x => x.SaveChangesAsync(), 
+             x => x.SaveChangesAsync(),
              Times.Once);
             Assert.True(result);
         }
@@ -105,7 +104,7 @@ namespace Libro.Test.BookTransactions
                 .ReturnsAsync(() => null!);
 
             //Act
-           
+
             async Task act() => await _handler.Handle(_command, default);
             CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
             CustomNotFoundException ExpectedException = new("bookTransaction");
@@ -130,7 +129,7 @@ namespace Libro.Test.BookTransactions
              Times.Never);
 
             Assert.Equal(ExpectedException.Message, ActualException.Message);
-           
+
         }
 
         [Fact]

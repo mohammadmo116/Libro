@@ -1,14 +1,8 @@
-﻿using Libro.Application.Interfaces;
-using Libro.Infrastructure.Repositories;
+﻿using Libro.Domain.Exceptions;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Libro.Domain.Exceptions;
 
 namespace Libro.Application.ReadingLists.Commands
 {
@@ -31,8 +25,8 @@ namespace Libro.Application.ReadingLists.Commands
 
         }
         public async Task<bool> Handle(UpdateReadingListCommand request, CancellationToken cancellationToken)
-        { 
-            var readingList = await _readingListRepository.GetReadingListByUserAsync(request.UserId,request.ReadingList.Id);
+        {
+            var readingList = await _readingListRepository.GetReadingListByUserAsync(request.UserId, request.ReadingList.Id);
             if (readingList is null)
             {
                 _logger.LogInformation($"CustomNotFoundException readingListId:{request.ReadingList.Id}");

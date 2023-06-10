@@ -5,7 +5,7 @@ namespace Libro.Domain.Entities
 {
     public class Role : BaseEntity
     {
-       
+
         [Required]
         [MaxLength(256)]
         public string Name { get; set; }
