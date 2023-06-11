@@ -52,12 +52,6 @@ namespace Libro.Application.Users.Commands
                 throw new UserExistsException(nameof(request.User.PhoneNumber));
             }
 
-            UserRole userRole = new()
-            {
-                RoleId = role.Id,
-                UserId = request.User.Id
-
-            };
             var user = await _userRepository.RegisterUserAsync(request.User);
             user.Roles.Add(role);
             await _unitOfWork.SaveChangesAsync();

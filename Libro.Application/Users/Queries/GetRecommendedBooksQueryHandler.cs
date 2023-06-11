@@ -6,13 +6,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Libro.Application.Users.Queries
 {
-    public sealed class GetPatronRecommendedBooksQueryHandler : IRequestHandler<GetPatronRecommendedBooksQuery, (List<Book>, int)>
+    public sealed class GetRecommendedBooksQueryHandler : IRequestHandler<GetRecommendedBooksQuery, (List<Book>, int)>
     {
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<GetPatronRecommendedBooksQueryHandler> _logger;
+        private readonly ILogger<GetRecommendedBooksQueryHandler> _logger;
 
-        public GetPatronRecommendedBooksQueryHandler(
-            ILogger<GetPatronRecommendedBooksQueryHandler> logger,
+        public GetRecommendedBooksQueryHandler(
+            ILogger<GetRecommendedBooksQueryHandler> logger,
             IUserRepository userRepository
             )
         {
@@ -21,10 +21,10 @@ namespace Libro.Application.Users.Queries
 
         }
 
-        public async Task<(List<Book>, int)> Handle(GetPatronRecommendedBooksQuery request, CancellationToken cancellationToken)
+        public async Task<(List<Book>, int)> Handle(GetRecommendedBooksQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserWtithRolesAsync(request.PatronId);
-            if (user is null || !user.Roles.Any(r => r.Name.ToLower() == "patron"))
+            var user = await _userRepository.GetUserAsync(request.UserId);
+            if (user is null)
             {
                 _logger.LogInformation("CustomNotFoundException (User)");
                 throw new CustomNotFoundException("User");

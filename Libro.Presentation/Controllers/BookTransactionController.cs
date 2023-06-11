@@ -82,7 +82,7 @@ namespace Libro.Presentation.Controllers
             catch (CustomNotFoundException e)
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "bookTransaction", Message = e.Message });
                 return new NotFoundObjectResult(errorResponse);
             }
 
@@ -109,7 +109,7 @@ namespace Libro.Presentation.Controllers
             catch (CustomNotFoundException e)
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "bookTransaction", Message = e.Message });
                 return new NotFoundObjectResult(errorResponse);
             }
 

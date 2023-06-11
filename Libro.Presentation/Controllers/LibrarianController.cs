@@ -26,13 +26,14 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("admin")]
-        [HttpGet("{Librarian}", Name = "GetLibrarianById")]
-        public async Task<ActionResult<UserDto>> GetUserById(Guid LibrarianId)
+        [ToRole("librarian")]
+        [HttpGet("{UserId}", Name = "GetLibrarianById")]
+        public async Task<ActionResult<UserDto>> GetLibrarianById(Guid UserId)
         {
             try
             {
 
-                var query = new GetUserQuery(LibrarianId);
+                var query = new GetUserQuery(UserId);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<UserDto>());
 
@@ -58,7 +59,7 @@ namespace Libro.Presentation.Controllers
                 var query = new CreateUserByRoleCommand(user, "librarian");
                 var Result = await _mediator.Send(query);
                 var ResultUserDto = Result.Adapt<UserDtoWithId>();
-                return CreatedAtAction(nameof(GetUserById), new { UserId = ResultUserDto.Id }, ResultUserDto);
+                return CreatedAtAction(nameof(GetLibrarianById), new { UserId = ResultUserDto.Id }, ResultUserDto);
 
             }
 
@@ -72,18 +73,19 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("admin")]
-        [HttpPut("{LibrarianId}", Name = "UpdateLibrarianUser")]
-        public async Task<ActionResult> UpdateLibrarianUser(Guid LibrarianId, UpdateUserDto userDto)
+        [ToRole("librarian")]
+        [HttpPut("{UserId}", Name = "UpdateLibrarianUser")]
+        public async Task<ActionResult> UpdateLibrarianUser(Guid UserId, UpdateUserDto userDto)
         {
             try
             {
-                if (LibrarianId != userDto.Id)
+                if (UserId != userDto.Id)
                 {
                     return BadRequest();
                 }
 
                 var user = userDto.Adapt<User>();
-                var query = new UpdateUserByRoleCommand(user, "Librarian");
+                var query = new UpdateUserCommand(user);
                 var Result = await _mediator.Send(query);
                 return Result ? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
 
@@ -104,13 +106,14 @@ namespace Libro.Presentation.Controllers
             }
         }
         [HasRole("admin")]
-        [HttpDelete("{LibrarianId}", Name = "RemoveLibrarianUser")]
-        public async Task<ActionResult> RemoveLibrarianUser(Guid LibrarianId)
+        [ToRole("librarian")]
+        [HttpDelete("{UserId}", Name = "RemoveLibrarianUser")]
+        public async Task<ActionResult> RemoveLibrarianUser(Guid UserId)
         {
             try
             {
 
-                var command = new RemoveUserByRoleCommand(LibrarianId, "librarian");
+                var command = new RemoveUserCommand(UserId);
                 var Result = await _mediator.Send(command);
                 return Result ? Ok("Librarian User has been Deleted") : StatusCode(StatusCodes.Status500InternalServerError);
             }

@@ -39,13 +39,14 @@ namespace Libro.WebApi.Controllers
             var Result = await _mediator.Send(query);
             return Ok(Result);
         }
-
-        [HttpGet("test", Name = "Geet")]
-        public async Task<ActionResult> Geet()
+        [HasRole("patron")]
+        [ToRole("patron")]
+        [HttpGet("{UserId}", Name = "Geet")]
+        public async Task<ActionResult> Geet(Guid UserId)
         {
 
 
-            return Ok("test");
+            return Ok();
         }
 
 

@@ -59,39 +59,23 @@ namespace Libro.Presentation.Controllers
         [HttpPost("ReservedBooks", Name = "NotifyPatronsForReservedBooks")]
         public async Task<ActionResult> NotifyPatronsForReservedBooks()
         {
-            try
-            {
 
-                var request = new NotifyPatronsForReservedBooksCommand();
-                var Result = await _mediator.Send(request);
-                return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (CustomNotFoundException e)
-            {
+            var request = new NotifyPatronsForReservedBooksCommand();
+            var Result = await _mediator.Send(request);
+            return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
 
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-            }
+
         }
         [HasRole("librarian")]
         [HttpPost("DueDates", Name = "NotifyPatronsForDueDates")]
         public async Task<ActionResult> NotifyPatronsForDueDates()
         {
-            try
-            {
 
-                var request = new NotifyPatronsForDueDatesCommand();
-                var Result = await _mediator.Send(request);
-                return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (CustomNotFoundException e)
-            {
+            var request = new NotifyPatronsForDueDatesCommand();
+            var Result = await _mediator.Send(request);
+            return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
 
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-            }
+
         }
     }
 }
