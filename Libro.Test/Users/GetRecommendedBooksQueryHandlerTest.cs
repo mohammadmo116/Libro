@@ -9,18 +9,15 @@ using Assert = Xunit.Assert;
 
 namespace Libro.Test.Users
 {
-    public sealed class GetPatronRecommendedBooksQueryHandlerTest
+    public sealed class GetRecommendedBooksQueryHandlerTest
     {
-
-        private readonly Role _admin;
-        private readonly Role _patron;
         private readonly List<Book> _books;
         private readonly User _user;
-        private readonly GetPatronRecommendedBooksQuery _query;
-        private readonly GetPatronRecommendedBooksQueryHandler _handler;
+        private readonly GetRecommendedBooksQuery _query;
+        private readonly GetRecommendedBooksQueryHandler _handler;
         private readonly Mock<IUserRepository> _userRepositoryMock;
-        private readonly Mock<ILogger<GetPatronRecommendedBooksQueryHandler>> _loggerMock;
-        public GetPatronRecommendedBooksQueryHandlerTest()
+        private readonly Mock<ILogger<GetRecommendedBooksQueryHandler>> _loggerMock;
+        public GetRecommendedBooksQueryHandlerTest()
         {
             var AuthorsList = new List<Author> {
                     new Author(){
@@ -33,18 +30,6 @@ namespace Libro.Test.Users
                     },
             };
 
-            _admin = new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "admin",
-
-            };
-            _patron = new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "patron",
-
-            };
             _user = new()
             {
                 Id = Guid.NewGuid(),
@@ -91,17 +76,16 @@ namespace Libro.Test.Users
         }
 
         [Fact]
-        public async Task Handle_Should_ReturnRecommendedBooks_WhenPatronUserIsFound()
+        public async Task Handle_Should_ReturnRecommendedBooks_WhenUserIsFound()
 
         {
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserWtithRolesAsync(
+                x => x.GetUserAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => _user);
 
-            _user.Roles.Add(_patron);
 
             _userRepositoryMock.Setup(
                 x => x.GetRecommendedBooksAsync(
@@ -117,7 +101,7 @@ namespace Libro.Test.Users
 
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
 
             _userRepositoryMock.Verify(
@@ -138,7 +122,7 @@ namespace Libro.Test.Users
 
             //Arrange
             _userRepositoryMock.Setup(
-                x => x.GetUserWtithRolesAsync(
+                x => x.GetUserAsync(
                     It.IsAny<Guid>()))
                 .ReturnsAsync(() => null!);
 
@@ -150,7 +134,7 @@ namespace Libro.Test.Users
 
             //Assert
             _userRepositoryMock.Verify(
-              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
+              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
               Times.Once);
             _userRepositoryMock.Verify(
               x => x.GetRecommendedBooksAsync(
@@ -161,37 +145,7 @@ namespace Libro.Test.Users
             Assert.Equal(ExpectedException.Message, ActualException.Message);
 
         }
-        [Fact]
-        public async Task Handle_Should_ThrowCustomNotFoundException_WhenUserIsNotPatron()
-        {
 
-            //Arrange
-            _userRepositoryMock.Setup(
-                x => x.GetUserWtithRolesAsync(
-                    It.IsAny<Guid>()))
-                .ReturnsAsync(() => _user);
-
-            _user.Roles.Remove(_patron);
-            _user.Roles.Add(_admin);
-
-            //Act
-            async Task act() => await _handler.Handle(_query, default);
-            CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
-            CustomNotFoundException ExpectedException = new("User");
-
-            //Assert
-            _userRepositoryMock.Verify(
-              x => x.GetUserWtithRolesAsync(It.Is<Guid>(x => x == _user.Id)),
-              Times.Once);
-            _userRepositoryMock.Verify(
-              x => x.GetBorrowingHistoryAsync(
-                  It.IsAny<Guid>(),
-                  It.IsAny<int>(),
-                  It.IsAny<int>()),
-              Times.Never);
-            Assert.Equal(ExpectedException.Message, ActualException.Message);
-
-        }
 
     }
 }

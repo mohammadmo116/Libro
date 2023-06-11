@@ -28,12 +28,13 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
         }
         [HasRole("admin,librarian")]
-        [HttpGet("{PatronId}", Name = "GetPatronUser")]
-        public async Task<ActionResult<UserDtoWithId>> GetPatronUser(Guid PatronId)
+        [ToRole("patron")]
+        [HttpGet("{UserId}", Name = "GetPatronUser")]
+        public async Task<ActionResult<UserDtoWithId>> GetPatronUser(Guid UserId)
         {
             try
             {
-                var query = new GetPatronUserQuery(PatronId);
+                var query = new GetUserQuery(UserId);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<UserDtoWithId>());
 
@@ -49,18 +50,19 @@ namespace Libro.Presentation.Controllers
         }
 
         [HasRole("admin,librarian")]
-        [HttpPut("{PatronId}", Name = "UpdatePatronUser")]
-        public async Task<ActionResult> UpdatePatronUser(Guid PatronId, UpdateUserDto userDto)
+        [ToRole("patron")]
+        [HttpPut("{UserId}", Name = "UpdatePatronUser")]
+        public async Task<ActionResult> UpdatePatronUser(Guid UserId, UpdateUserDto userDto)
         {
             try
             {
-                if (PatronId != userDto.Id)
+                if (UserId != userDto.Id)
                 {
                     return BadRequest();
                 }
 
                 var user = userDto.Adapt<User>();
-                var query = new UpdateUserByRoleCommand(user, "patron");
+                var query = new UpdateUserCommand(user);
                 var Result = await _mediator.Send(query);
 
                 return Result ? Ok("Profile has heen Updated") : StatusCode(StatusCodes.Status500InternalServerError);
@@ -82,8 +84,9 @@ namespace Libro.Presentation.Controllers
             }
         }
         [HasRole("admin,librarian")]
-        [HttpGet("{PatronId}/BorrowingHistory", Name = "GetPatronBorrwingHistory")]
-        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetPatronBorrowingHistory(Guid PatronId, int PageNumber = 0, int Count = 5)
+        [ToRole("patron")]
+        [HttpGet("{UserId}/BorrowingHistory", Name = "GetPatronBorrwingHistory")]
+        public async Task<ActionResult<List<BookTransactionWithStatusDto>>> GetPatronBorrowingHistory(Guid UserId, int PageNumber = 0, int Count = 5)
         {
             try
             {
@@ -92,12 +95,12 @@ namespace Libro.Presentation.Controllers
                 if (Count < 1)
                     Count = 1;
 
-                var query = new GetPatronBorrowingHistoryQuery(PatronId, PageNumber, Count);
+                var query = new GetBorrowingHistoryQuery(UserId, PageNumber, Count);
                 var Result = await _mediator.Send(query);
 
                 return Ok(new
                 {
-                    ReadingList = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>(),
+                    Transactions = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>(),
                     Pages = Result.Item2
                 });
 
@@ -128,7 +131,7 @@ namespace Libro.Presentation.Controllers
                 {
                     return BadRequest("Bad user Id");
                 }
-                var query = new GetPatronRecommendedBooksQuery(parsedUserId, PageNumber, Count);
+                var query = new GetRecommendedBooksQuery(parsedUserId, PageNumber, Count);
                 var Result = await _mediator.Send(query);
 
                 return Ok(new
