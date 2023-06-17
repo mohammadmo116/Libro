@@ -7,16 +7,15 @@ using Moq;
 
 namespace Libro.Test.ReadingLists
 {
-    public class GetReadingListWithBooksQueryHandlerTest
+    public class GetUserReadingListWithBooksQueryHandlerTest
     {
         private readonly User _user;
         private readonly ReadingList _readingList;
-        private readonly GetReadingListWithBooksQuery _Query;
-        private readonly GetReadingListWithBooksQueryHandler _handler;
+        private readonly GetUserReadingListWithBooksQuery _Query;
+        private readonly GetUserReadingListWithBooksQueryHandler _handler;
         private readonly Mock<IReadingListRepository> _readingListRepositoryMock;
-        private readonly Mock<ILogger<GetReadingListWithBooksQueryHandler>> _loggerMock;
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        public GetReadingListWithBooksQueryHandlerTest()
+
+        public GetUserReadingListWithBooksQueryHandlerTest()
         {
             _readingList = new()
             {
@@ -31,14 +30,10 @@ namespace Libro.Test.ReadingLists
                 PhoneNumber = "12345",
                 UserName = "Test"
             };
-            _unitOfWorkMock = new();
             _readingListRepositoryMock = new();
-            _loggerMock = new();
             _Query = new(_user.Id, _readingList.Id, 1, 1);
             _handler = new(
-                _readingListRepositoryMock.Object,
-                _loggerMock.Object,
-                _unitOfWorkMock.Object
+                _readingListRepositoryMock.Object
                 );
         }
         [Fact]

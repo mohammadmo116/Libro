@@ -81,12 +81,7 @@ namespace Libro.Test.Users
         {
 
             //Arrange
-            _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
-                    It.IsAny<Guid>()))
-                .ReturnsAsync(() => _user);
-
-
+         
             _userRepositoryMock.Setup(
                 x => x.GetRecommendedBooksAsync(
                     It.IsAny<Guid>(),
@@ -100,10 +95,7 @@ namespace Libro.Test.Users
             var result = await _handler.Handle(_query, default);
 
             //Assert
-            _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
-              Times.Once);
-
+  
             _userRepositoryMock.Verify(
                 x => x.GetRecommendedBooksAsync(
                     It.Is<Guid>(u => u == _user.Id),
@@ -116,36 +108,7 @@ namespace Libro.Test.Users
 
 
         }
-        [Fact]
-        public async Task Handle_Should_ThrowCustomNotFoundException_WhenUserIsNotFound()
-        {
-
-            //Arrange
-            _userRepositoryMock.Setup(
-                x => x.GetUserAsync(
-                    It.IsAny<Guid>()))
-                .ReturnsAsync(() => null!);
-
-            //Act
-
-            async Task act() => await _handler.Handle(_query, default);
-            CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
-            CustomNotFoundException ExpectedException = new("User");
-
-            //Assert
-            _userRepositoryMock.Verify(
-              x => x.GetUserAsync(It.Is<Guid>(x => x == _user.Id)),
-              Times.Once);
-            _userRepositoryMock.Verify(
-              x => x.GetRecommendedBooksAsync(
-                  It.IsAny<Guid>(),
-                  It.IsAny<int>(),
-                  It.IsAny<int>()),
-              Times.Never);
-            Assert.Equal(ExpectedException.Message, ActualException.Message);
-
-        }
-
+        
 
     }
 }

@@ -34,28 +34,27 @@ namespace Libro.Infrastructure.Repositories
 
 
         }
-        public async Task<List<Guid>> GetPatronIdsForReservedBooksAsync()
+        public async Task<List<User>> GetPatronsWithReservedBooksAsync()
         {
 
             return await _context.Users
-                 .Include(a => a.Roles)
-                 .Include(a => a.BookTransactions)
-                 .Where(u => u.Roles.Any(a => a.Name == "patron"))
-                 .Where(u => u.BookTransactions.Any(a => a.Status == BookStatus.Reserved))
-                 .Select(a => a.Id).ToListAsync();
+                     .Include(a => a.BookTransactions.Where(a => a.Status == BookStatus.Reserved))
+                     .ThenInclude(a => a.Book)
+                    .Where(u => u.Roles.Any(a => a.Name == "patron"))
+                    .ToListAsync();
+
 
 
 
         }
-        public async Task<List<Guid>> GetPatronIdsForDueDatesAsync()
+        public async Task<List<User>> GetPatronsWithDueDatesAsync()
         {
 
-            return await _context.Users
-                 .Include(a => a.Roles)
-                 .Include(a => a.BookTransactions)
-                 .Where(u => u.Roles.Any(a => a.Name == "patron"))
-                 .Where(u => u.BookTransactions.Any(a => a.Status == BookStatus.Borrowed))
-                 .Select(a => a.Id).ToListAsync();
+           return await _context.Users
+                .Include(a => a.BookTransactions.Where(a => a.Status == BookStatus.Borrowed && a.DueDate < DateTime.UtcNow))
+                .ThenInclude(a => a.Book)
+               .Where(u => u.Roles.Any(a => a.Name == "patron"))
+               .ToListAsync();
 
 
 

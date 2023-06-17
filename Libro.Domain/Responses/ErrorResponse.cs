@@ -4,10 +4,14 @@ namespace Libro.Domain.Responses
 {
     public class ErrorResponse
     {
+        public ErrorResponse()
+        {
+           
+        }
         public ErrorResponse(HttpStatusCode status)
         {
             Status = status;
-            Errors = new List<ErrorModel>();
+            Errors = new List<ErrorModel>() { };
         }
 
         public HttpStatusCode Status { get; set; }

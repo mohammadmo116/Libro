@@ -64,11 +64,6 @@ namespace Libro.Test.Notifications
         {
             //Arrange
 
-            _userRepositoryMock.Setup(
-             x => x.GetUserAsync(
-                 It.IsAny<Guid>()))
-               .ReturnsAsync(_user);
-
             _notificationRepositoryMock.Setup(
               x => x.GetNotifications(
                   It.IsAny<Guid>(),
@@ -81,10 +76,6 @@ namespace Libro.Test.Notifications
 
             //Assert  
 
-            _userRepositoryMock.Verify(
-              x => x.GetUserAsync(
-                  It.Is<Guid>(a => a == _user.Id)),
-              Times.Once);
 
             _notificationRepositoryMock.Verify(
               x => x.GetNotifications(
@@ -98,41 +89,6 @@ namespace Libro.Test.Notifications
             Assert.Equal(1, result.Item2);
         }
 
-
-        [Fact]
-        public async Task Handle_Should_ThrowCustomNotFoundException_WhenUserIsNotFound()
-        {
-
-            //Arrange
-
-            _userRepositoryMock.Setup(
-             x => x.GetUserAsync(
-                 It.IsAny<Guid>()))
-               .ReturnsAsync(() => null!);
-
-
-            //Act
-            async Task act() => await _handler.Handle(_query, default);
-            CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
-            CustomNotFoundException ExpectedException = new("User");
-
-            //Assert
-
-
-            _userRepositoryMock.Verify(
-           x => x.GetUserAsync(
-               It.Is<Guid>(a => a == _user.Id)),
-           Times.Once);
-
-            _notificationRepositoryMock.Verify(
-             x => x.GetNotifications(
-                 It.Is<Guid>(a => a == _user.Id),
-                 It.Is<int>(a => a == 1),
-                 It.Is<int>(a => a == 1)),
-             Times.Never);
-
-            Assert.Equal(ExpectedException.Message, ActualException.Message);
-
-        }
+       
     }
 }

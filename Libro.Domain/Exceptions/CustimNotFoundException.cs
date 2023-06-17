@@ -2,9 +2,12 @@
 {
     public class CustomNotFoundException : Exception
     {
-        public CustomNotFoundException(string code)
-            : base($"404 {code} NotFound")
+        public string _field { get; set; }
+        public CustomNotFoundException(string field)
+            : base($"404 {field} NotFound")
         {
+
+            _field = field;
         }
     }
 }
