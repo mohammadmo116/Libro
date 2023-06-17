@@ -26,12 +26,7 @@ namespace Libro.Application.Notifications.Queries
 
         public async Task<(List<Notification>, int)> Handle(GetUserNotificaionsQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserAsync(request.UserId);
-            if (user is null)
-            {
-                _logger.LogInformation("CustomNotFoundException (User)");
-                throw new CustomNotFoundException("User");
-            }
+          
             return await _notificationRepository.GetNotifications(request.UserId, request.PageNumbr, request.Count);
         }
     }

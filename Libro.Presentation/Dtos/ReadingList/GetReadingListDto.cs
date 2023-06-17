@@ -2,10 +2,7 @@
 {
     public class GetReadingListDto : ReadingListDto
     {
-
         public Guid Id { get; set; }
-
-
 
     }
 }

@@ -27,7 +27,7 @@ namespace Libro.Application.Users.Commands
 
         public async Task<bool> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserWtithRolesAsync(request.user.Id);
+            var user = await _userRepository.GetUserAsync(request.user.Id);
 
             if (user is null)
             {

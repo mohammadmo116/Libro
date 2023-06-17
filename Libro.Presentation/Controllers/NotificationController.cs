@@ -3,11 +3,17 @@ using Libro.Application.Notifications.Queries;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
+using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.Notifications;
+using Libro.Presentation.SwaggerExamples.Book;
+using Libro.Presentation.SwaggerExamples.Librarian;
+using Libro.Presentation.SwaggerExamples.Notification;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 using System.Security.Claims;
 
@@ -15,6 +21,8 @@ namespace Libro.Presentation.Controllers
 {
     [ApiController]
     [Route("Notification")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal Server Error")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "Authorization has been denied for this request")]
     public class NotificationController : ControllerBase
     {
 
@@ -24,6 +32,30 @@ namespace Libro.Presentation.Controllers
         {
             _mediator = mediator;
         }
+        /// <summary>
+        /// Returns user's notification with pagination
+        /// </summary>
+        /// <param name="PageNumber"></param>
+        /// <param name="Count"></param>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Route Defualts:
+        ///  
+        ///     { 
+        ///     Defualt:
+        ///         PageNumber=0,
+        ///         Count=5
+        ///     
+        ///     Max:
+        ///         Count=10
+        ///     }
+        /// Sample request:
+        ///
+        ///     GET /Notification?PageNumber=0&amp;Count=5
+        /// </remarks>
+        [SwaggerResponse(StatusCodes.Status200OK, "List of Notifications with pagination", typeof(GetNotificationsPaginationOkResultExample))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetNotificationsPaginationOkResultExample))]
+        [SwaggerResponse(StatusCodes.Status403Forbidden, "When user is not Patron")]
 
         [HasRole("patron")]
         [HttpGet(Name = "GetUserNotifications")]
@@ -35,63 +67,59 @@ namespace Libro.Presentation.Controllers
                 Count = 1;
 
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (!Guid.TryParse(userId, out Guid parsedUserId))
-            {
-                return BadRequest("Bad user Id");
-            }
-            try
-            {
+            _ = Guid.TryParse(userId, out Guid parsedUserId);
+      
                 var query = new GetUserNotificaionsQuery(parsedUserId, PageNumber, Count);
                 var Result = await _mediator.Send(query);
 
-                return Ok(new { Books = Result.Item1.Adapt<List<GetNotificationsDto>>(), Pages = Result.Item2 });
-            }
-            catch (CustomNotFoundException e)
-            {
-
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-            }
+                return Ok(new { Notifications = Result.Item1.Adapt<List<GetNotificationsDto>>(), Pages = Result.Item2 });
+          
         }
 
+
+        /// <summary>
+        /// Notify Patrons About their reserved books(Push - database - Email notification)
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        ///
+        ///     POST /Notification/ReservedBooks
+        /// </remarks>
+        [SwaggerResponse(StatusCodes.Status200OK, "Succes when Patrons are Notified")]
+        [SwaggerResponse(StatusCodes.Status403Forbidden, "When user is not Librarian")]
         [HasRole("librarian")]
         [HttpPost("ReservedBooks", Name = "NotifyPatronsForReservedBooks")]
         public async Task<ActionResult> NotifyPatronsForReservedBooks()
         {
-            try
-            {
 
-                var request = new NotifyPatronsForReservedBooksCommand();
-                var Result = await _mediator.Send(request);
-                return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (CustomNotFoundException e)
-            {
+            var request = new NotifyPatronsForReservedBooksCommand();
+            var Result = await _mediator.Send(request);
+            return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
 
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-            }
+
         }
+        /// <summary>
+        /// Notify Patrons About their DueDate books(Push - database - Email notification)
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        ///
+        ///     POST /Notification/DueDates
+        /// </remarks>
+        [SwaggerResponse(StatusCodes.Status200OK, "Succes when Patrons are Notified")]
+        [SwaggerResponse(StatusCodes.Status403Forbidden, "When user is not Librarian")]
         [HasRole("librarian")]
         [HttpPost("DueDates", Name = "NotifyPatronsForDueDates")]
         public async Task<ActionResult> NotifyPatronsForDueDates()
         {
-            try
-            {
 
-                var request = new NotifyPatronsForDueDatesCommand();
-                var Result = await _mediator.Send(request);
-                return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            catch (CustomNotFoundException e)
-            {
+            var request = new NotifyPatronsForDueDatesCommand();
+            var Result = await _mediator.Send(request);
+            return Result ? Ok("Patrons Has Been Notified") : StatusCode(StatusCodes.Status500InternalServerError);
 
-                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "User", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
-            }
+
         }
     }
 }

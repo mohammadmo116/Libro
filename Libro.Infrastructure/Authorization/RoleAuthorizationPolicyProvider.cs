@@ -7,6 +7,7 @@ namespace Libro.Infrastructure.Authorization
     {
         public RoleAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options) : base(options)
         {
+
         }
 
 
@@ -17,9 +18,15 @@ namespace Libro.Infrastructure.Authorization
             {
                 return policy;
             }
+
             return new AuthorizationPolicyBuilder()
-                .AddRequirements(new RoleRequirement(policyName))
-                .Build();
+                        .RequireAuthenticatedUser()
+                        .AddRequirements(new RoleRequirement(policyName))
+                        .Build();
+
+
+            // return await Task.FromResult<AuthorizationPolicy>(null);
+
         }
     }
 }

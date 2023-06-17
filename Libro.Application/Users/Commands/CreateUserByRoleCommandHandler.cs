@@ -31,8 +31,8 @@ namespace Libro.Application.Users.Commands
 
             if (role is null)
             {
-                _logger.LogInformation($"CustomNotFoundException Role : librarian");
-                throw new CustomNotFoundException($"Role {request.RoleName}");
+                _logger.LogInformation($"CustomNotFoundException Role : {request.RoleName}");
+                throw new CustomNotFoundException($"Role");
             }
 
 
@@ -52,12 +52,6 @@ namespace Libro.Application.Users.Commands
                 throw new UserExistsException(nameof(request.User.PhoneNumber));
             }
 
-            UserRole userRole = new()
-            {
-                RoleId = role.Id,
-                UserId = request.User.Id
-
-            };
             var user = await _userRepository.RegisterUserAsync(request.User);
             user.Roles.Add(role);
             await _unitOfWork.SaveChangesAsync();
