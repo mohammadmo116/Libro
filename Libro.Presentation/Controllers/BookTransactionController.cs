@@ -1,11 +1,14 @@
-﻿using Libro.Application.BookTransactions.Commands;
+﻿using Libro.Application.Books.Queries;
+using Libro.Application.BookTransactions.Commands;
 using Libro.Application.BookTransactions.Queiries;
+using Libro.Application.BookTransactions.Queries;
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
+using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.BookTransaction;
 using Libro.Presentation.SwaggerExamples.Book;
 using Libro.Presentation.SwaggerExamples.BookReview;
@@ -36,6 +39,42 @@ namespace Libro.Presentation.Controllers
             _mediator = mediator;
         }
 
+
+
+        /// <summary>
+        /// Get Book Transaction By Transaction Id
+        /// </summary>
+        /// <param name="TransactionId"></param>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET /Book/Transactions/455AE5E6-D447-4A66-AB59-5E48B3E69E03  
+        /// </remarks>
+        [SwaggerResponse(StatusCodes.Status200OK, description: "Returns BookTransaction Details", Type = typeof(BookTransactionWithStatusAndIdDto))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "When BookTransaction Is Not Found")]
+        [SwaggerResponse(StatusCodes.Status403Forbidden, "When user is not Admin,Librarian or Patron")]
+        [HasRole("admin, librarian, patron")]
+        [HttpGet("Transactions/{TransactionId}", Name = "GetBookTransactionById")]
+        public async Task<ActionResult<BookTransactionWithStatusAndIdDto>> GetBookTransactionById(Guid TransactionId)
+        {
+            try {
+                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                _ = Guid.TryParse(userId, out Guid parsedUserId);
+                
+                var query = new GetBookTransactionQuery(parsedUserId,TransactionId);
+            var Result = await _mediator.Send(query);
+            return Ok(Result.Adapt<BookTransactionWithStatusAndIdDto>());
+            }
+            catch(CustomNotFoundException e) {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
+                return new NotFoundObjectResult(errorResponse);
+
+            }
+        }
+
+
         /// <summary>
         /// Reserve book by BookId
         /// </summary>
@@ -59,10 +98,8 @@ namespace Libro.Presentation.Controllers
             try
             {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (!Guid.TryParse(userId, out Guid parsedUserId))
-                {
-                    return BadRequest("Bad user Id");
-                }
+                _ = Guid.TryParse(userId, out Guid parsedUserId);
+                
                 BookTransaction bookTransaction = new()
                 {
                     Id = Guid.NewGuid(),

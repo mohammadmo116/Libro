@@ -1,11 +1,13 @@
 using FluentEmail.Core;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Libro.Application;
 using Libro.Domain.Responses;
 using Libro.Infrastracture;
 using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Hubs;
+using Libro.Infrastructure.Jobs;
 using Libro.Presentation;
 using Libro.Presentation.SwaggerExamples;
 using Libro.WebApi.Filters;
@@ -88,6 +90,16 @@ if (app.Environment.IsDevelopment())
 
 
 }
+//HangFire
+app.UseHangfireDashboard();
+
+////HangFire Jobs 
+//every Minute
+RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "* * * * *");
+//every day at 7:00:00 am
+//RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
+
+//Serilog
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();

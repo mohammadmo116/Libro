@@ -13,6 +13,15 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task<BookTransaction> GetUserBookTransactionAsync(Guid UserId,Guid TransactionId)
+        {
+            var bookTransaction = await _context.BookTransactions
+                .Include(a=>a.Book)
+                .Where(a=>a.UserId==UserId)
+                .FirstOrDefaultAsync(a => a.Id == TransactionId);
+
+            return bookTransaction;
+        }
         public async Task<bool> BookIsReturnedAsync(Guid UserId, Guid BookId)
         {
             return await _context.BookTransactions
