@@ -12,6 +12,23 @@ namespace Libro.Infrastructure.Repositories
         {
             _context = context;
         }
+
+        public async Task<(List<ReadingList>, int)> GetReadingListsByUserAsync(Guid UserId, int PageNumber, int Count)
+        {
+
+            var readingListsCount = await _context.ReadingLists
+                .Where(a => a.UserId == UserId).CountAsync();
+
+            var readingLists = await _context.ReadingLists
+                 .Where(a => a.UserId == UserId).Skip(PageNumber * Count).Take(Count).ToListAsync();
+
+            var NumberOfPages = 1;
+            if (readingListsCount > 0)
+                NumberOfPages = (int)Math.Ceiling((double)readingListsCount / Count);
+           
+            return (readingLists, NumberOfPages);
+        }
+
         public async Task<ReadingList> GetReadingListByUserAsync(Guid UserId, Guid ReadingListId)
         {
             var readingList = await _context.ReadingLists
@@ -62,8 +79,24 @@ namespace Libro.Infrastructure.Repositories
             _context.ReadingLists.Remove(readingList);
 
         }
+        public async Task AddBookToReadingList(BookReadingList bookReadingList)
+        {
 
+            await _context.BookReadingLists.AddAsync(bookReadingList);
 
+        }
+        public void RemoveBookFromReadingList(BookReadingList bookReadingList)
+        {
 
+             _context.BookReadingLists.Remove(bookReadingList);
+
+        }
+        public async Task<bool> ContainsTheBook(BookReadingList bookReadingList)
+        {
+
+           return await _context.BookReadingLists.ContainsAsync(bookReadingList);
+
+        }
+        
     }
 }

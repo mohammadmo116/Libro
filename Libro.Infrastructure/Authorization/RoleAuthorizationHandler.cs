@@ -1,5 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 
@@ -17,11 +17,26 @@ namespace Libro.Infrastructure.Authorization
             AuthorizationHandlerContext context,
             RoleRequirement requirement)
         {
-            string? userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            string? userId = null;
+            if (requirement.AttrbuteName==nameof(HasRoleAttribute))
+            {
+                userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            }
+            if (requirement.AttrbuteName==nameof(ToRoleAttribute))
+            {
+                if (context.Resource is HttpContext httpContext)
+                {
+
+                    userId = (string)httpContext.Request.RouteValues.FirstOrDefault(a => a.Key == "UserId").Value;
+                }
+            }
             if (!Guid.TryParse(userId, out Guid parsedUserId))
             {
                 return;
             }
+
+
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
             IRoleService roleService = scope.ServiceProvider
             .GetRequiredService<IRoleService>();
@@ -30,14 +45,9 @@ namespace Libro.Infrastructure.Authorization
             HashSet<string> roles = await roleService
                 .GetRolesAsync(parsedUserId);
 
-            var GivenRoles = requirement.Roles
-                .Trim()
-                .Replace(" ", "")
-                .Split(',')
-                .ToHashSet<string>();
+  
 
-
-            if (roles.Intersect(GivenRoles).Any())
+            if (roles.Intersect(requirement.Roles).Any())
             {
                 context.Succeed(requirement);
             }

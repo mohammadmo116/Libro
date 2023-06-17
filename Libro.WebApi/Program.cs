@@ -1,18 +1,30 @@
+using FluentEmail.Core;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Libro.Application;
+using Libro.Domain.Responses;
 using Libro.Infrastracture;
 using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Hubs;
+using Libro.Infrastructure.Jobs;
 using Libro.Presentation;
+using Libro.Presentation.SwaggerExamples;
 using Libro.WebApi.Filters;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +42,6 @@ services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapte
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = new()
     {
@@ -48,38 +59,12 @@ services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
 services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
 
 
-services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Libro.WebApi", Version = "V1" });
-
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "please insert Bearer token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement {{
-                                        new OpenApiSecurityScheme{
-                                            Reference=new OpenApiReference{
-                                                 Type=ReferenceType.SecurityScheme,
-                                                 Id="Bearer"
-                                            }
-                                        },
-        new List<string>()
-                                        }
-    });
-
-
-});
-
 services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
     .AddPresentaion();
+
+
 builder.Host.UseSerilog((context, config) =>
         config.ReadFrom.Configuration(context.Configuration));
 
@@ -105,6 +90,16 @@ if (app.Environment.IsDevelopment())
 
 
 }
+//HangFire
+app.UseHangfireDashboard();
+
+////HangFire Jobs 
+//every Minute
+RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "* * * * *");
+//every day at 7:00:00 am
+//RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
+
+//Serilog
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();

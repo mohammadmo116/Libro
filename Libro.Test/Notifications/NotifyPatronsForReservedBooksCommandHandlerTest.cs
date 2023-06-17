@@ -1,6 +1,9 @@
-﻿using Libro.Application.Interfaces;
+﻿using FluentEmail.Core;
+using FluentEmail.Core.Models;
+using Libro.Application.Interfaces;
 using Libro.Application.Notifications.Commands;
 using Libro.Domain.Entities;
+using Libro.Domain.Enums;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
@@ -12,24 +15,44 @@ namespace Libro.Test.Notifications
     public class NotifyPatronsForReservedBooksCommandHandlerTest
     {
         private readonly User _user;
+        private readonly List<User> _userlist=new();
+        private readonly Book _book;
+        private readonly List<Book> _booklist=new();
+        private readonly Role _patron;
         private readonly Notification _notification;
         private readonly NotifyPatronsForReservedBooksCommand _command;
         private readonly NotifyPatronsForReservedBooksCommandHandler _handler;
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<INotificationRepository> _notificationRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IFluentEmailFactory> _emailFactoryMock;
         private readonly Mock<ILogger<NotifyPatronsForReservedBooksCommandHandler>> _loggerMock;
 
         public NotifyPatronsForReservedBooksCommandHandlerTest()
         {
 
+            _patron = new() {
+                Id = Guid.NewGuid(),
+                Name="patron"
+            };
+            _book = new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "sd",
+
+            };
+            _booklist.Add(_book);
+           
             _user = new()
             {
                 Id = Guid.NewGuid(),
                 Email = "test@test.com",
                 UserName = "test",
                 PhoneNumber = "123",
+                Books= _booklist
+
             };
+            _user.Roles.Add(_patron);
             _notification = new()
             {
                 Id = _user.Id,
@@ -37,34 +60,56 @@ namespace Libro.Test.Notifications
                 UserId = _user.Id,
 
             };
+        
+            var transaction = new BookTransaction() {
+             
+                UserId=_user.Id,
+                BookId= _book.Id,
+                Status=BookStatus.Reserved,
+                Id=Guid.NewGuid(),
+                Book=_book,
+               
+            };
+          
+            _userlist.Add(_user);
+            _user.BookTransactions.Add(transaction);
             _notificationRepositoryMock = new();
             _userRepositoryMock = new();
             _unitOfWorkMock = new();
             _loggerMock = new();
+            _emailFactoryMock = new();
             _command = new();
             _handler = new(
                 _notificationRepositoryMock.Object,
                 _userRepositoryMock.Object,
                 _loggerMock.Object,
-                _unitOfWorkMock.Object);
+                _unitOfWorkMock.Object,
+                _emailFactoryMock.Object);
 
         }
         [Fact]
         public async Task Handle_Should_ReturnTrue_WhenNotifyTheUser()
         {
-
+         
             //Arrange
             _userRepositoryMock.Setup(x =>
-                x.GetPatronIdsForReservedBooksAsync()
-                ).ReturnsAsync(new List<Guid>()
-                { Guid.NewGuid(),
-                    Guid.NewGuid(),
+                x.GetPatronsWithReservedBooksAsync()
+                ).ReturnsAsync(_userlist);
 
-                });
+            Mock<IFluentEmail> mockFluentEmail = new();
+            _emailFactoryMock.Setup(x => x.Create()).Returns(mockFluentEmail.Object);
+            mockFluentEmail.Setup(x => x.To(It.IsAny<string>())).Returns(mockFluentEmail.Object);
+            mockFluentEmail.Setup(x => x.Subject(It.IsAny<string>())).Returns(mockFluentEmail.Object);
+            mockFluentEmail.Setup(x => x.UsingTemplate(It.IsAny<string>(), It.IsAny<It.IsAnyType>(),It.IsAny<bool>())).Returns(mockFluentEmail.Object);
+            mockFluentEmail.Setup(x => x.SendAsync(null)).ReturnsAsync(It.IsAny<SendResponse>());
+
+
+            
+         
 
             _notificationRepositoryMock.Setup(x =>
-                x.NotifyUsers(
-                    It.IsAny<List<string>>(),
+                x.NotifyUser(
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>()
                 ));
@@ -85,12 +130,12 @@ namespace Libro.Test.Notifications
             //Assert
 
             _userRepositoryMock.Verify(x =>
-                x.GetPatronIdsForReservedBooksAsync(),
+                x.GetPatronsWithReservedBooksAsync(),
                 Times.Once);
 
             _notificationRepositoryMock.Verify(x =>
-                x.NotifyUsers(
-                    It.IsAny<List<string>>(),
+                x.NotifyUser(
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>()),
                     Times.Once);
@@ -113,8 +158,8 @@ namespace Libro.Test.Notifications
 
             //Arrange
             _userRepositoryMock.Setup(x =>
-                x.GetPatronIdsForReservedBooksAsync()
-                ).ReturnsAsync(new List<Guid>());
+                x.GetPatronsWithReservedBooksAsync()
+                ).ReturnsAsync(new List<User>());
 
 
             //Act
@@ -126,7 +171,7 @@ namespace Libro.Test.Notifications
             Assert.True(result);
 
             _userRepositoryMock.Verify(x =>
-                  x.GetPatronIdsForReservedBooksAsync(),
+                  x.GetPatronsWithReservedBooksAsync(),
                   Times.Once);
 
             _notificationRepositoryMock.Verify(x =>
