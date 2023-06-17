@@ -69,7 +69,7 @@ namespace Libro.Application.Notifications.Commands
                             await _notificationRepository.NotifyUser(user.Id.ToString(), "PushNotifications", message);
                             StringBuilder tamplate = new ();
                             tamplate.AppendLine($"Dear @Model.UserEmail");
-                            tamplate.AppendLine($"<p>Please Check Your Reserved Book <a href =\"https://localhost:7062/user/Transactions/@Model.TransactionNumber\">@Model.BookTitle</a> . Borrow As Soon As Possible</p>.");
+                            tamplate.AppendLine($"<p>Please Check Your Reserved Book <a href =\"https://localhost:7062/Book/Transactions/@Model.TransactionNumber\">@Model.BookTitle</a> . Borrow As Soon As Possible</p>.");
                             tamplate.AppendLine($"- Libro Team");
 
                                  var email = await _emailFactory

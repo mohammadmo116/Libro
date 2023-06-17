@@ -1,4 +1,4 @@
-﻿
+﻿using Hangfire;
 using Libro.Application.Interfaces;
 using Libro.Application.Repositories;
 using Libro.Infrastructure;
@@ -30,7 +30,9 @@ namespace Libro.Infrastracture
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSignalR();
-
+            //configure Hangfire
+            services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
+            services.AddHangfireServer();
             return services;
         }
     }

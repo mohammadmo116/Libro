@@ -103,7 +103,12 @@ namespace Libro.Presentation.Controllers
             var query = new GetBookByIdQuery(BookId);
             var Result = await _mediator.Send(query);
             if (Result is null)
-                return NotFound("Book Not_Found");
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = "404 Book NotFound" });
+                return new NotFoundObjectResult(errorResponse);
+            }
+          
 
             return Ok(Result.Adapt<BookWithAuthorsDto>());
         }
