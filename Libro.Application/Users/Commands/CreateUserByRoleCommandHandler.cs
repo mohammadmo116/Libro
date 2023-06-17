@@ -31,8 +31,8 @@ namespace Libro.Application.Users.Commands
 
             if (role is null)
             {
-                _logger.LogInformation($"CustomNotFoundException Role : librarian");
-                throw new CustomNotFoundException($"Role {request.RoleName}");
+                _logger.LogInformation($"CustomNotFoundException Role : {request.RoleName}");
+                throw new CustomNotFoundException($"Role");
             }
 
 

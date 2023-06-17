@@ -18,20 +18,17 @@ namespace Libro.Infrastructure.Authorization
             RoleRequirement requirement)
         {
             string? userId = null;
-            if (requirement.Roles.StartsWith(nameof(HasRoleAttribute), StringComparison.OrdinalIgnoreCase))
+            if (requirement.AttrbuteName==nameof(HasRoleAttribute))
             {
                 userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                requirement.Roles = requirement.Roles[nameof(HasRoleAttribute).Length..];
 
             }
-            if (requirement.Roles.StartsWith(nameof(ToRoleAttribute), StringComparison.OrdinalIgnoreCase))
+            if (requirement.AttrbuteName==nameof(ToRoleAttribute))
             {
-
                 if (context.Resource is HttpContext httpContext)
                 {
 
                     userId = (string)httpContext.Request.RouteValues.FirstOrDefault(a => a.Key == "UserId").Value;
-                    requirement.Roles = requirement.Roles[nameof(ToRoleAttribute).Length..];
                 }
             }
             if (!Guid.TryParse(userId, out Guid parsedUserId))
@@ -48,14 +45,9 @@ namespace Libro.Infrastructure.Authorization
             HashSet<string> roles = await roleService
                 .GetRolesAsync(parsedUserId);
 
-            var GivenRoles = requirement.Roles
-                .Trim()
-                .Replace(" ", "")
-                .Split(',')
-                .ToHashSet<string>();
+  
 
-
-            if (roles.Intersect(GivenRoles).Any())
+            if (roles.Intersect(requirement.Roles).Any())
             {
                 context.Succeed(requirement);
             }

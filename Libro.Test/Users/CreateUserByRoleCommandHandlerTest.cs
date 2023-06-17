@@ -157,7 +157,7 @@ namespace Libro.Test.Users
             //Act
             async Task act() => await _handler.Handle(_command, default);
             CustomNotFoundException ActualException = await Assert.ThrowsAsync<CustomNotFoundException>(act);
-            CustomNotFoundException ExpectedException = new($"Role {_role.Name}");
+            CustomNotFoundException ExpectedException = new($"Role");
 
             //Assert   
 

@@ -23,13 +23,8 @@ namespace Libro.Application.Users.Queries
 
         public async Task<(List<Book>, int)> Handle(GetRecommendedBooksQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserAsync(request.UserId);
-            if (user is null)
-            {
-                _logger.LogInformation("CustomNotFoundException (User)");
-                throw new CustomNotFoundException("User");
-            }
-            return await _userRepository.GetRecommendedBooksAsync(user.Id, request.PageNumber, request.Count);
+            
+            return await _userRepository.GetRecommendedBooksAsync(request.UserId, request.PageNumber, request.Count);
         }
     }
 }
