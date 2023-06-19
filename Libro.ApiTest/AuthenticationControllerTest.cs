@@ -10,19 +10,12 @@ namespace Libro.ApiTest
     public class AuthenticationControllerTest : IntegrationTest
     {
 
-        public AuthenticationControllerTest() : base()
-        {
-
-
-
-
-
-        }
+       
         [Fact]
         public async Task RegisterUser()
         {
             //Arrange       
-
+            
             var user1 = new CreateUserDto()
             {
                 UserName = "Test".ToLower(),
@@ -84,8 +77,8 @@ namespace Libro.ApiTest
             var user1 = new LoginUserDto()
             {
 
-                Email = "Test@Test.com",
-                Password = "string"
+                Email = "patron@libro.com".ToLower(),
+                Password = "password"
 
             };
             var user2 = new LoginUserDto()
@@ -112,7 +105,7 @@ namespace Libro.ApiTest
             userResponse1.Should().BeOfType<string>();
 
             response2.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-
+          
         }
 
     }
