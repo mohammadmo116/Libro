@@ -4,19 +4,37 @@ using Libro.Application.Repositories;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Libro.Infrastracture
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+       
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
+            {
+
+               
+                if (environment.IsDevelopment())
+                    options.UseSqlServer(configuration
+                        .GetConnectionString("sqlServer")
+                        ?? throw new InvalidOperationException("Connection string 'sqlServer' not found."));
+                if (environment.IsProduction())
+                    options.UseSqlServer(configuration
+                        .GetConnectionString("sqlServerProduction")
+                        ?? throw new InvalidOperationException("Connection string 'sqlServer' not found."));
+                else if(environment.EnvironmentName=="IntegrationTesting")
+                      options.UseInMemoryDatabase("IntegrationTestingDb");
+              
+
+            });
 
             services.AddScoped<IWeatherRepository, WeatherRepository>();
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
@@ -31,8 +49,8 @@ namespace Libro.Infrastracture
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSignalR();
             //configure Hangfire
-            services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
-            services.AddHangfireServer();
+            // services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
+            //services.AddHangfireServer();
             return services;
         }
     }

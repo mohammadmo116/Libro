@@ -9,7 +9,9 @@
 
 
   </PropertyGroup>
-
+	<ItemGroup>
+		<InternalsVisibleTo Include="Libro.ApiTest" />
+	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="Mapster.Async" Version="2.0.0" />

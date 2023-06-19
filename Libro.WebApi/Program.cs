@@ -61,7 +61,7 @@ services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvi
 
 services
     .AddApplication()
-    .AddInfrastructure(builder.Configuration)
+    .AddInfrastructure(builder.Configuration,builder.Environment)
     .AddPresentaion();
 
 
@@ -91,11 +91,11 @@ if (app.Environment.IsDevelopment())
 
 }
 //HangFire
-app.UseHangfireDashboard();
+//app.UseHangfireDashboard();
 
 ////HangFire Jobs 
 //every Minute
-RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "* * * * *");
+//RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "* * * * *");
 //every day at 7:00:00 am
 //RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
 
@@ -108,3 +108,4 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationHub>("/NotificationHub").RequireAuthorization();
 app.Run();
+public partial class Program { }
