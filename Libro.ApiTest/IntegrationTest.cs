@@ -20,6 +20,7 @@ namespace Libro.ApiTest
     {
         protected readonly ApplicationDbContext? _context;
         protected readonly HttpClient _client;
+        protected readonly User _user;
         protected readonly User _adminUser;
         protected readonly User _librarianUser;
         protected readonly User _librarianUser2;
@@ -49,7 +50,15 @@ namespace Libro.ApiTest
                 },
 
             };
-       
+
+            _user = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "user@Libro.com".ToLower(),
+                UserName = "user".ToLower(),
+                Password = BCrypt.Net.BCrypt.HashPassword("password"),
+                PhoneNumber = "3112354".ToLower()
+            };
             _adminUser = new User()
             {
                 Id = Guid.NewGuid(),
@@ -97,6 +106,7 @@ namespace Libro.ApiTest
                 _context.Users.Add(_librarianUser);
                 _context.Users.Add(_librarianUser2);
                 _context.Users.Add(_patronUser);
+                _context.Users.Add(_user);
                 _context.SaveChanges();
             
 
@@ -106,17 +116,26 @@ namespace Libro.ApiTest
            
         }
         
-        protected async Task AuthenticateAsync(string Role)
+        protected async Task AuthenticateAsync(string? role="")
         {
-            var token = await GetJwtAsync(Role);           
+            var token = await GetJwtAsync(role);           
            _client.DefaultRequestHeaders.Authorization =new AuthenticationHeaderValue("Bearer",token);
 
         }
        
        
-        private async Task<string> GetJwtAsync(string role)
+        private async Task<string> GetJwtAsync(string? role)
         {
             HttpResponseMessage? response=new();
+            if (string.IsNullOrEmpty(role))
+            {
+                response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
+                {
+                    Email = "user@Libro.com".ToLower(),
+                    Password = "password"
+                });
+
+            }
             if (role == "patron")
             {
  

@@ -57,7 +57,7 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Author", Message = "Author Not_Found" });
-                return new BadRequestObjectResult(errorResponse);
+                return new NotFoundObjectResult(errorResponse);
                
             }
 
@@ -134,7 +134,7 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Author", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
+                return new NotFoundObjectResult(errorResponse);
 
             }
         }
@@ -165,7 +165,7 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Author", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
+                return new NotFoundObjectResult(errorResponse);
 
             }
         }
