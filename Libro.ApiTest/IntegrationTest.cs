@@ -16,7 +16,7 @@ using System.Net.Sockets;
 
 namespace Libro.ApiTest
 {
-    public class IntegrationTest
+    public class IntegrationTest : IClassFixture<WebApplicationFactory<Program>>
     {
         protected readonly ApplicationDbContext? _context;
         protected readonly HttpClient _client;
@@ -100,14 +100,15 @@ namespace Libro.ApiTest
             };
             _patronUser.Roles.Add(roles.FirstOrDefault(a => a.Name == "patron"));
 
-                _context = appFactory.Services.GetRequiredService<ApplicationDbContext>();
-                _context.Roles.AddRange(roles);
-                _context.Users.Add(_adminUser);
-                _context.Users.Add(_librarianUser);
-                _context.Users.Add(_librarianUser2);
-                _context.Users.Add(_patronUser);
-                _context.Users.Add(_user);
-                _context.SaveChanges();
+
+            _context = appFactory.Services.GetRequiredService<ApplicationDbContext>();
+            _context.Roles.AddRange(roles);
+            _context.Users.Add(_adminUser);
+            _context.Users.Add(_librarianUser);
+            _context.Users.Add(_librarianUser2);
+            _context.Users.Add(_patronUser);
+             _context.Users.Add(_user);
+             _context.SaveChanges();
             
 
 
