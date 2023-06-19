@@ -2,77 +2,85 @@
 using Libro.Domain.Entities;
 using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.Author;
-using Libro.Presentation.Dtos.User;
-using Mapster;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http.Json;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Libro.Presentation.Dtos.Book;
+using Mapster;
 
 namespace Libro.ApiTest
 {
-    public class AuthorControllerTest : IntegrationTest
+    public class BookControllerTest : IntegrationTest
     {
-      
-        public AuthorControllerTest() : base() {
-            var authorDto = new CreateAuthorDto()
+        public BookControllerTest() : base()
+        {
+            var bookDto = new CreateBookDto()
             {
-                Name = "Author",
-                DateOfBirth = DateTime.Now.AddYears(-25),
+                Title = "Title",
+                Genre="genre",
+                IsAvailable=true,
+                PublishedDate= DateTime.Now.AddYears(-3),
 
             };
-            var author = authorDto.Adapt<Author>();
-            author.Id= Guid.NewGuid();
-            _context.Authors.Add(author);
+            var book = bookDto.Adapt<Book>();
+            book.Id = Guid.NewGuid();
+            _context.Books.Add(book);
             _context.SaveChanges();
         }
         [Fact]
-        public async Task CreateAuthor()
+        public async Task CreateBook()
         {
 
             //Arrange
-            var author1 = new CreateAuthorDto()
+            var book1 = new CreateBookDto()
             {
-               Name="Author1",
-               DateOfBirth=DateTime.Now.AddYears(-20),
+                Title = "Title1",
+                Genre = "genre1",
+                IsAvailable = true,
+                PublishedDate = DateTime.Now.AddYears(-4),
 
             };
-            var author2 = new CreateAuthorDto()
+            
+            var book2 = new CreateBookDto()
             {
-                Name = "Author1",
-                DateOfBirth = DateTime.Now.AddDays(1),
+                Title = "Title2",
+                Genre = "genre2",
+                IsAvailable = true,
+                PublishedDate = DateTime.Now.AddYears(5),
 
             };
-            var author3 = new CreateAuthorDto()
-            {
-                DateOfBirth = DateTime.Now.AddYears(-20),
+            var book3 = new CreateBookDto()
+            {             
+                Genre = "genre2",
+                PublishedDate = DateTime.Now.AddYears(-5),
 
             };
-        
+
+
             //Act
 
             //401 Unauthrized           
-            var unauthrizedResponse = await _client.PostAsJsonAsync("/Author", author1);
+            var unauthrizedResponse = await _client.PostAsJsonAsync("/Book", book1);
 
             //403 forbidden
             await AuthenticateAsync("patron");
-            var forbiddenResponse = await _client.PostAsJsonAsync("/Author", author1);
+            var forbiddenResponse = await _client.PostAsJsonAsync("/Book", book1);
 
             //201 Created
             await AuthenticateAsync("librarian");
-            var createdResponse = await _client.PostAsJsonAsync("/Author", author1);
+            var createdResponse = await _client.PostAsJsonAsync("/Book", book1);
 
 
-            //400 bad request DateOfBirth in the furute
-            var badRequentResponse = await _client.PostAsJsonAsync("/Author", author2);
+            //400 bad request PublishedDate in the future  
+            var badRequentResponse = await _client.PostAsJsonAsync("/Book", book2);
             var objectBadRequentResponse = await badRequentResponse.Content.ReadFromJsonAsync<ErrorResponse>();
 
             //400 bad request required fields  
-            var badRequentResponse2 = await _client.PostAsJsonAsync("/Author", author3);
+            var badRequentResponse2 = await _client.PostAsJsonAsync("/Book", book3);
             var objectBadRequentResponse2 = await badRequentResponse2.Content.ReadFromJsonAsync<ErrorResponse>();
 
 
@@ -90,30 +98,30 @@ namespace Libro.ApiTest
             objectBadRequentResponse2.Should().BeOfType<ErrorResponse>();
 
         }
-       
+        
         [Fact]
-        public async Task GetAuthor()
+        public async Task GetBook()
         {
 
             //Arrange
-            var author=_context.Authors.First();
-            var authorId = author.Id;
+            var book = _context.Books.First();
+            var bookId = book.Id;
 
             //Act
 
             //401 Unauthrized           
-            var unauthrizedResponse = await _client.GetAsync($"/Author/{authorId}");
+            var unauthrizedResponse = await _client.GetAsync($"/Book/{bookId}");
 
             //403 Forbidden
             await AuthenticateAsync();
-            var forBiddenResponse = await _client.GetAsync($"/Author/{authorId}");
+            var forBiddenResponse = await _client.GetAsync($"/Book/{bookId}");
 
             //200 Ok
             await AuthenticateAsync("patron");
-            var okResponse = await _client.GetAsync($"/Author/{authorId}");
+            var okResponse = await _client.GetAsync($"/Book/{bookId}");
 
-            //404 author notfound
-            var notFoundResponse = await _client.GetAsync($"/Author/{Guid.NewGuid()}");
+            //404 book notfound
+            var notFoundResponse = await _client.GetAsync($"/Book/{Guid.NewGuid()}");
             var objectNotFoundResponse = await notFoundResponse.Content.ReadFromJsonAsync<ErrorResponse>();
 
 
@@ -131,63 +139,67 @@ namespace Libro.ApiTest
 
 
         }
+        
         [Fact]
-        public async Task UpdateAuthor()
+        public async Task UpdateBook()
         {
 
             //Arrange
-            var author = _context.Authors.First();
-            var authorId = author.Id;
+            var book = _context.Books.First();
+            var bookId = book.Id;
 
             var TestId = Guid.NewGuid();
-            var updateAuthor = new AuthorDto()
+            var updateBook = new UpdateBookDto()
             {
-                Id = authorId,
-                Name = "Author"
+                Id = bookId,
+                Title="title",
+                PublishedDate= DateTime.UtcNow.AddYears(-3),
+                
             };
-            var updateAuthor2 = new AuthorDto()
+            var updateBook2 = new UpdateBookDto()
             {
-                Id = authorId
+                Id = bookId,
+              
+
             };
             //Act
 
             //401 Unauthrized           
-            var unauthrizedResponse = await _client.PutAsJsonAsync($"/Author/{authorId}", updateAuthor);
+            var unauthrizedResponse = await _client.PutAsJsonAsync($"/Book/{bookId}", updateBook);
 
             //403 forbidden if the user not patron
             await AuthenticateAsync("patron");
-            var forbiddenResponse = await _client.PutAsJsonAsync($"/Author/{authorId}", updateAuthor);
+            var forbiddenResponse = await _client.PutAsJsonAsync($"/Book/{bookId}", updateBook);
 
 
             await AuthenticateAsync("librarian");
 
             //200 Ok
-            var okResponse = await _client.PutAsJsonAsync($"/Author/{authorId}", updateAuthor);
+            var okResponse = await _client.PutAsJsonAsync($"/Book/{bookId}", updateBook);
 
-            //400 bad request DateOfBirth in the furute     
-            updateAuthor.DateOfBirth = DateTime.UtcNow.AddDays(10);
-            var badRequestResponse = await _client.PutAsJsonAsync($"/Author/{authorId}", updateAuthor);
+            //400 bad request PublishedDate in the furute   
+            updateBook.PublishedDate = DateTime.UtcNow.AddDays(10);
+            var badRequestResponse = await _client.PutAsJsonAsync($"/Book/{bookId}", updateBook);
             var objectBadRequestResponse = await badRequestResponse.Content.ReadFromJsonAsync<ErrorResponse>();
 
-
-            //400 bad request required fields   
-            var badRequestResponse2 = await _client.PutAsJsonAsync($"/Author/{authorId}", updateAuthor2);
-            var objectBadRequestResponse2 = await badRequestResponse2.Content.ReadFromJsonAsync<ErrorResponse>();
+            //400 bad request required fields      
+            var badRequestResponse3 = await _client.PutAsJsonAsync($"/Book/{bookId}", updateBook2);
+            var objectBadRequestResponse3 = await badRequestResponse3.Content.ReadFromJsonAsync<ErrorResponse>();
 
 
             //400 bad request when id in route != id in the body   
-            updateAuthor.DateOfBirth = DateTime.UtcNow.AddDays(1);
-            var badRequestResponse3 = await _client.PutAsJsonAsync($"/Author/{TestId}", updateAuthor);
-            var objectBadRequestRespons3 = await badRequestResponse3.Content.ReadFromJsonAsync<ErrorResponse>();
+            updateBook.PublishedDate = DateTime.UtcNow.AddDays(1);
+            var badRequestResponse2 = await _client.PutAsJsonAsync($"/Book/{TestId}", updateBook);
+            var objectBadRequestResponse2 = await badRequestResponse2.Content.ReadFromJsonAsync<ErrorResponse>();
 
             //404 Author not found
-            updateAuthor.Id=TestId;
-            updateAuthor.DateOfBirth = DateTime.UtcNow.AddYears(-30);
-            var notFoundResponse = await _client.PutAsJsonAsync($"/Author/{TestId}", updateAuthor);
+            updateBook.Id = TestId;
+            updateBook.PublishedDate = DateTime.UtcNow.AddYears(-30);
+            var notFoundResponse = await _client.PutAsJsonAsync($"/Book/{TestId}", updateBook);
             var objectNotFoundResponse = await notFoundResponse.Content.ReadFromJsonAsync<ErrorResponse>();
 
 
-           
+
 
 
             //Assert
@@ -201,8 +213,7 @@ namespace Libro.ApiTest
             objectNotFoundResponse.Should().BeOfType<ErrorResponse>();
 
             badRequestResponse3.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            objectBadRequestRespons3.Should().BeOfType<ErrorResponse>();
-
+            objectBadRequestResponse3.Should().BeOfType<ErrorResponse>();
 
             badRequestResponse2.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             objectBadRequestResponse2.Should().BeOfType<ErrorResponse>();
@@ -212,29 +223,29 @@ namespace Libro.ApiTest
 
         }
         [Fact]
-        public async Task DeleteLibrarian()
+        public async Task DeleteBook()
         {
 
             //Arrange
-            var author = _context.Authors.First();
-            var authorId = author.Id;
+            var book = _context.Books.First();
+            var bookId = book.Id;
 
             //Act
 
             //401 Unauthrized           
-            var unauthrizedResponse = await _client.DeleteAsync($"/Author/{authorId}");
+            var unauthrizedResponse = await _client.DeleteAsync($"/Book/{bookId}");
 
             //403 forbidden if the user not patron
             await AuthenticateAsync("patron");
-            var forbiddenResponse = await _client.DeleteAsync($"/Author/{authorId}");
+            var forbiddenResponse = await _client.DeleteAsync($"/Book/{bookId}");
 
 
             await AuthenticateAsync("librarian");
             //200 Ok
-            var okResponse = await _client.DeleteAsync($"/Author/{authorId}");
+            var okResponse = await _client.DeleteAsync($"/Book/{bookId}");
 
-            //404 Author not found
-            var notFoundResponse = await _client.DeleteAsync($"/Author/{Guid.NewGuid()}");
+            //404 Book not found
+            var notFoundResponse = await _client.DeleteAsync($"/Book/{Guid.NewGuid()}");
             var objectNotFoundResponse = await notFoundResponse.Content.ReadFromJsonAsync<ErrorResponse>();
 
             //Assert
@@ -248,5 +259,6 @@ namespace Libro.ApiTest
             okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         }
+
     }
 }
