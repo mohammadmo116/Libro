@@ -134,7 +134,7 @@ namespace Libro.Presentation.Controllers
         [SwaggerResponse(StatusCodes.Status201Created, "Returns the newly created Book and it's route in the header:location", Type = typeof(BookWithAuthorsDto))]
         [SwaggerResponse(StatusCodes.Status400BadRequest,"when PublishedDate is in the future", typeof(CreateBookErrorResponseExample))]
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CreateBookErrorResponseExample))]
-        [HasRole("librarian,patron")]
+        [HasRole("librarian")]
         [HttpPost(Name = "CreateBook")]
         public async Task<CreatedAtActionResult> CreateBook(CreateBookDto bookDto)
         {
@@ -222,7 +222,7 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
+                return new NotFoundObjectResult(errorResponse);
 
             }
         }
