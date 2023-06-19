@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Libro.Presentation.Dtos.Book;
 using Mapster;
+using Libro.ApiTest.Responses;
 
 namespace Libro.ApiTest
 {
@@ -139,7 +140,40 @@ namespace Libro.ApiTest
 
 
         }
-        
+        [Fact]
+        public async Task GetBooks()
+        {
+
+            //Arrange
+            var book = _context.Books.First();
+            var bookId = book.Id;
+
+            //Act
+
+            //401 Unauthrized           
+            var unauthrizedResponse = await _client.GetAsync($"/Book");
+
+            //403 Forbidden
+            await AuthenticateAsync();
+            var forBiddenResponse = await _client.GetAsync($"/Book");
+
+            //200 Ok
+            await AuthenticateAsync("patron");
+            var okResponse = await _client.GetAsync($"/Book");
+            var objectOkResponse = await okResponse.Content.ReadFromJsonAsync<BookResponse>();
+
+
+            //Assert
+            unauthrizedResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+            forBiddenResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+            okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            objectOkResponse.pages.Should().Be(1);
+            objectOkResponse.books.Should().NotBeNullOrEmpty();
+            objectOkResponse.books.First().Id.Should().Be(bookId);
+
+        }
         [Fact]
         public async Task UpdateBook()
         {
