@@ -46,13 +46,7 @@ namespace Libro.WebApi.Controllers
         public async Task<ActionResult> Geet()
         {
 
-
-
-         
-
-
-
-            return Ok();
+            return Ok("D");
         }
 
 
