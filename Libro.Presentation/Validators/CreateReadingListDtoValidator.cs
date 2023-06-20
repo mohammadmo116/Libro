@@ -7,7 +7,7 @@ namespace Libro.Presentation.Validators
     {
         public CreateReadingListDtoValidator()
         {
-            RuleFor(a => a.Private).NotNull().NotEmpty().WithMessage("The Private field is required.");
+            RuleFor(a => a.Name).NotEmpty().NotNull().WithMessage("The Private field is required.");
         }
 
     }
