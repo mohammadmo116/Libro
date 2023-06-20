@@ -75,7 +75,7 @@ namespace Libro.Presentation.Controllers
 
             return Ok(new
             {
-                ReadingList = Result.Item1.Adapt<List<GetReadingListDto>>(),
+                ReadingLists = Result.Item1.Adapt<List<GetReadingListDto>>(),
                 Pages = Result.Item2
             }
             );
