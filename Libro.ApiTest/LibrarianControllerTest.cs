@@ -11,6 +11,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Libro.ApiTest.Responses;
 
 namespace Libro.ApiTest
 {
@@ -114,9 +115,10 @@ namespace Libro.ApiTest
 
             //200 Ok
             var okResponse = await _client.GetAsync($"/Librarian/{librarianId}");
+            var objectOkResponse = await okResponse.Content.ReadFromJsonAsync<UserDto>();
 
-         
-           
+
+
             //Assert
             unauthrizedResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
@@ -125,7 +127,7 @@ namespace Libro.ApiTest
             forbiddenResponse2.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
             okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-
+            objectOkResponse.Email.Should().Be(_librarianUser.Email);
 
         }
         [Fact]

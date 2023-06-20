@@ -42,6 +42,7 @@ namespace Libro.ApiTest
 
             //200 Ok
             var okResponse = await _client.GetAsync($"/Patron/{patronId}");
+            var objectOkResponse = await okResponse.Content.ReadFromJsonAsync<UserDto>();
 
 
 
@@ -53,7 +54,7 @@ namespace Libro.ApiTest
             forbiddenResponse2.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
             okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-
+            objectOkResponse.Email.Should().Be(_patronUser.Email);
 
         }
         [Theory]
