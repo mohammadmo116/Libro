@@ -10,6 +10,6 @@ namespace Libro.ApiTest.Responses
     public class BookResponse
     {
         public List<GetBookDto> books { get; set; }=new ();
-        public int pages { get; set; } = 0;
+        public int Pages { get; set; } = 0;
     }
 }

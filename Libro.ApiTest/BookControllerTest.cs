@@ -169,7 +169,7 @@ namespace Libro.ApiTest
             forBiddenResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
             okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            objectOkResponse.pages.Should().Be(1);
+            objectOkResponse.Pages.Should().Be(1);
             objectOkResponse.books.Should().NotBeNullOrEmpty();
             objectOkResponse.books.First().Id.Should().Be(bookId);
 

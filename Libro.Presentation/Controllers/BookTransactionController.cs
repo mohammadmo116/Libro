@@ -220,13 +220,13 @@ namespace Libro.Presentation.Controllers
         ///     }
         /// Sample request:
         ///
-        ///     GET /Book/Transactions?PageNumber=0&amp;Count=5
+        ///     GET /Book/Due-Date-Transactions?PageNumber=0&amp;Count=5
         /// </remarks>
         [SwaggerResponse(StatusCodes.Status200OK, "List of Transactions with pagination", typeof(GetTransactionsPaginationOkResultExample))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetTransactionsPaginationOkResultExample))]
         [HasRole("librarian")]
         [HttpGet("Due-Date-Transactions")]
-        public async Task<ActionResult<(List<BookTransactionWithStatusDto>, int)>> TrackDueDate(int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookTransactionWithStatusAndIdDto>, int)>> TrackDueDate(int PageNumber = 0, int Count = 5)
         {
             if (Count > 10)
                 Count = 10;
@@ -238,7 +238,7 @@ namespace Libro.Presentation.Controllers
 
             return Ok(new
             {
-                Transactions = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>()
+                Transactions = Result.Item1.Adapt<List<BookTransactionWithStatusAndIdDto>>()
                 ,
                 Pages = Result.Item2
             });
