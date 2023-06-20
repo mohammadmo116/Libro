@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 
@@ -35,7 +37,7 @@ namespace Libro.Infrastructure.Authorization
             {
                 return;
             }
-
+          
 
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
             IRoleService roleService = scope.ServiceProvider

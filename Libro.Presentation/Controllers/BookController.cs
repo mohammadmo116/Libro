@@ -222,7 +222,7 @@ namespace Libro.Presentation.Controllers
             {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = e.Message });
-                return new BadRequestObjectResult(errorResponse);
+                return new NotFoundObjectResult(errorResponse);
 
             }
         }

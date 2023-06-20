@@ -4,8 +4,9 @@ namespace Libro.Presentation.Dtos.ReadingList
 {
     public class ReadingListDto
     {
-        public string Name { get; set; }
         [Required]
-        public bool Private { get; set; }
+        public string Name { get; set; }
+       
+        public bool Private { get; set; } = true;
     }
 }
