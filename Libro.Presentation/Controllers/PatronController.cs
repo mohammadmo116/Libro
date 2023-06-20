@@ -151,7 +151,7 @@ namespace Libro.Presentation.Controllers
         [HasRole("admin,librarian")]
         [ToRole("patron")]
         [HttpGet("{UserId}/Borrowing-History", Name = "GetPatronBorrwingHistory")]
-        public async Task<ActionResult<(List<BookTransactionWithStatusDto>,int)>> GetPatronBorrowingHistory(Guid UserId, int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookTransactionWithStatusAndIdDto>,int)>> GetPatronBorrowingHistory(Guid UserId, int PageNumber = 0, int Count = 5)
         {
             try
             {
@@ -165,7 +165,7 @@ namespace Libro.Presentation.Controllers
 
                 return Ok(new
                 {
-                    Transactions = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>(),
+                    Transactions = Result.Item1.Adapt<List<BookTransactionWithStatusAndIdDto>>(),
                     Pages = Result.Item2
                 });
 
