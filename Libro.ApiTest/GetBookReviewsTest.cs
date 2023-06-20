@@ -89,7 +89,7 @@ namespace Libro.ApiTest
              objectnotFoundResponse.Should().BeOfType<ErrorResponse>();
 
              okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-             objectOkResponse.pages.Should().Be(1);
+             objectOkResponse.Pages.Should().Be(1);
 
              objectOkResponse.Reviews.Should().NotBeNullOrEmpty();
              objectOkResponse.Reviews.First().BookId.Should().Be(bookId);

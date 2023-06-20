@@ -11,6 +11,6 @@ namespace Libro.ApiTest.Responses
     public class BookReviewsResponse
     {
         public List<GetBookReviewWithUserDto> Reviews { get; set; } = new();
-        public int pages { get; set; } = 0;
+        public int Pages { get; set; } = 0;
     }
 }

@@ -46,7 +46,7 @@ namespace Libro.Application.BookTransactions.Commands
                 throw new CustomNotFoundException("Book");
             }
 
-            var transaction = await _unitOfWork.BeginTransactionAsync();
+            
             _bookRepository.MakeBookAvailable(book);
 
             if (BookTransaction.Status == BookStatus.Reserved)
@@ -62,7 +62,7 @@ namespace Libro.Application.BookTransactions.Commands
             }
 
             var numberOfRows = await _unitOfWork.SaveChangesAsync();
-            await _unitOfWork.CommitAsync(transaction);
+   
 
             return numberOfRows > 1;
 
