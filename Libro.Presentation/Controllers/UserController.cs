@@ -153,7 +153,7 @@ namespace Libro.Presentation.Controllers
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetTransactionsPaginationOkResultExample))]
         [HasRole("librarian,admin,patron")]
         [HttpGet("Borrowing-History", Name = "GetBorrowingHistory")]
-        public async Task<ActionResult<(List<BookTransactionWithStatusDto>, int)>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookTransactionWithStatusAndIdDto>, int)>> GetBorrowingHistory(int PageNumber = 0, int Count = 5)
         {
             try
             {
@@ -170,7 +170,7 @@ namespace Libro.Presentation.Controllers
 
                 return Ok(new
                 {
-                    ReadingList = Result.Item1.Adapt<List<BookTransactionWithStatusDto>>(),
+                    Transactions = Result.Item1.Adapt<List<BookTransactionWithStatusAndIdDto>>(),
                     Pages = Result.Item2
                 });
 

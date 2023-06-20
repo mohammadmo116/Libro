@@ -100,6 +100,7 @@ namespace Libro.ApiTest
             };
             _patronUser.Roles.Add(roles.FirstOrDefault(a => a.Name == "patron"));
 
+         
 
             _context = appFactory.Services.GetRequiredService<ApplicationDbContext>();
             _context.Roles.AddRange(roles);
@@ -107,7 +108,7 @@ namespace Libro.ApiTest
             _context.Users.Add(_librarianUser);
             _context.Users.Add(_librarianUser2);
             _context.Users.Add(_patronUser);
-             _context.Users.Add(_user);
+            _context.Users.Add(_user);
              _context.SaveChanges();
             
 
