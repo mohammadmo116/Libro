@@ -35,7 +35,7 @@ namespace Libro.Application.Users.Commands
 
             _userRepository.RemoveUser(user);
             var numberOfRows = await _unitOfWork.SaveChangesAsync();
-            return numberOfRows > 1;
+            return numberOfRows > 0;
         }
     }
 }
