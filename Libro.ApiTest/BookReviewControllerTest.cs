@@ -147,7 +147,7 @@ namespace Libro.ApiTest
         public async Task GetBookReviews()
         {
          
-            
+           
             //Arrange
             var bookId= _book.Id;
             
@@ -186,7 +186,7 @@ namespace Libro.ApiTest
             objectOkResponse.Reviews.First().BookId.Should().Be(bookId);
             objectOkResponse.Reviews.First().UserId.Should().Be(_patron.Id);
             
-
+            
         }
 
     }
