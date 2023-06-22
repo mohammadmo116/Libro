@@ -50,7 +50,8 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Authentication:Issuer"],
         ValidAudience = builder.Configuration["Authentication:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretForKey"])),
+        ClockSkew=TimeSpan.FromSeconds(5)
     });
 
 
@@ -91,13 +92,13 @@ if (app.Environment.IsDevelopment())
 
 }
 //HangFire
-//app.UseHangfireDashboard();
+app.UseHangfireDashboard();
 
 ////HangFire Jobs 
 //every Minute
 //RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "* * * * *");
 //every day at 7:00:00 am
-//RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
+RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
 
 //Serilog
 app.UseSerilogRequestLogging();

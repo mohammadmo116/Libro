@@ -72,13 +72,21 @@ namespace Libro.Application.Notifications.Commands
                             tamplate.AppendLine($"<p>Please Check Your Reserved Book <a href =\"https://localhost:7062/Book/Transactions/@Model.TransactionNumber\">@Model.BookTitle</a> . Borrow As Soon As Possible</p>.");
                             tamplate.AppendLine($"- Libro Team");
 
+                            try {
                                  var email = await _emailFactory
                                 .Create()
                                 .To(user.Email)
                                 .Subject("Reserved Book")
                                 .UsingTemplate(tamplate.ToString(), new { UserEmail = user.Email, TransactionNumber = Transaction.Id, BookTitle = Transaction.Book.Title })
                                 .SendAsync();
-      
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogInformation($"NotifyPatronsForReservedBooksCommand - message :  {ex.Message}");
+
+                            }
+
+
                     }
                        
 
