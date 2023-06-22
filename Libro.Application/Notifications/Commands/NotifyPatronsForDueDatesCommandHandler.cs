@@ -65,12 +65,20 @@ namespace Libro.Application.Notifications.Commands
                         tamplate.AppendLine($"Dear @Model.UserEmail");
                         tamplate.AppendLine($"<p>Please Check Your Expired Borrowed Book <a href =\"https://localhost:7062/Book/Transactions/@Model.TransactionNumber\">@Model.BookTitle</a> . Return it As Soon As Possible</p>.");
                         tamplate.AppendLine($"- Libro Team");
-                        await _emailFactory
-                              .Create()
-                              .To(user.Email)
-                              .Subject("Expired Borrowed Book")
-                              .UsingTemplate(tamplate.ToString(), new { UserEmail = user.Email, TransactionNumber = Transaction.Id, BookTitle = Transaction.Book.Title })
-                              .SendAsync();
+                        try
+                        {
+                            var email = await _emailFactory
+                                  .Create()
+                                  .To(user.Email)
+                                  .Subject("Expired Borrowed Book")
+                                  .UsingTemplate(tamplate.ToString(), new { UserEmail = user.Email, TransactionNumber = Transaction.Id, BookTitle = Transaction.Book.Title })
+                                  .SendAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogInformation($"NotifyPatronsForDueDatesCommand - message :  {ex.Message}");
+
+                        }
                     }
             }
         

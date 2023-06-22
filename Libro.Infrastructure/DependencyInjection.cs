@@ -49,8 +49,8 @@ namespace Libro.Infrastracture
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSignalR();
             //configure Hangfire
-            // services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
-            //services.AddHangfireServer();
+            services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
+            services.AddHangfireServer();
             return services;
         }
     }
