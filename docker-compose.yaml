@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  libro-server:
+    build: .
+    ports:
+      - "5000:80"
+      - "5001:443"
+    depends_on:
+      - sqlserver
+    networks:
+      - internal
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Mohammad@123
+    ports:
+      - "1500:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    networks:
+      - internal
+networks:
+  internal:
+volumes:
+  sqldata:

@@ -24,12 +24,12 @@ namespace Libro.Infrastracture
                
                 if (environment.IsDevelopment())
                     options.UseSqlServer(configuration
-                        .GetConnectionString("sqlServer")
+                        .GetConnectionString("sqlServerDevelopment")
                         ?? throw new InvalidOperationException("Connection string 'sqlServer' not found."));
                 if (environment.IsProduction())
                     options.UseSqlServer(configuration
                         .GetConnectionString("sqlServerProduction")
-                        ?? throw new InvalidOperationException("Connection string 'sqlServer' not found."));
+                        ?? throw new InvalidOperationException("Connection string 'sqlServerDocker' not found."));
                 else if(environment.EnvironmentName=="IntegrationTesting")
                       options.UseInMemoryDatabase("IntegrationTestingDb");
               
@@ -49,8 +49,8 @@ namespace Libro.Infrastracture
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSignalR();
             //configure Hangfire
-            services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
-            services.AddHangfireServer();
+            //services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
+            //services.AddHangfireServer();
             return services;
         }
     }
