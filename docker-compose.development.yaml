@@ -1,0 +1,18 @@
+version: "3"
+
+services:  
+  sqlserver-dev:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Mohammad@123
+    ports:
+      - "1501:1433"
+    volumes:
+      - devsqldata:/var/opt/mssql
+    networks:
+      - internal
+networks:
+  internal:
+volumes:
+  devsqldata:

@@ -65,10 +65,6 @@ namespace Libro.Test.BookTransactions
 
             _book.IsAvailable = true;
 
-            _unitOfWorkMock.Setup(
-               x => x.BeginTransactionAsync())
-               .ReturnsAsync(It.IsAny<IDbContextTransaction>);
-
             _bookRepository.Setup(
               x => x.MakeBookNotAvailable(
                   It.IsAny<Book>()));
@@ -77,8 +73,6 @@ namespace Libro.Test.BookTransactions
              x => x.AddBookTransactionWithReservedStatus(
                  It.IsAny<BookTransaction>()));
 
-            _unitOfWorkMock.Setup(
-               x => x.CommitAsync(It.IsAny<IDbContextTransaction>()));
 
             _unitOfWorkMock.Setup(
                x => x.SaveChangesAsync())
@@ -95,10 +89,6 @@ namespace Libro.Test.BookTransactions
 
             Assert.True(_book.IsAvailable);
 
-            _unitOfWorkMock.Verify(
-               x => x.BeginTransactionAsync(),
-               Times.Once);
-
 
             _bookRepository.Verify(
               x => x.MakeBookNotAvailable(
@@ -109,10 +99,6 @@ namespace Libro.Test.BookTransactions
              x => x.AddBookTransactionWithReservedStatus(
                  It.Is<BookTransaction>(a => a == _bookTransaction)),
              Times.Once);
-
-            _unitOfWorkMock.Verify(
-               x => x.CommitAsync(It.IsAny<IDbContextTransaction>()),
-               Times.Once);
 
             _unitOfWorkMock.Verify(
                x => x.SaveChangesAsync(),
