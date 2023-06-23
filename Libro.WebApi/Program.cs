@@ -100,6 +100,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 //every day at 7:00:00 am
 //RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
 
+
 //Serilog
 app.UseSerilogRequestLogging();
 

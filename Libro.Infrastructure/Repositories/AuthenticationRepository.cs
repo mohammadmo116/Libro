@@ -44,6 +44,7 @@ namespace Libro.Infrastructure.Repositories
             var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             return token;
 
+
         }
 
         public async Task<User?> ValidateUserCredentialsAsync(string email, string password)

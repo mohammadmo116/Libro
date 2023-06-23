@@ -58,6 +58,7 @@ namespace Libro.Test.Books
               x => x.SaveChangesAsync(),
               Times.Once);
 
+
             Assert.Equal(_book.Id, result.Id);
         }
 

@@ -10,7 +10,8 @@ namespace Libro.ApiTest
     public class AuthenticationControllerTest : IntegrationTest
     {
 
-       
+         
+
         [Fact]
         public async Task RegisterUser()
         {
