@@ -50,11 +50,11 @@ namespace Libro.Infrastructure.Repositories
         public async Task<List<User>> GetPatronsWithDueDatesAsync()
         {
 
-           return await _context.Users
-                .Include(a => a.BookTransactions.Where(a => a.Status == BookStatus.Borrowed && a.DueDate < DateTime.UtcNow))
-                .ThenInclude(a => a.Book)
-               .Where(u => u.Roles.Any(a => a.Name == "patron"))
-               .ToListAsync();
+            return await _context.Users
+                 .Include(a => a.BookTransactions.Where(a => a.Status == BookStatus.Borrowed && a.DueDate < DateTime.UtcNow))
+                 .ThenInclude(a => a.Book)
+                .Where(u => u.Roles.Any(a => a.Name == "patron"))
+                .ToListAsync();
 
 
 

@@ -1,14 +1,7 @@
-﻿using Libro.Domain.Enums;
-using Libro.Presentation.Dtos.Author;
+﻿using Libro.Presentation.Dtos.Author;
 using Libro.Presentation.Dtos.Book;
-using Libro.Presentation.Dtos.BookTransaction;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Presentation.SwaggerExamples.Patron
 {
@@ -36,7 +29,7 @@ namespace Libro.Presentation.SwaggerExamples.Patron
                                     DateOfBirth=DateTime.UtcNow.AddYears(-25)
                                 },
                             }
-                      
+
                         },
                              new (){
                           Id=Guid.NewGuid(),

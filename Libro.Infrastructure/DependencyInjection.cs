@@ -14,14 +14,14 @@ namespace Libro.Infrastracture
 {
     public static class DependencyInjection
     {
-       
+
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
 
-               
+
                 if (environment.IsDevelopment())
                     options.UseSqlServer(configuration
                         .GetConnectionString("sqlServerDevelopment")
@@ -30,9 +30,9 @@ namespace Libro.Infrastracture
                     options.UseSqlServer(configuration
                         .GetConnectionString("sqlServerProduction")
                         ?? throw new InvalidOperationException("Connection string 'sqlServerDocker' not found."));
-                else if(environment.EnvironmentName=="IntegrationTesting")
-                      options.UseInMemoryDatabase("IntegrationTestingDb");
-              
+                else if (environment.EnvironmentName == "IntegrationTesting")
+                    options.UseInMemoryDatabase("IntegrationTestingDb");
+
 
             });
 
@@ -49,8 +49,12 @@ namespace Libro.Infrastracture
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSignalR();
             //configure Hangfire
-            //services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServer") ?? throw new InvalidOperationException("Connection string 'sqlServer' not found.")));
-            //services.AddHangfireServer();
+            if(environment.IsDevelopment())
+                services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServerDevelopment") ?? throw new InvalidOperationException("Connection string 'sqlServerDevelopment' not found.")));
+            if (environment.IsProduction())
+                services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("sqlServerProduction") ?? throw new InvalidOperationException("Connection string 'sqlServerProduction' not found.")));
+
+            services.AddHangfireServer();
             return services;
         }
     }

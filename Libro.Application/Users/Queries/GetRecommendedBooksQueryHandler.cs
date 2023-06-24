@@ -1,6 +1,5 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +22,7 @@ namespace Libro.Application.Users.Queries
 
         public async Task<(List<Book>, int)> Handle(GetRecommendedBooksQuery request, CancellationToken cancellationToken)
         {
-            
+
             return await _userRepository.GetRecommendedBooksAsync(request.UserId, request.PageNumber, request.Count);
         }
     }

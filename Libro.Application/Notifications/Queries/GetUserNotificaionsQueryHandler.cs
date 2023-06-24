@@ -1,6 +1,5 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
 using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -26,7 +25,7 @@ namespace Libro.Application.Notifications.Queries
 
         public async Task<(List<Notification>, int)> Handle(GetUserNotificaionsQuery request, CancellationToken cancellationToken)
         {
-          
+
             return await _notificationRepository.GetNotifications(request.UserId, request.PageNumbr, request.Count);
         }
     }

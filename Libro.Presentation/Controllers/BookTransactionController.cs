@@ -1,5 +1,4 @@
-﻿using Libro.Application.Books.Queries;
-using Libro.Application.BookTransactions.Commands;
+﻿using Libro.Application.BookTransactions.Commands;
 using Libro.Application.BookTransactions.Queiries;
 using Libro.Application.BookTransactions.Queries;
 using Libro.Domain.Entities;
@@ -8,10 +7,7 @@ using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.BookTransaction;
-using Libro.Presentation.SwaggerExamples.Book;
-using Libro.Presentation.SwaggerExamples.BookReview;
 using Libro.Presentation.SwaggerExamples.BookTransaction;
 using Mapster;
 using MediatR;
@@ -58,15 +54,17 @@ namespace Libro.Presentation.Controllers
         [HttpGet("Transactions/{TransactionId}", Name = "GetBookTransactionById")]
         public async Task<ActionResult<BookTransactionWithStatusAndIdDto>> GetBookTransactionById(Guid TransactionId)
         {
-            try {
+            try
+            {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
-                
-                var query = new GetBookTransactionQuery(parsedUserId,TransactionId);
-            var Result = await _mediator.Send(query);
-            return Ok(Result.Adapt<BookTransactionWithStatusAndIdDto>());
+
+                var query = new GetBookTransactionQuery(parsedUserId, TransactionId);
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<BookTransactionWithStatusAndIdDto>());
             }
-            catch(CustomNotFoundException e) {
+            catch (CustomNotFoundException e)
+            {
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
                 return new NotFoundObjectResult(errorResponse);
@@ -91,7 +89,7 @@ namespace Libro.Presentation.Controllers
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ReserveBookErrorResponseExample))]
         [SwaggerResponse(StatusCodes.Status403Forbidden, "When user is not patron")]
         [HasRole("patron")]
-        [HttpPost("{BookId}/Reserve", Name = "ReserveBook")]  
+        [HttpPost("{BookId}/Reserve", Name = "ReserveBook")]
         public async Task<ActionResult> ReserveBook(Guid BookId)
         {
 
@@ -99,7 +97,7 @@ namespace Libro.Presentation.Controllers
             {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
-                
+
                 BookTransaction bookTransaction = new()
                 {
                     Id = Guid.NewGuid(),

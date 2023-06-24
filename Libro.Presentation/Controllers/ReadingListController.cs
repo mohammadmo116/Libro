@@ -5,10 +5,7 @@ using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.ReadingListExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.ReadingList;
-using Libro.Presentation.SwaggerExamples.Book;
-using Libro.Presentation.SwaggerExamples.Patron;
 using Libro.Presentation.SwaggerExamples.ReadingList;
 using Mapster;
 using MediatR;
@@ -117,7 +114,7 @@ namespace Libro.Presentation.Controllers
 
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             _ = Guid.TryParse(userId, out Guid parsedUserId);
-            
+
             var query = new GetUserReadingListWithBooksQuery(parsedUserId, ReadingListId, PageNumber, Count);
             var Result = await _mediator.Send(query);
 
@@ -156,7 +153,7 @@ namespace Libro.Presentation.Controllers
 
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             _ = Guid.TryParse(userId, out Guid parsedUserId);
-            
+
             var readingList = readingListDto.Adapt<ReadingList>();
             var command = new CreateReadingListCommand(parsedUserId, readingList);
             var Result = await _mediator.Send(command);
@@ -192,7 +189,7 @@ namespace Libro.Presentation.Controllers
             {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
-             
+
                 if (ReadingListId != readingListDto.Id)
                 {
                     var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
@@ -233,7 +230,7 @@ namespace Libro.Presentation.Controllers
             {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
-                
+
                 var command = new RemoveReadingListCommand(parsedUserId, ReadingListId);
                 var Result = await _mediator.Send(command);
                 return Result ? Ok("Reading List has been Deleted") : StatusCode(StatusCodes.Status500InternalServerError);
@@ -265,7 +262,8 @@ namespace Libro.Presentation.Controllers
         [HttpPost("{ReadingListId}/Books/{BookId}", Name = "AddBookToReadingList")]
         public async Task<ActionResult> AddBookToReadingList(Guid ReadingListId, Guid BookId)
         {
-            try {
+            try
+            {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
                 BookReadingList bookReadingList = new()

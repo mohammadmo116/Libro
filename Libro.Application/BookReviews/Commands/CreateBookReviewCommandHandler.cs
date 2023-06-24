@@ -15,7 +15,7 @@ namespace Libro.Application.BookReviews.Commands
         private readonly IUserRepository _userRepository;
         private readonly IBookTransactionRepository _bookTransactionRepository;
         private readonly IUnitOfWork _unitOfWork;
-         
+
 
         public CreateBookReviewCommandHandler(
             ILogger<CreateBookReviewCommandHandler> logger,

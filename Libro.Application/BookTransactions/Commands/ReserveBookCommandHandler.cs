@@ -40,8 +40,8 @@ namespace Libro.Application.BookTransactions.Commands
                 _logger.LogInformation($"bookId : {request.BookTransaction.BookId}");
                 throw new BookIsNotAvailableException(book.Title!);
             }
-            
-           
+
+
             _bookRepository.MakeBookNotAvailable(book);
             await _bookTransactionRepository.AddBookTransactionWithReservedStatus(request.BookTransaction);
             var numberOfRows = await _unitOfWork.SaveChangesAsync();

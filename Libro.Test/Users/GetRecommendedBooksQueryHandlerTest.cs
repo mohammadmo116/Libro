@@ -1,11 +1,9 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Application.Users.Queries;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using Assert = Xunit.Assert;
 
 namespace Libro.Test.Users
 {
@@ -81,7 +79,7 @@ namespace Libro.Test.Users
         {
 
             //Arrange
-         
+
             _userRepositoryMock.Setup(
                 x => x.GetRecommendedBooksAsync(
                     It.IsAny<Guid>(),
@@ -95,7 +93,7 @@ namespace Libro.Test.Users
             var result = await _handler.Handle(_query, default);
 
             //Assert
-  
+
             _userRepositoryMock.Verify(
                 x => x.GetRecommendedBooksAsync(
                     It.Is<Guid>(u => u == _user.Id),
@@ -108,7 +106,7 @@ namespace Libro.Test.Users
 
 
         }
-        
+
 
     }
 }

@@ -5,11 +5,7 @@ using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.BookExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
-using Libro.Presentation.Dtos.Author;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.BookReview;
-using Libro.Presentation.SwaggerExamples.Author;
-using Libro.Presentation.SwaggerExamples.Book;
 using Libro.Presentation.SwaggerExamples.BookReview;
 using Mapster;
 using MediatR;
@@ -102,7 +98,7 @@ namespace Libro.Presentation.Controllers
         /// </remarks>
         [SwaggerResponse(StatusCodes.Status200OK, "Returns the newly created Review", Type = typeof(CreateBookReviewDto))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "When Book is Not Found")]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "When Book is Not Returned or already reviewd or bad rate value",typeof(CreateBookReviewErrorResponseExample))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "When Book is Not Returned or already reviewd or bad rate value", typeof(CreateBookReviewErrorResponseExample))]
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CreateBookReviewErrorResponseExample))]
         [HasRole("patron")]
         [HttpPost("{BookId}/Review", Name = "ReviewBook")]

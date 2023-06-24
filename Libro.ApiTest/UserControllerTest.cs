@@ -4,14 +4,8 @@ using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Libro.Presentation.Dtos.Book;
+using System.Net.Http.Json;
 
 namespace Libro.ApiTest
 {
@@ -55,7 +49,7 @@ namespace Libro.ApiTest
         [Fact]
         public async Task UpdateUser()
         {
-            
+
             //Arrange
             var patronId = _patronUser.Id;
             var updateuser = new UpdateUserDto()
@@ -90,10 +84,10 @@ namespace Libro.ApiTest
 
             badRequestResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             objectBadRequestResponse.Should().BeOfType<ErrorResponse>();
-            
+
         }
 
-       
+
 
         [Fact]
         public async Task GetUserBorrowingHistory()
@@ -122,7 +116,7 @@ namespace Libro.ApiTest
             _context.Books.Add(book);
             _context.BookTransactions.Add(bookTransaction);
             _context.SaveChanges();
-           
+
             //Act
 
             //401 Unauthrized           
@@ -162,9 +156,9 @@ namespace Libro.ApiTest
                 PhoneNumber = "3112544".ToLower()
             };
             _context.Users.Add(userr);
-            var role =_context.Roles.FirstOrDefault(a => a.Name == "patron");
+            var role = _context.Roles.FirstOrDefault(a => a.Name == "patron");
             var userId = userr.Id;
-            var roleId= role.Id;
+            var roleId = role.Id;
             _context.SaveChanges();
 
             //Act

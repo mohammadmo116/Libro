@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	  <PreserveCompilationContext>true</PreserveCompilationContext>
 	  <OutputType>Exe</OutputType>
+	  <UserSecretsId>7e50a1af-f4d1-45ee-9bba-1af3272839f4</UserSecretsId>
 	  
   </PropertyGroup>
 
@@ -16,6 +17,12 @@
 	<ItemGroup>
 	  
 	 <InternalsVisibleTo Include="Libro.ApiTest" />
+	  
+	 <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+	  
+	 <PackageReference Include="Azure.Identity" Version="1.9.0" />
+	  
+	 <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
     <PackageReference Include="FluentValidation" Version="11.5.2" />
 
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />

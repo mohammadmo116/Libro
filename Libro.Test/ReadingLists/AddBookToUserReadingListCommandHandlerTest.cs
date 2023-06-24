@@ -1,17 +1,12 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Application.ReadingLists.Commands;
 using Libro.Domain.Entities;
-using Libro.Infrastructure.Repositories;
-using Libro.Infrastructure;
-using Microsoft.Extensions.Logging;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.ReadingListExceptions;
+using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace Libro.Test.ReadingLists
 {
@@ -29,12 +24,13 @@ namespace Libro.Test.ReadingLists
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         public AddBookToUserReadingListCommandHandlerTest()
         {
-            _book = new() { 
-                Id=Guid.NewGuid(),
-                Genre="g",
-                IsAvailable=true,
-                PublishedDate=DateTime.Now,
-                Title="t"            
+            _book = new()
+            {
+                Id = Guid.NewGuid(),
+                Genre = "g",
+                IsAvailable = true,
+                PublishedDate = DateTime.Now,
+                Title = "t"
             };
             _user = new()
             {
@@ -55,7 +51,7 @@ namespace Libro.Test.ReadingLists
                 ReadingListId = _readingList.Id
             };
             _unitOfWorkMock = new();
-            _bookRepositoryMock= new();
+            _bookRepositoryMock = new();
             _readingListRepositoryMock = new();
             _loggerMock = new();
             _command = new(_user.Id, _bookReadingList);
@@ -115,7 +111,7 @@ namespace Libro.Test.ReadingLists
 
             _readingListRepositoryMock.Verify(
               x => x.ContainsTheBook(
-                  It.Is<BookReadingList>(x => x.ReadingListId == _readingList.Id && x.BookId ==_book.Id)
+                  It.Is<BookReadingList>(x => x.ReadingListId == _readingList.Id && x.BookId == _book.Id)
                   ),
               Times.Once);
 
@@ -129,7 +125,7 @@ namespace Libro.Test.ReadingLists
               x => x.SaveChangesAsync(),
               Times.Once);
 
-          
+
         }
         [Fact]
         public async Task Handle_Should_ShouldThrowCustomNotFoundException_WhenBookIsNotFound()
@@ -139,7 +135,7 @@ namespace Libro.Test.ReadingLists
             _bookRepositoryMock.Setup(
            x => x.GetBookAsync(
                It.IsAny<Guid>()))
-                .ReturnsAsync(()=>null!);
+                .ReturnsAsync(() => null!);
 
             //Act
             async Task act() => await _handler.Handle(_command, default);
@@ -195,7 +191,7 @@ namespace Libro.Test.ReadingLists
              x => x.GetReadingListByUserAsync(
                  It.IsAny<Guid>(),
                  It.IsAny<Guid>()))
-               .ReturnsAsync(()=>null!);        
+               .ReturnsAsync(() => null!);
 
             //Act
             async Task act() => await _handler.Handle(_command, default);

@@ -10,13 +10,13 @@ namespace Libro.ApiTest
     public class AuthenticationControllerTest : IntegrationTest
     {
 
-         
+
 
         [Fact]
         public async Task RegisterUser()
         {
             //Arrange       
-            
+
             var user1 = new CreateUserDto()
             {
                 UserName = "Test".ToLower(),
@@ -49,7 +49,7 @@ namespace Libro.ApiTest
             var userResponse2 = await response2.Content.ReadFromJsonAsync<ErrorResponse>();
 
             //404 Role PatronNotFound
-            var patronRoles =await _context.Roles.Where(a => a.Name.ToLower() == "patron").ToListAsync();
+            var patronRoles = await _context.Roles.Where(a => a.Name.ToLower() == "patron").ToListAsync();
             _context.Roles.RemoveRange(patronRoles);
             await _context.SaveChangesAsync();
             var response3 = await _client.PostAsJsonAsync("/Authentication/Rgister", user3);
@@ -74,7 +74,7 @@ namespace Libro.ApiTest
         public async Task LoginUser()
         {
             //Arrange       
-         
+
             var user1 = new LoginUserDto()
             {
 
@@ -98,7 +98,7 @@ namespace Libro.ApiTest
 
             //401 InvalidCredentials
             var response2 = await _client.PostAsJsonAsync("/Authentication/Login", user2);
-          
+
 
             //Assert
             response1.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -106,7 +106,7 @@ namespace Libro.ApiTest
             userResponse1.Should().BeOfType<string>();
 
             response2.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-          
+
         }
 
     }

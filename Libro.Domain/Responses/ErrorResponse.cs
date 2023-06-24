@@ -6,7 +6,7 @@ namespace Libro.Domain.Responses
     {
         public ErrorResponse()
         {
-           
+
         }
         public ErrorResponse(HttpStatusCode status)
         {

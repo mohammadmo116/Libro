@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 
@@ -20,12 +18,12 @@ namespace Libro.Infrastructure.Authorization
             RoleRequirement requirement)
         {
             string? userId = null;
-            if (requirement.AttrbuteName==nameof(HasRoleAttribute))
+            if (requirement.AttrbuteName == nameof(HasRoleAttribute))
             {
                 userId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
             }
-            if (requirement.AttrbuteName==nameof(ToRoleAttribute))
+            if (requirement.AttrbuteName == nameof(ToRoleAttribute))
             {
                 if (context.Resource is HttpContext httpContext)
                 {
@@ -37,7 +35,7 @@ namespace Libro.Infrastructure.Authorization
             {
                 return;
             }
-          
+
 
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
             IRoleService roleService = scope.ServiceProvider
@@ -47,7 +45,7 @@ namespace Libro.Infrastructure.Authorization
             HashSet<string> roles = await roleService
                 .GetRolesAsync(parsedUserId);
 
-  
+
 
             if (roles.Intersect(requirement.Roles).Any())
             {

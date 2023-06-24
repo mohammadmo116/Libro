@@ -6,8 +6,6 @@ using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.User;
-using Libro.Presentation.SwaggerExamples.Authentication;
-using Libro.Presentation.SwaggerExamples.Book;
 using Libro.Presentation.SwaggerExamples.Librarian;
 using Mapster;
 using MediatR;
@@ -42,7 +40,7 @@ namespace Libro.Presentation.Controllers
         ///
         ///     GET /librarian/A63B4C43-AA43-4E90-A97E-FB8DABC3162D
         /// </remarks>
-        [SwaggerResponse(StatusCodes.Status200OK, "Returns Librarian's Profile",typeof(UserDto))]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns Librarian's Profile", typeof(UserDto))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "When Librarian is Not Found")]
         [HasRole("admin")]
         [ToRole("librarian")]

@@ -1,6 +1,5 @@
 using Libro.Application.WeatherForecasts.Queries;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
 using Libro.Infrastructure;
 using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Hubs;
@@ -8,7 +7,6 @@ using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Libro.WebApi.Controllers
 {
@@ -41,7 +39,7 @@ namespace Libro.WebApi.Controllers
             var Result = await _mediator.Send(query);
             return Ok(Result);
         }
-   
+
         [HttpGet("aa", Name = "Geet")]
         public async Task<ActionResult> Geet()
         {

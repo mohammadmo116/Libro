@@ -4,10 +4,8 @@ using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Exceptions.UserExceptions;
 using Libro.Domain.Responses;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.User;
 using Libro.Presentation.SwaggerExamples.Authentication;
-using Libro.Presentation.SwaggerExamples.Librarian;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -60,30 +58,30 @@ namespace Libro.Presentation.Controllers
         [HttpPost("Rgister", Name = "Rgister")]
         public async Task<ActionResult<UserDtoWithId>> RgisterUser(CreateUserDto createUserDto)
         {
-              try
-              {
-                 var user = createUserDto.Adapt<User>();                  
-                 var query = new CreateUserByRoleCommand(user,"patron");   
-                 var Result = await _mediator.Send(query);
-                 return Ok(Result.Adapt<UserDtoWithId>());
-                
+            try
+            {
+                var user = createUserDto.Adapt<User>();
+                var query = new CreateUserByRoleCommand(user, "patron");
+                var Result = await _mediator.Send(query);
+                return Ok(Result.Adapt<UserDtoWithId>());
+
             }
 
-              catch (UserExistsException e)
-              {
-                  var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
-                  errorResponse.Errors.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
-                  return new BadRequestObjectResult(errorResponse);
+            catch (UserExistsException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName = e._field, Message = e.Message });
+                return new BadRequestObjectResult(errorResponse);
 
-              }
-              catch (CustomNotFoundException e)
-              {
-                  var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
-                  errorResponse.Errors.Add(new ErrorModel() { FieldName = "Role", Message = e.Message });
-                  return new NotFoundObjectResult(errorResponse);
+            }
+            catch (CustomNotFoundException e)
+            {
+                var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
+                errorResponse.Errors.Add(new ErrorModel() { FieldName = "Role", Message = e.Message });
+                return new NotFoundObjectResult(errorResponse);
 
-              }
-       
+            }
+
 
         }
 

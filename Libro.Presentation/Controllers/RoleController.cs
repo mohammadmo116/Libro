@@ -3,10 +3,8 @@ using Libro.Domain.Entities;
 using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
-using Libro.Presentation.Dtos.Author;
 using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
-using Libro.Presentation.SwaggerExamples.Author;
 using Libro.Presentation.SwaggerExamples.Role;
 using Mapster;
 using MediatR;
@@ -44,7 +42,7 @@ namespace Libro.Presentation.Controllers
         ///         name = roleName
         ///     }
         /// </remarks>
-        [SwaggerResponse(StatusCodes.Status200OK, "Success and returns the newly created role",typeof(RoleDto))]
+        [SwaggerResponse(StatusCodes.Status200OK, "Success and returns the newly created role", typeof(RoleDto))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "when Role Name Already Exists", typeof(CreateRoleErrorResponseExample))]
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CreateRoleErrorResponseExample))]
         [HasRole("admin")]

@@ -13,7 +13,7 @@ namespace Libro.Test.Notifications
 {
     public class NotifyPatronsForDueDatesCommandHandlerTest
     {
-       
+
         private readonly List<User> _userlist = new();
         private readonly Book _book;
         private readonly List<Book> _booklist = new();
@@ -31,7 +31,7 @@ namespace Libro.Test.Notifications
         public NotifyPatronsForDueDatesCommandHandlerTest()
         {
 
-           
+
             _patron = new()
             {
                 Id = Guid.NewGuid(),
@@ -81,7 +81,7 @@ namespace Libro.Test.Notifications
             _userRepositoryMock = new();
             _unitOfWorkMock = new();
             _loggerMock = new();
-            _emailFactoryMock=new();
+            _emailFactoryMock = new();
             _command = new();
             _handler = new(
                 _notificationRepositoryMock.Object,

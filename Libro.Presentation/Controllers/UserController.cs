@@ -8,13 +8,10 @@ using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.BookTransaction;
 using Libro.Presentation.Dtos.Role;
 using Libro.Presentation.Dtos.User;
-using Libro.Presentation.SwaggerExamples.Book;
 using Libro.Presentation.SwaggerExamples.BookTransaction;
-using Libro.Presentation.SwaggerExamples.Librarian;
 using Libro.Presentation.SwaggerExamples.User;
 using Mapster;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -49,7 +46,7 @@ namespace Libro.Presentation.Controllers
         /// </remarks>      
         [HasRole("librarian,admin,patron")]
         [HttpGet(Name = "GetUser")]
-        [SwaggerResponse(StatusCodes.Status200OK, "Returns User's Profile",typeof(UserDto))]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns User's Profile", typeof(UserDto))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "When User is Not Found")]
         public async Task<ActionResult<UserDto>> GetUser()
         {
@@ -57,7 +54,7 @@ namespace Libro.Presentation.Controllers
             {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
-                
+
                 var query = new GetUserQuery(parsedUserId);
                 var Result = await _mediator.Send(query);
                 return Ok(Result.Adapt<UserDto>());
@@ -100,7 +97,7 @@ namespace Libro.Presentation.Controllers
             {
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
-                
+
                 if (parsedUserId != userDto.Id)
                 {
                     var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
@@ -164,7 +161,7 @@ namespace Libro.Presentation.Controllers
                     Count = 1;
                 string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 _ = Guid.TryParse(userId, out Guid parsedUserId);
-                
+
                 var query = new GetBorrowingHistoryQuery(parsedUserId, PageNumber, Count);
                 var Result = await _mediator.Send(query);
 

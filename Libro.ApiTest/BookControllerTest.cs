@@ -1,17 +1,11 @@
 ﻿using FluentAssertions;
+using Libro.ApiTest.Responses;
 using Libro.Domain.Entities;
 using Libro.Domain.Responses;
-using Libro.Presentation.Dtos.Author;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Libro.Presentation.Dtos.Book;
 using Mapster;
-using Libro.ApiTest.Responses;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Libro.ApiTest
 {
@@ -22,9 +16,9 @@ namespace Libro.ApiTest
             var bookDto = new CreateBookDto()
             {
                 Title = "Title",
-                Genre="genre",
-                IsAvailable=true,
-                PublishedDate= DateTime.Now.AddYears(-3),
+                Genre = "genre",
+                IsAvailable = true,
+                PublishedDate = DateTime.Now.AddYears(-3),
 
             };
             var book = bookDto.Adapt<Book>();
@@ -45,7 +39,7 @@ namespace Libro.ApiTest
                 PublishedDate = DateTime.Now.AddYears(-4),
 
             };
-            
+
             var book2 = new CreateBookDto()
             {
                 Title = "Title2",
@@ -55,7 +49,7 @@ namespace Libro.ApiTest
 
             };
             var book3 = new CreateBookDto()
-            {             
+            {
                 Genre = "genre2",
                 PublishedDate = DateTime.Now.AddYears(-5),
 
@@ -99,7 +93,7 @@ namespace Libro.ApiTest
             objectBadRequentResponse2.Should().BeOfType<ErrorResponse>();
 
         }
-        
+
         [Fact]
         public async Task GetBook()
         {
@@ -186,14 +180,14 @@ namespace Libro.ApiTest
             var updateBook = new UpdateBookDto()
             {
                 Id = bookId,
-                Title="title",
-                PublishedDate= DateTime.UtcNow.AddYears(-3),
-                
+                Title = "title",
+                PublishedDate = DateTime.UtcNow.AddYears(-3),
+
             };
             var updateBook2 = new UpdateBookDto()
             {
                 Id = bookId,
-              
+
 
             };
             //Act

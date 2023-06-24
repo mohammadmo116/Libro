@@ -1,17 +1,10 @@
-﻿using Libro.Domain.Responses;
+﻿using FluentAssertions;
+using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using Libro.ApiTest.Responses;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Libro.ApiTest
 {
@@ -97,7 +90,7 @@ namespace Libro.ApiTest
         {
 
             //Arrange
-            var librarianId=_librarianUser.Id;
+            var librarianId = _librarianUser.Id;
 
             //Act
 
@@ -166,7 +159,7 @@ namespace Libro.ApiTest
             updateuser.Id = TestId;
             var forbiddenResponse2 = await _client.PutAsJsonAsync($"/Librarian/{TestId}", updateuser);
 
-           
+
 
 
 
@@ -208,7 +201,7 @@ namespace Libro.ApiTest
             //403 forbidden if the managed user is not Librarian or not found
             var forbiddenResponse2 = await _client.DeleteAsync($"/Librarian/{Guid.NewGuid()}");
 
-         
+
 
 
 

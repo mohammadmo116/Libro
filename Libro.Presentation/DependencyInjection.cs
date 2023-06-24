@@ -1,12 +1,7 @@
-﻿using FluentValidation.AspNetCore;
-using Libro.Domain.Responses;
-using Libro.Presentation.SwaggerExamples;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+﻿using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Reflection;
 
 namespace Libro.Presentation
 {
@@ -14,11 +9,11 @@ namespace Libro.Presentation
     {
         public static IServiceCollection AddPresentaion(this IServiceCollection services)
         {
-           
+
             services.AddSwaggerGen(options =>
             {
-                
-             
+
+
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
 
@@ -60,7 +55,7 @@ namespace Libro.Presentation
                     BearerFormat = "JWT",
                     Scheme = "bearer"
                 });
-              
+
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement {{
                                         new OpenApiSecurityScheme{
                                             Reference=new OpenApiReference{

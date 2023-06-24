@@ -1,12 +1,11 @@
 ﻿using FluentAssertions;
 using Libro.ApiTest.Responses;
-using System.Net.Http.Json;
-using System.Net;
 using Libro.Domain.Entities;
-using Libro.Presentation.Dtos.BookReview;
-using Libro.Domain.Responses;
 using Libro.Domain.Enums;
-using Xunit;
+using Libro.Domain.Responses;
+using Libro.Presentation.Dtos.BookReview;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Libro.ApiTest
 {
@@ -19,7 +18,7 @@ namespace Libro.ApiTest
         public BookReviewControllerTest() : base()
         {
 
-             _book = new Book()
+            _book = new Book()
             {
                 Id = Guid.NewGuid(),
                 Title = "Title",
@@ -29,7 +28,7 @@ namespace Libro.ApiTest
 
             };
 
-             _patron = new User()
+            _patron = new User()
             {
                 Id = Guid.NewGuid(),
                 Email = "patronBookReview21@libro.com",
@@ -37,21 +36,21 @@ namespace Libro.ApiTest
                 Password = "password"
             };
 
-             _bookReview = new BookReview()
+            _bookReview = new BookReview()
             {
                 UserId = _patron.Id,
                 BookId = _book.Id,
                 Rate = 5,
                 Review = "good"
-             };
+            };
 
-            _context.Users.Add(_patron);   
+            _context.Users.Add(_patron);
             _context.Books.Add(_book);
             _context.BookReviews.Add(_bookReview);
             _context.SaveChanges();
         }
 
-       
+
 
         [Fact]
         public async Task CreateBookReview()
@@ -60,21 +59,21 @@ namespace Libro.ApiTest
             //Arrange       
 
             BookTransaction bookTransaction = new()
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = _patronUser.Id,
-                    BookId = _book.Id,
-                    Status = BookStatus.Returned,
-                    DueDate = DateTime.UtcNow.AddDays(1),
-                    BorrowedDate = DateTime.UtcNow.AddDays(-10),
+            {
+                Id = Guid.NewGuid(),
+                UserId = _patronUser.Id,
+                BookId = _book.Id,
+                Status = BookStatus.Returned,
+                DueDate = DateTime.UtcNow.AddDays(1),
+                BorrowedDate = DateTime.UtcNow.AddDays(-10),
 
-                };
+            };
             _context.BookTransactions.Add(bookTransaction);
             _context.SaveChanges();
 
             var bookReviewDto = new CreateBookReviewDto()
             {
-               
+
                 Rate = 4,
                 Review = "good1"
 
@@ -140,53 +139,53 @@ namespace Libro.ApiTest
             badRequentResponse3.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             objectBadRequentResponse3.Should().BeOfType<ErrorResponse>();
 
-            
+
         }
 
         [Fact]
         public async Task GetBookReviews()
         {
-         
-           
+
+
             //Arrange
-            var bookId= _book.Id;
-            
+            var bookId = _book.Id;
+
             //Act
-            
+
             //401 Unauthrized           
             var unauthrizedResponse = await _client.GetAsync($"/Book/{bookId}/Reviews");
-            
+
             //403 Forbidden
             await AuthenticateAsync();
             var forBiddenResponse = await _client.GetAsync($"/Book/{bookId}/Reviews");
-            
+
             //404 Ok
             await AuthenticateAsync("patron");
             var notFoundResponse = await _client.GetAsync($"/Book/{Guid.NewGuid()}/Reviews");
             var objectnotFoundResponse = await notFoundResponse.Content.ReadFromJsonAsync<ErrorResponse>();
-            
+
             //200 Ok
             await AuthenticateAsync("patron");
             var okResponse = await _client.GetAsync($"/Book/{bookId}/Reviews");
             var objectOkResponse = await okResponse.Content.ReadFromJsonAsync<BookReviewsResponse>();
-            
-            
+
+
             //Assert
             unauthrizedResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-            
+
             forBiddenResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-            
+
             notFoundResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
             objectnotFoundResponse.Should().BeOfType<ErrorResponse>();
-            
+
             okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
             objectOkResponse.Pages.Should().Be(1);
-            
+
             objectOkResponse.Reviews.Should().NotBeNullOrEmpty();
             objectOkResponse.Reviews.First().BookId.Should().Be(bookId);
             objectOkResponse.Reviews.First().UserId.Should().Be(_patron.Id);
-            
-            
+
+
         }
 
     }

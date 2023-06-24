@@ -2,29 +2,22 @@
 using Libro.ApiTest.Responses;
 using Libro.Domain.Entities;
 using Libro.Domain.Responses;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.ReadingList;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.ApiTest
 {
-    public class ReadingListControllerTest:IntegrationTest
+    public class ReadingListControllerTest : IntegrationTest
     {
         public ReadingListControllerTest() : base()
         {
-           var readingList = new ReadingList()
+            var readingList = new ReadingList()
             {
                 Id = Guid.NewGuid(),
-                Name= "Test435",
-                Private=false,
-                UserId=_patronUser.Id
+                Name = "Test435",
+                Private = false,
+                UserId = _patronUser.Id
             };
             var book = new Book()
             {
@@ -35,7 +28,7 @@ namespace Libro.ApiTest
                 PublishedDate = DateTime.Now.AddYears(-4),
 
             };
-           
+
             readingList.Books.Add(book);
             _context.ReadingLists.Add(readingList);
             _context.SaveChanges();
@@ -56,7 +49,7 @@ namespace Libro.ApiTest
             {
                 Private = true
             };
-         
+
             //Act
 
             //401 Unauthrized           
@@ -88,7 +81,7 @@ namespace Libro.ApiTest
 
         }
 
-       
+
 
         [Fact]
         public async Task GetReadingLists()
@@ -181,7 +174,7 @@ namespace Libro.ApiTest
             var updatedReadingList = new UpdateReadingListDto()
             {
                 Id = readingListId,
-                Name= readingList.Name
+                Name = readingList.Name
             };
 
             //Act
@@ -339,7 +332,7 @@ namespace Libro.ApiTest
             //Act
 
             //401 Unauthrized           
-            var unauthrizedResponse = await _client.PostAsJsonAsync($"/ReadingList/{readingListId}/Books/{bookId}",new object());
+            var unauthrizedResponse = await _client.PostAsJsonAsync($"/ReadingList/{readingListId}/Books/{bookId}", new object());
 
             //403 forbidden if the user not patron
             await AuthenticateAsync();
@@ -356,11 +349,11 @@ namespace Libro.ApiTest
             //404 ReadingList not found
             var notFoundResponse = await _client.PostAsJsonAsync($"/ReadingList/{Guid.NewGuid()}/Books/{bookId}", new object());
             var objectNotFoundResponse = await notFoundResponse.Content.ReadFromJsonAsync<ErrorResponse>();
-            
+
             //404 Book not found
             var notFoundResponse1 = await _client.PostAsJsonAsync($"/ReadingList/{readingListId}/Books/{Guid.NewGuid()}", new object());
             var objectNotFoundResponse1 = await notFoundResponse1.Content.ReadFromJsonAsync<ErrorResponse>();
-            
+
             //Assert
             unauthrizedResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 

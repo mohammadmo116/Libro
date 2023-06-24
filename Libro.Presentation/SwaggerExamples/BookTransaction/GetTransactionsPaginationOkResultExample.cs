@@ -1,19 +1,12 @@
 ﻿using Libro.Domain.Enums;
-using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.Book;
-using Libro.Presentation.Dtos.BookReview;
 using Libro.Presentation.Dtos.BookTransaction;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Presentation.SwaggerExamples.BookTransaction
 {
-    public class GetTransactionsPaginationOkResultExample : IExamplesProvider<object>    
+    public class GetTransactionsPaginationOkResultExample : IExamplesProvider<object>
     {
 
         public object GetExamples()
@@ -45,7 +38,7 @@ namespace Libro.Presentation.SwaggerExamples.BookTransaction
                     },
 
 
-                }, 
+                },
                 Pages = 2
             }).Value;
             return a;

@@ -3,11 +3,6 @@ using Libro.Domain.Entities;
 using Libro.Infrastructure.Repositories;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Assert = Xunit.Assert;
 
 namespace Libro.Test.ReadingLists
@@ -70,8 +65,8 @@ namespace Libro.Test.ReadingLists
             _readingListRepositoryMock.Verify(
               x => x.GetReadingListsByUserAsync(
                    It.Is<Guid>(x => x == _user.Id),
-                  It.Is<int>(x=>x==1),
-                 It.Is<int>(x=>x==1)
+                  It.Is<int>(x => x == 1),
+                 It.Is<int>(x => x == 1)
                   ),
               Times.Once);
 

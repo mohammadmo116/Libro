@@ -1,12 +1,7 @@
 ﻿using Libro.Application.Notifications.Commands;
 using Libro.Application.Notifications.Queries;
-using Libro.Domain.Exceptions;
-using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.Notifications;
-using Libro.Presentation.SwaggerExamples.Book;
-using Libro.Presentation.SwaggerExamples.Librarian;
 using Libro.Presentation.SwaggerExamples.Notification;
 using Mapster;
 using MediatR;
@@ -14,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
-using System.Net;
 using System.Security.Claims;
 
 namespace Libro.Presentation.Controllers
@@ -68,12 +62,12 @@ namespace Libro.Presentation.Controllers
 
             string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             _ = Guid.TryParse(userId, out Guid parsedUserId);
-      
-                var query = new GetUserNotificaionsQuery(parsedUserId, PageNumber, Count);
-                var Result = await _mediator.Send(query);
 
-                return Ok(new { Notifications = Result.Item1.Adapt<List<GetNotificationsDto>>(), Pages = Result.Item2 });
-          
+            var query = new GetUserNotificaionsQuery(parsedUserId, PageNumber, Count);
+            var Result = await _mediator.Send(query);
+
+            return Ok(new { Notifications = Result.Item1.Adapt<List<GetNotificationsDto>>(), Pages = Result.Item2 });
+
         }
 
 

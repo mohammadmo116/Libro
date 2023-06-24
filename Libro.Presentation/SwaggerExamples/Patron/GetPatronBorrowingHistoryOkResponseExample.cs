@@ -1,14 +1,7 @@
 ﻿using Libro.Domain.Enums;
-using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.BookTransaction;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 
 namespace Libro.Presentation.SwaggerExamples.Patron
 {
@@ -16,8 +9,9 @@ namespace Libro.Presentation.SwaggerExamples.Patron
     {
         public object GetExamples()
         {
-                var a = new OkObjectResult(new {
-                    Transactions = new List<BookTransactionWithStatusDto>() {
+            var a = new OkObjectResult(new
+            {
+                Transactions = new List<BookTransactionWithStatusDto>() {
                         new (){
                             DueDate = DateTime.Now,
                             Status=BookStatus.Borrowed,
@@ -39,14 +33,14 @@ namespace Libro.Presentation.SwaggerExamples.Patron
                             },
                         }
                     },
-                 
+
 
                 Pages = 2
-               }).Value; 
+            }).Value;
             return a;
-            
-  
-            
+
+
+
         }
     }
 }

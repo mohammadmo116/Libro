@@ -1,8 +1,6 @@
 ﻿using Libro.Domain.Entities;
-using Libro.Infrastructure;
 using Libro.Infrastructure.Repositories;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace Libro.Application.ReadingLists.Queries
 {

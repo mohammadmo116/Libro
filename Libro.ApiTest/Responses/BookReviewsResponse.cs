@@ -1,10 +1,4 @@
-﻿using Libro.Presentation.Dtos.Book;
-using Libro.Presentation.Dtos.BookReview;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Libro.Presentation.Dtos.BookReview;
 
 namespace Libro.ApiTest.Responses
 {

@@ -1,17 +1,9 @@
-﻿using Libro.Application.BookTransactions.Commands;
-using Libro.Application.BookTransactions.Queries;
+﻿using Libro.Application.BookTransactions.Queries;
 using Libro.Application.Interfaces;
 using Libro.Domain.Entities;
-using Libro.Domain.Enums;
 using Libro.Domain.Exceptions;
-using Libro.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Test.BookTransactions
 {
@@ -45,9 +37,9 @@ namespace Libro.Test.BookTransactions
                 UserId = Guid.NewGuid(),
             };
 
-            _query = new (_user.Id,_bookTransaction.Id);
+            _query = new(_user.Id, _bookTransaction.Id);
 
-            _handler = new (
+            _handler = new(
                _loggerMock.Object,
                _bookTransactionRepository.Object
                );
@@ -79,7 +71,7 @@ namespace Libro.Test.BookTransactions
                    ),
                Times.Once);
 
-           
+
 
         }
         [Fact]

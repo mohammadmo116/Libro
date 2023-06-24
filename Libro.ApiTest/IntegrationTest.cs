@@ -1,18 +1,11 @@
+using Libro.Domain.Entities;
 using Libro.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Net.Http.Headers;
-using Libro.Presentation;
-using System.Net.Http.Json;
 using Libro.Presentation.Dtos.User;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.TestHost;
-using Libro.Presentation.Dtos.Role;
-using Libro.Domain.Entities;
-using System.Net.Sockets;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace Libro.ApiTest
 {
@@ -25,12 +18,14 @@ namespace Libro.ApiTest
         protected readonly User _librarianUser;
         protected readonly User _librarianUser2;
         protected readonly User _patronUser;
-        public IntegrationTest() {
+        public IntegrationTest()
+        {
 
-                var appFactory = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(builder => {
-                    builder.UseEnvironment("IntegrationTesting");
-                });
+            var appFactory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("IntegrationTesting");
+            });
 
             var roles = new List<Role>() {
                 new()
@@ -75,7 +70,7 @@ namespace Libro.ApiTest
                 Email = "librarian@Libro.com".ToLower(),
                 UserName = "librarian".ToLower(),
                 Password = BCrypt.Net.BCrypt.HashPassword("password"),
-                PhoneNumber = "1123524".ToLower()               
+                PhoneNumber = "1123524".ToLower()
             };
             _librarianUser.Roles.Add(roles.FirstOrDefault(a => a.Name == "librarian"));
 
@@ -90,7 +85,7 @@ namespace Libro.ApiTest
             _librarianUser2.Roles.Add(roles.FirstOrDefault(a => a.Name == "librarian"));
 
 
-             _patronUser = new User()
+            _patronUser = new User()
             {
                 Id = Guid.NewGuid(),
                 Email = "patron@Libro.com".ToLower(),
@@ -100,7 +95,7 @@ namespace Libro.ApiTest
             };
             _patronUser.Roles.Add(roles.FirstOrDefault(a => a.Name == "patron"));
 
-         
+
 
             _context = appFactory.Services.GetRequiredService<ApplicationDbContext>();
             _context.Roles.AddRange(roles);
@@ -109,26 +104,26 @@ namespace Libro.ApiTest
             _context.Users.Add(_librarianUser2);
             _context.Users.Add(_patronUser);
             _context.Users.Add(_user);
-             _context.SaveChanges();
-            
+            _context.SaveChanges();
+
 
 
 
             _client = appFactory.CreateClient();
-           
-        }
-        
-        protected async Task AuthenticateAsync(string? role="")
-        {
-            var token = await GetJwtAsync(role);           
-           _client.DefaultRequestHeaders.Authorization =new AuthenticationHeaderValue("Bearer",token);
 
         }
-       
-       
+
+        protected async Task AuthenticateAsync(string? role = "")
+        {
+            var token = await GetJwtAsync(role);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        }
+
+
         private async Task<string> GetJwtAsync(string? role)
         {
-            HttpResponseMessage? response=new();
+            HttpResponseMessage? response = new();
             if (string.IsNullOrEmpty(role))
             {
                 response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
@@ -140,34 +135,34 @@ namespace Libro.ApiTest
             }
             if (role == "patron")
             {
- 
-                 response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
+
+                response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
                 {
                     Email = "patron@Libro.com".ToLower(),
                     Password = "password"
-                 });
+                });
             }
             if (role == "librarian")
             {
 
-                 response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
+                response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
                 {
-                     Email = "librarian@Libro.com".ToLower(),
-                     Password = "password"
-                 });
+                    Email = "librarian@Libro.com".ToLower(),
+                    Password = "password"
+                });
             }
             if (role == "admin")
             {
 
-                 response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
+                response = await _client.PostAsJsonAsync("/Authentication/Login", new LoginUserDto()
                 {
-                     Email = "admin@Libro.com".ToLower(),
-                     Password = "password"
+                    Email = "admin@Libro.com".ToLower(),
+                    Password = "password"
                 });
             }
             var JWTtoken = await response.Content.ReadAsStringAsync();
-                return JWTtoken;
-            
+            return JWTtoken;
+
         }
     }
 }

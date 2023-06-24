@@ -1,7 +1,6 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Application.Notifications.Queries;
 using Libro.Domain.Entities;
-using Libro.Domain.Exceptions;
 using Libro.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -89,6 +88,6 @@ namespace Libro.Test.Notifications
             Assert.Equal(1, result.Item2);
         }
 
-       
+
     }
 }

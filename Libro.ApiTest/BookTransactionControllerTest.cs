@@ -1,28 +1,23 @@
 ﻿using FluentAssertions;
+using Libro.ApiTest.Responses;
 using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Responses;
-using Libro.Presentation.Dtos.Book;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Libro.Presentation.Dtos.BookTransaction;
-using Libro.ApiTest.Responses;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Libro.ApiTest
 {
     public class BookTransactionControllerTest : IntegrationTest
     {
-        public BookTransactionControllerTest() : base() 
+        public BookTransactionControllerTest() : base()
         {
-       
+
         }
         [Fact]
-        public async Task GetBookTransactiob() {
+        public async Task GetBookTransactiob()
+        {
 
             //Arrange
             var book = new Book()
@@ -79,7 +74,7 @@ namespace Libro.ApiTest
             forBiddenResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
             okResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-          
+
 
             notFoundResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
             objectNotFoundResponse.Should().BeOfType<ErrorResponse>();
@@ -116,7 +111,7 @@ namespace Libro.ApiTest
             //Act
 
             //401 Unauthrized           
-            var unauthrizedResponse = await _client.PostAsJsonAsync($"/Book/{book.Id}/Reserve",new object());
+            var unauthrizedResponse = await _client.PostAsJsonAsync($"/Book/{book.Id}/Reserve", new object());
 
             //403 Forbidden
             await AuthenticateAsync();
@@ -178,17 +173,18 @@ namespace Libro.ApiTest
 
             };
             _context.Books.Add(book);
-            _context.BookTransactions.Add(bookTransaction);        
+            _context.BookTransactions.Add(bookTransaction);
             _context.SaveChanges();
 
 
             //Act
-         
+
 
             //401 Unauthrized           
-            var unauthrizedResponse = await _client.PutAsJsonAsync($"/Book/Transactions/{bookTransaction.Id}/Borrow", new DueDateDto() {
+            var unauthrizedResponse = await _client.PutAsJsonAsync($"/Book/Transactions/{bookTransaction.Id}/Borrow", new DueDateDto()
+            {
                 DueDate = DateTime.UtcNow.AddDays(14)
-                });
+            });
 
             //403 Forbidden
             await AuthenticateAsync();
@@ -259,8 +255,8 @@ namespace Libro.ApiTest
                 BookId = book.Id,
                 UserId = _patronUser.Id,
                 Status = BookStatus.Borrowed,
-                BorrowedDate=DateTime.UtcNow,
-                DueDate =DateTime.UtcNow.AddDays(14)
+                BorrowedDate = DateTime.UtcNow,
+                DueDate = DateTime.UtcNow.AddDays(14)
 
 
             };
@@ -284,7 +280,7 @@ namespace Libro.ApiTest
             var okResponse = await _client.PutAsJsonAsync($"/Book/Transactions/{bookTransaction.Id}/Return", new object());
 
             //404 book notfound
-            var notFoundResponse = await _client.PutAsJsonAsync($"/Book/Transactions/{Guid.NewGuid()}/Return",new object());
+            var notFoundResponse = await _client.PutAsJsonAsync($"/Book/Transactions/{Guid.NewGuid()}/Return", new object());
 
             var objectNotFoundResponse = await notFoundResponse.Content.ReadFromJsonAsync<ErrorResponse>();
 
@@ -331,7 +327,7 @@ namespace Libro.ApiTest
             _context.Books.Add(book);
             _context.BookTransactions.Add(bookTransaction);
             _context.SaveChanges();
-          
+
 
             //Act
 

@@ -25,7 +25,7 @@ namespace Libro.Infrastructure.Repositories
             var NumberOfPages = 1;
             if (readingListsCount > 0)
                 NumberOfPages = (int)Math.Ceiling((double)readingListsCount / Count);
-           
+
             return (readingLists, NumberOfPages);
         }
 
@@ -88,15 +88,15 @@ namespace Libro.Infrastructure.Repositories
         public void RemoveBookFromReadingList(BookReadingList bookReadingList)
         {
 
-             _context.BookReadingLists.Remove(bookReadingList);
+            _context.BookReadingLists.Remove(bookReadingList);
 
         }
         public async Task<bool> ContainsTheBook(BookReadingList bookReadingList)
         {
 
-           return await _context.BookReadingLists.ContainsAsync(bookReadingList);
+            return await _context.BookReadingLists.ContainsAsync(bookReadingList);
 
         }
-        
+
     }
 }

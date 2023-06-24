@@ -1,42 +1,31 @@
-using FluentEmail.Core;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
 using Libro.Application;
-using Libro.Domain.Responses;
 using Libro.Infrastracture;
 using Libro.Infrastructure.Authorization;
 using Libro.Infrastructure.Hubs;
 using Libro.Infrastructure.Jobs;
 using Libro.Presentation;
-using Libro.Presentation.SwaggerExamples;
 using Libro.WebApi.Filters;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Swashbuckle.AspNetCore.Filters;
-using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
+
 var services = builder.Services;
+
 services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddApplicationPart(typeof(Libro.Presentation.AssemblyReference).Assembly)
     .AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
    .ConfigureApiBehaviorOptions(options =>
     options.SuppressModelStateInvalidFilter = true);
-
 services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters()
     .AddValidatorsFromAssemblyContaining<Libro.Presentation.AssemblyReference>();
 
@@ -51,7 +40,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidIssuer = builder.Configuration["Authentication:Issuer"],
         ValidAudience = builder.Configuration["Authentication:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretForKey"])),
-        ClockSkew=TimeSpan.FromSeconds(5)
+        ClockSkew = TimeSpan.FromSeconds(5)
     });
 
 
@@ -61,13 +50,14 @@ services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvi
 
 
 services
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration,builder.Environment)
+    .AddApplication(builder.Configuration)
+    .AddInfrastructure(builder.Configuration, builder.Environment)
     .AddPresentaion();
 
 
 builder.Host.UseSerilog((context, config) =>
         config.ReadFrom.Configuration(context.Configuration));
+
 
 var app = builder.Build();
 try
@@ -92,13 +82,13 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 
 }
 //HangFire
-//app.UseHangfireDashboard();
+app.UseHangfireDashboard();
 
 ////HangFire Jobs 
 //every Minute
 //RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "* * * * *");
 //every day at 7:00:00 am
-//RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
+RecurringJob.AddOrUpdate<JobToNotifyPatronDueForDateBooks>("my-job-id", job => job.ExecuteAsync(), "00 07 * * *");
 
 
 //Serilog
@@ -110,4 +100,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationHub>("/NotificationHub").RequireAuthorization();
 app.Run();
+
 public partial class Program { }

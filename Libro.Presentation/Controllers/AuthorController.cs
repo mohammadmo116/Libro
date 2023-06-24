@@ -5,12 +5,9 @@ using Libro.Domain.Exceptions;
 using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Author;
-using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.SwaggerExamples.Author;
-using Libro.Presentation.SwaggerExamples.Book;
 using Mapster;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -58,7 +55,7 @@ namespace Libro.Presentation.Controllers
                 var errorResponse = new ErrorResponse(status: HttpStatusCode.NotFound);
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Author", Message = "Author Not_Found" });
                 return new NotFoundObjectResult(errorResponse);
-               
+
             }
 
             return Ok(Result.Adapt<AuthorDto>());

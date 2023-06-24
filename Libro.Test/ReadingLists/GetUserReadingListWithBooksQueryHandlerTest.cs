@@ -1,8 +1,6 @@
 ﻿using Libro.Application.ReadingLists.Queries;
 using Libro.Domain.Entities;
-using Libro.Infrastructure;
 using Libro.Infrastructure.Repositories;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Libro.Test.ReadingLists

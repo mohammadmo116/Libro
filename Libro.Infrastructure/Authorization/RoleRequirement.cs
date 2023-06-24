@@ -1,7 +1,4 @@
-﻿using Libro.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace Libro.Infrastructure.Authorization
 {
@@ -16,7 +13,7 @@ namespace Libro.Infrastructure.Authorization
                 .Replace(" ", "")
                 .Split(',')
                 .ToHashSet();
-                
+
                 AttrbuteName = nameof(HasRoleAttribute);
             }
             if (roles.StartsWith(nameof(ToRoleAttribute), StringComparison.OrdinalIgnoreCase))
@@ -30,9 +27,9 @@ namespace Libro.Infrastructure.Authorization
                 AttrbuteName = nameof(ToRoleAttribute);
 
             }
-           
+
         }
         public HashSet<string> Roles { get; set; }
-        public string AttrbuteName{ get; set; }
+        public string AttrbuteName { get; set; }
     }
 }

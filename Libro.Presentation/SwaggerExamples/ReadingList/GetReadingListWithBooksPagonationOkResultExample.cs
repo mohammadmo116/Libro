@@ -1,13 +1,7 @@
-﻿using Libro.Presentation.Dtos.Author;
-using Libro.Presentation.Dtos.Book;
+﻿using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.ReadingList;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Presentation.SwaggerExamples.ReadingList
 {
@@ -17,12 +11,13 @@ namespace Libro.Presentation.SwaggerExamples.ReadingList
         {
             var a = new OkObjectResult(new
             {
-                ReadingList = new GetReadingListWithBooksDto() {
-                       Id=Guid.NewGuid(),
-                       Name="readingListName",
-                       Private=false,
-                       Books= new List<BookDto>() {
-                       new(){ 
+                ReadingList = new GetReadingListWithBooksDto()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "readingListName",
+                    Private = false,
+                    Books = new List<BookDto>() {
+                       new(){
                        Title="title",
                        Genre="genre",
                        PublishedDate=DateTime.UtcNow.AddYears(-21)

@@ -39,7 +39,7 @@
     <ProjectReference Include="..\Libro.Infrastructure\Libro.Infrastructure.csproj" />
     <ProjectReference Include="..\Libro.Presentation\Libro.Presentation.csproj" />
     <ProjectReference Include="..\Libro.Test\Libro.Test.csproj" />
-    <ProjectReference Include="..\Libro.WebApi\Libro.WebApi.csproj" />
+    <ProjectReference Include="..\Libro.WebApi\LibroWebApi.csproj" />
   </ItemGroup>
 
 </Project>

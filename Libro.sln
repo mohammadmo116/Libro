@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.Presentation", "Libro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.Application", "Libro.Application\Libro.Application.csproj", "{D126A08A-8BE7-4003-BA1D-C06B36C6CAC4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.WebApi", "Libro.WebApi\Libro.WebApi.csproj", "{1EA8EC4C-AFFC-4334-8AAF-27FD37A1E714}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibroWebApi", "Libro.WebApi\LibroWebApi.csproj", "{1EA8EC4C-AFFC-4334-8AAF-27FD37A1E714}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.Test", "Libro.Test\Libro.Test.csproj", "{BED62CE4-4150-4D18-83B6-B3A8B31F3EDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libro.ApiTest", "Libro.ApiTest\Libro.ApiTest.csproj", "{E4BD0456-8DDA-4A0F-95F3-B0F6BEF3CA6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libro.ApiTest", "Libro.ApiTest\Libro.ApiTest.csproj", "{E4BD0456-8DDA-4A0F-95F3-B0F6BEF3CA6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

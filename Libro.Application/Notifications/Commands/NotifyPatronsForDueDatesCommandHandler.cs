@@ -28,7 +28,7 @@ namespace Libro.Application.Notifications.Commands
             _userRepository = userRepository;
             _logger = logger;
             _unitOfWork = unitOfWork;
-            _emailFactory= emailFactory;
+            _emailFactory = emailFactory;
         }
 
         public async Task<bool> Handle(NotifyPatronsForDueDatesCommand request, CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ namespace Libro.Application.Notifications.Commands
             {
                 return true;
             }
-       
+
             List<Notification> notifications = new();
 
             foreach (var user in users)
@@ -49,18 +49,18 @@ namespace Libro.Application.Notifications.Commands
                     foreach (var Transaction in user.BookTransactions)
                     {
 
-                        var message = "{message="+$"Please Check Your Expired Borrowed Book - Transaction #{Transaction.Id} Return it As Soon As Possible,"+
-                            $"TransactionId={Transaction.Id}"+"}";
+                        var message = "{message=" + $"Please Check Your Expired Borrowed Book - Transaction #{Transaction.Id} Return it As Soon As Possible," +
+                            $"TransactionId={Transaction.Id}" + "}";
                         //for the database
                         notifications.Add(new()
                         {
                             Id = Guid.NewGuid(),
                             Message = message,
                             UserId = user.Id,
-                            IsRead=false
+                            IsRead = false
                         });
                         //SignalR- Push Notifications
-                        await _notificationRepository.NotifyUser(user.Id.ToString(),"PushNotifications",message);
+                        await _notificationRepository.NotifyUser(user.Id.ToString(), "PushNotifications", message);
                         StringBuilder tamplate = new();
                         tamplate.AppendLine($"Dear @Model.UserEmail");
                         tamplate.AppendLine($"<p>Please Check Your Expired Borrowed Book <a href =\"https://localhost:7062/Book/Transactions/@Model.TransactionNumber\">@Model.BookTitle</a> . Return it As Soon As Possible</p>.");
@@ -81,7 +81,7 @@ namespace Libro.Application.Notifications.Commands
                         }
                     }
             }
-        
+
             await _notificationRepository.DataBaseNotify(notifications);
             var NumberOfRows = await _unitOfWork.SaveChangesAsync();
             return NumberOfRows > 0;

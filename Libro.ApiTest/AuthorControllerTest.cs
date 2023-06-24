@@ -2,23 +2,17 @@
 using Libro.Domain.Entities;
 using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.Author;
-using Libro.Presentation.Dtos.User;
 using Mapster;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.ApiTest
 {
     public class AuthorControllerTest : IntegrationTest
     {
-      
-        public AuthorControllerTest() : base() {
+
+        public AuthorControllerTest() : base()
+        {
             var authorDto = new CreateAuthorDto()
             {
                 Name = "Author",
@@ -26,7 +20,7 @@ namespace Libro.ApiTest
 
             };
             var author = authorDto.Adapt<Author>();
-            author.Id= Guid.NewGuid();
+            author.Id = Guid.NewGuid();
             _context.Authors.Add(author);
             _context.SaveChanges();
         }
@@ -37,8 +31,8 @@ namespace Libro.ApiTest
             //Arrange
             var author1 = new CreateAuthorDto()
             {
-               Name="Author1",
-               DateOfBirth=DateTime.Now.AddYears(-20),
+                Name = "Author1",
+                DateOfBirth = DateTime.Now.AddYears(-20),
 
             };
             var author2 = new CreateAuthorDto()
@@ -52,7 +46,7 @@ namespace Libro.ApiTest
                 DateOfBirth = DateTime.Now.AddYears(-20),
 
             };
-        
+
             //Act
 
             //401 Unauthrized           
@@ -90,13 +84,13 @@ namespace Libro.ApiTest
             objectBadRequentResponse2.Should().BeOfType<ErrorResponse>();
 
         }
-       
+
         [Fact]
         public async Task GetAuthor()
         {
 
             //Arrange
-            var author=_context.Authors.First();
+            var author = _context.Authors.First();
             var authorId = author.Id;
 
             //Act
@@ -181,13 +175,13 @@ namespace Libro.ApiTest
             var objectBadRequestRespons3 = await badRequestResponse3.Content.ReadFromJsonAsync<ErrorResponse>();
 
             //404 Author not found
-            updateAuthor.Id=TestId;
+            updateAuthor.Id = TestId;
             updateAuthor.DateOfBirth = DateTime.UtcNow.AddYears(-30);
             var notFoundResponse = await _client.PutAsJsonAsync($"/Author/{TestId}", updateAuthor);
             var objectNotFoundResponse = await notFoundResponse.Content.ReadFromJsonAsync<ErrorResponse>();
 
 
-           
+
 
 
             //Assert

@@ -1,14 +1,7 @@
 ﻿using Hangfire;
 using Libro.Application.Notifications.Commands;
 using MediatR;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.Infrastructure.Jobs
 {
@@ -17,9 +10,10 @@ namespace Libro.Infrastructure.Jobs
         private readonly IMediator _mediator;
         private readonly ILogger<JobToNotifyPatronDueForDateBooks> _logger;
         public JobToNotifyPatronDueForDateBooks(IMediator mediator,
-            ILogger<JobToNotifyPatronDueForDateBooks> logger) {
+            ILogger<JobToNotifyPatronDueForDateBooks> logger)
+        {
             _mediator = mediator;
-            _logger= logger;
+            _logger = logger;
         }
         [AutomaticRetry(Attempts = 3)]
         public async Task ExecuteAsync()

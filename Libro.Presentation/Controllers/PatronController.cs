@@ -7,9 +7,7 @@ using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.Dtos.BookTransaction;
-using Libro.Presentation.Dtos.Notifications;
 using Libro.Presentation.Dtos.User;
-using Libro.Presentation.SwaggerExamples.Book;
 using Libro.Presentation.SwaggerExamples.Librarian;
 using Libro.Presentation.SwaggerExamples.Patron;
 using Mapster;
@@ -145,13 +143,13 @@ namespace Libro.Presentation.Controllers
         /// 
         ///     GET /Patron/A63B4C43-AA43-4E90-A97E-FB8DABC3162D/Borrowing-History?PageNumber=0&amp;Count=5
         /// </remarks>
-       
-        [SwaggerResponse(StatusCodes.Status200OK, "List of Transactions with pagination",typeof(GetPatronBorrowingHistoryOkResponseExample))]
+
+        [SwaggerResponse(StatusCodes.Status200OK, "List of Transactions with pagination", typeof(GetPatronBorrowingHistoryOkResponseExample))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetPatronBorrowingHistoryOkResponseExample))]
         [HasRole("admin,librarian")]
         [ToRole("patron")]
         [HttpGet("{UserId}/Borrowing-History", Name = "GetPatronBorrwingHistory")]
-        public async Task<ActionResult<(List<BookTransactionWithStatusAndIdDto>,int)>> GetPatronBorrowingHistory(Guid UserId, int PageNumber = 0, int Count = 5)
+        public async Task<ActionResult<(List<BookTransactionWithStatusAndIdDto>, int)>> GetPatronBorrowingHistory(Guid UserId, int PageNumber = 0, int Count = 5)
         {
             try
             {
@@ -208,21 +206,21 @@ namespace Libro.Presentation.Controllers
         [HttpGet("RecommendedBooks", Name = "GetRecommendedBooks")]
         public async Task<ActionResult<(List<BookWithAuthorsDto>, int)>> GetPatronRecommendedBooks(int PageNumber = 0, int Count = 5)
         {
-                if (Count > 10)
-                    Count = 10;
-                if (Count < 1)
-                    Count = 1;
-                string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                _=Guid.TryParse(userId, out Guid parsedUserId);
-              
-                var query = new GetRecommendedBooksQuery(parsedUserId, PageNumber, Count);
-                var Result = await _mediator.Send(query);
+            if (Count > 10)
+                Count = 10;
+            if (Count < 1)
+                Count = 1;
+            string? userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            _ = Guid.TryParse(userId, out Guid parsedUserId);
 
-                return Ok(new
-                {
-                    RecommendedBooks = Result.Item1.Adapt<List<BookWithAuthorsDto>>(),
-                    Pages = Result.Item2
-                });       
+            var query = new GetRecommendedBooksQuery(parsedUserId, PageNumber, Count);
+            var Result = await _mediator.Send(query);
+
+            return Ok(new
+            {
+                RecommendedBooks = Result.Item1.Adapt<List<BookWithAuthorsDto>>(),
+                Pages = Result.Item2
+            });
 
         }
 

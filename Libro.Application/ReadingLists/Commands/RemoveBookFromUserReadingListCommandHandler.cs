@@ -1,16 +1,10 @@
 ﻿using Libro.Application.Interfaces;
-using Libro.Domain.Entities;
-using Libro.Infrastructure.Repositories;
+using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.ReadingListExceptions;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Libro.Domain.Exceptions.ReadingListExceptions;
-using Libro.Domain.Exceptions;
 
 namespace Libro.Application.ReadingLists.Commands
 {
@@ -57,7 +51,7 @@ namespace Libro.Application.ReadingLists.Commands
                 throw new ReadingListDoesNotContainTheBookException();
             }
             _readingListRepository.RemoveBookFromReadingList(request.BookReadingList);
-            var NumberOfRows=await _unitOfWork.SaveChangesAsync();
+            var NumberOfRows = await _unitOfWork.SaveChangesAsync();
             return NumberOfRows > 0;
         }
     }

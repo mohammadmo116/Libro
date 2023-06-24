@@ -1,17 +1,12 @@
 ﻿using Libro.Application.Interfaces;
 using Libro.Application.ReadingLists.Commands;
 using Libro.Domain.Entities;
-using Libro.Infrastructure.Repositories;
+using Libro.Domain.Exceptions;
+using Libro.Domain.Exceptions.ReadingListExceptions;
 using Libro.Infrastructure;
+using Libro.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Libro.Domain.Exceptions.ReadingListExceptions;
-using Libro.Domain.Exceptions;
 
 namespace Libro.Test.ReadingLists
 {

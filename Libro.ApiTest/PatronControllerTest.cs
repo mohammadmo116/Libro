@@ -4,14 +4,8 @@ using Libro.Domain.Entities;
 using Libro.Domain.Enums;
 using Libro.Domain.Responses;
 using Libro.Presentation.Dtos.User;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Libro.ApiTest
 {
@@ -112,30 +106,30 @@ namespace Libro.ApiTest
         {
 
             //Arrange
-                 var book = new Book()
-              {
-                  Id = Guid.NewGuid(),
-                  Title = "Title3",
-                  Genre = "genre3",
-                  IsAvailable = true,
-                  PublishedDate = DateTime.Now.AddYears(-3)
+            var book = new Book()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Title3",
+                Genre = "genre3",
+                IsAvailable = true,
+                PublishedDate = DateTime.Now.AddYears(-3)
 
-              };
+            };
 
-              var bookTransaction = new BookTransaction()
-              {
-                  Id = Guid.NewGuid(),
-                  BookId = book.Id,
-                  UserId = _patronUser.Id,
-                  Status = BookStatus.Borrowed,
-                  BorrowedDate = DateTime.UtcNow,
-                  DueDate = DateTime.UtcNow.AddDays(14)
+            var bookTransaction = new BookTransaction()
+            {
+                Id = Guid.NewGuid(),
+                BookId = book.Id,
+                UserId = _patronUser.Id,
+                Status = BookStatus.Borrowed,
+                BorrowedDate = DateTime.UtcNow,
+                DueDate = DateTime.UtcNow.AddDays(14)
 
 
-              };
-              _context.Books.Add(book);
-              _context.BookTransactions.Add(bookTransaction);
-              _context.SaveChanges();
+            };
+            _context.Books.Add(book);
+            _context.BookTransactions.Add(bookTransaction);
+            _context.SaveChanges();
 
             var patronId = _patronUser.Id;
             //Act
@@ -146,7 +140,7 @@ namespace Libro.ApiTest
             //403 Forbidden
             await AuthenticateAsync();
             var forBiddenResponse = await _client.GetAsync($"/Patron/{patronId}/Borrowing-History?PageNumber=0&Count=5");
-            
+
             await AuthenticateAsync("librarian");
             var forBiddenResponse2 = await _client.GetAsync($"/Patron/{Guid.NewGuid()}/Borrowing-History?PageNumber=0&Count=5");
 
@@ -194,7 +188,7 @@ namespace Libro.ApiTest
 
 
             };
-            
+
             _context.Books.Add(book);
             _context.BookTransactions.Add(bookTransaction);
             _context.SaveChanges();

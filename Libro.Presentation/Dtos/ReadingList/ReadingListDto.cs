@@ -6,7 +6,7 @@ namespace Libro.Presentation.Dtos.ReadingList
     {
         [Required]
         public string Name { get; set; }
-       
+
         public bool Private { get; set; } = true;
     }
 }

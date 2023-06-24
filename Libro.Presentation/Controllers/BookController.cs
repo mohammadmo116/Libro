@@ -6,7 +6,6 @@ using Libro.Domain.Responses;
 using Libro.Infrastructure.Authorization;
 using Libro.Presentation.Dtos.Book;
 using Libro.Presentation.SwaggerExamples.Book;
-using Libro.Presentation.SwaggerExamples.Patron;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net;
-using System.Reflection;
 
 namespace Libro.Presentation.Controllers
 {
@@ -108,7 +106,7 @@ namespace Libro.Presentation.Controllers
                 errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Book", Message = "404 Book NotFound" });
                 return new NotFoundObjectResult(errorResponse);
             }
-          
+
 
             return Ok(Result.Adapt<BookWithAuthorsDto>());
         }
@@ -130,9 +128,9 @@ namespace Libro.Presentation.Controllers
         ///         isAvailable: true
         ///     }
         /// </remarks>
-       
+
         [SwaggerResponse(StatusCodes.Status201Created, "Returns the newly created Book and it's route in the header:location", Type = typeof(BookWithAuthorsDto))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest,"when PublishedDate is in the future", typeof(CreateBookErrorResponseExample))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "when PublishedDate is in the future", typeof(CreateBookErrorResponseExample))]
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CreateBookErrorResponseExample))]
         [HasRole("librarian")]
         [HttpPost(Name = "CreateBook")]
@@ -170,7 +168,7 @@ namespace Libro.Presentation.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, "When BookId in the route does not match the one in the body or PublishedDate is in the future", typeof(UpdateBookErrorResponseExample))]
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(UpdateBookErrorResponseExample))]
         [HasRole("librarian")]
-        [HttpPut("{BookId}", Name = "UpdateBook")]     
+        [HttpPut("{BookId}", Name = "UpdateBook")]
         public async Task<ActionResult<bool>> UpdateBook(Guid BookId, UpdateBookDto bookDto)
         {
             try
@@ -178,7 +176,7 @@ namespace Libro.Presentation.Controllers
                 if (BookId != bookDto.Id)
                 {
                     var errorResponse = new ErrorResponse(status: HttpStatusCode.BadRequest);
-                    errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Id", Message = "bad Id"});
+                    errorResponse.Errors?.Add(new ErrorModel() { FieldName = "Id", Message = "bad Id" });
                     return new BadRequestObjectResult(errorResponse);
                 }
                 var book = bookDto.Adapt<Book>();
